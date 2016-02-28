@@ -1,8 +1,19 @@
+;; Package list
+(setq package-list '(helm-company airline-themes powerline auto-complete popup badwolf-theme beginend coffee-mode company-go go-mode company company-jedi jedi-core python-environment deferred epc ctable concurrent deferred company company-shell dash company cython-mode dired-single dired-subtree dired-hacks-utils dash dash diredful dna-mode encourage-mode erc-hipchatify request alert log4e gntp s eruby-mode flycheck-flow flycheck seq let-alist pkg-info epl dash gntp go-mode helm-google google helm helm-core async popup async helm-mode-manager helm helm-core async popup async helm-proc helm helm-core async popup async helm-projectile dash projectile pkg-info epl dash helm helm-core async popup async highlight highlight-tail jedi-core python-environment deferred epc ctable concurrent deferred jenkins-watch js3-mode let-alist log4e magit-gh-pulls s pcache magit magit-popup dash async git-commit with-editor dash async dash with-editor dash async dash async gh logito pcache magit-popup dash async markdown-mode multi-term nhexl-mode org-jira osx-trash ox-impress-js org pcache popup projectile pkg-info epl dash python-environment deferred python-mode request spaceline s dash powerline telephone-line seq s vagrant visual-regexp wanderlust semi flim apel warm-night-theme with-editor dash async xterm-color yaml-mode))
 
-(package-initialize)
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
 			 ("marmalade" . "https://marmalade-repo.org/packages/")
 			                          ("melpa" . "https://melpa.org/packages/")))
+
+(package-initialize)
+
+; fetch the list of packages available
+(or (file-exists-p package-user-dir) (package-refresh-contents))
+
+;;install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
 
 ;; other packages
 (add-to-list 'load-path "~/.emacs.d/lisp/")
