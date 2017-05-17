@@ -55,7 +55,6 @@ plugins=(git)
 
 # export MANPATH="/usr/local/man:$MANPATH"
 
-export PATH=/Users/bwarren/.local/bin:/Users/bwarren/Library/Python/2.7/bin/:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 source $ZSH/oh-my-zsh.sh
 
 # You may need to manually s#et your language environment
@@ -67,12 +66,13 @@ source $ZSH/oh-my-zsh.sh
 # else
 #   export EDITOR='mvim'
 # fi
+export EDITOR='emacsc'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
 # ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
+export SSH_KEY_PATH="~/.ssh/rsa_id"
 
 # Set personal aliases, overriding those provided by oh-my-zsh libs,
 # plugins, and themes. Aliases can be placed here, though oh-my-zsh
@@ -90,17 +90,4 @@ bindkey '^[[1;5C' forward-word
 #bindkey '^[[1;3D' emacs-backward-word
 #bindkey '^[[1;3C' emacs-forward-word
 
-export EDITOR='emacs'
-
 export VAGRANT_LOG=warn
-
-if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
-
-if which ruby >/dev/null && which gem >/dev/null; then
-    export PATH="$(ruby -rubygems -e 'puts Gem.user_dir')/bin:$PATH"
-fi
-
-export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-
-# Specify your defaults in this environment variable
-export HOMEBREW_CASK_OPTS="--appdir=/Users/bwarren/Applications --caskroom=/Users/bwarren/.local/Caskroom"
