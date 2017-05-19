@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Usage: ./install.sh [project_path ($HOME/code/ben/dotfiles/)] [destination ($HOME)]
 
 DOTFILES=$HOME/code/ben/dotfiles
