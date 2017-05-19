@@ -24,7 +24,7 @@ echo "Clobber existing symlinks?"
 read yn
 case $yn in
     y|Y) echo "Removing existing symlinks..."
-	rm $DEST/{.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc/.zshrc}
+	rm $DEST/{.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc,.zshrc}
 	;;
     *) echo "Not replacing existing symlinks"
 	exit 1
