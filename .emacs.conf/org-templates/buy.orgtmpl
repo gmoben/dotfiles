@@ -1,0 +1,5 @@
+* BUY %? %^g %^{CATEGORY}p
+:PROPERTIES:
+:CREATED:  %U
+:NECESSITY:  %^{What necessity level?|NEED|WANT|NICE TO HAVE}
+:END:
