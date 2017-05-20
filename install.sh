@@ -5,16 +5,15 @@
 DOTFILES=$HOME/code/ben/dotfiles
 DEST=$HOME
 
-if [[$# -ge 1]]; then
+if [ $# -ge 1 ]; then
     DOTFILES=$1
 fi
-if [[$# -ge 2]]; then
+if [ $# -ge 2 ]; then
     DEST=$2
 fi
 
 echo "This script will attempt to create symlinks from files/folders in $DOTFILES to $DEST"
-echo "Are you sure?"
-read yn
+read -n 1 -p "Are you sure? (y/n)" yn
 case $yn in
     y|Y) ;;
     *) echo "Aborting"
@@ -22,11 +21,10 @@ case $yn in
 	;;
 esac
 
-echo "Clobber existing symlinks?"
-read yn
+read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 case $yn in
     y|Y) echo "Removing existing symlinks..."
-	rm $DEST/{.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc,.zshrc}
+	rm $DEST/{.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc,.zshrc} || true
 	;;
     *) echo "Not replacing existing symlinks"
 	exit 1
@@ -41,8 +39,7 @@ ln -s {$DOTFILES,$DEST}/.pylintrc
 ln -s {$DOTFILES,$DEST}/.zshrc
 
 if [ -d $DEST/.emacs.d ]; then
-    echo "The directory $DEST/.emacs.d already exists. Delete and replace? (y/n)"
-    read yn
+    read -n 1 -p "The directory $DEST/.emacs.d already exists. Delete and replace? (y/n)" yn
     case $yn in
 	y|Y) echo "Removing $DEST/emacs.d"
 	     rm -rf $DEST/.emacs.d

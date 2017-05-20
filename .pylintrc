@@ -5,7 +5,7 @@
 
 # Python code to execute, usually for sys.path manipulation such as
 # pygtk.require().
-init-hook='import sys; sys.path.append("/Users/bwarren/github/fds-ss"); sys.path.append("/Users/bwarren/github/fds-ss/.ignored/pindrop-pycore")'
+init-hook=
 
 
 # Profiled execution.

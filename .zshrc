@@ -12,7 +12,7 @@ ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use hyphen-insensitive completion. Case
 # sensitive completion must be off. _ and - will be interchangeable.
-# HYPHEN_INSENSITIVE="true"
+HYPHEN_INSENSITIVE="true"
 
 # Uncomment the following line to disable bi-weekly auto-update checks.
 # DISABLE_AUTO_UPDATE="true"
@@ -57,6 +57,8 @@ plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
+source $HOME/.aliases
+
 # You may need to manually s#et your language environment
 # export LANG=en_US.UTF-8
 
@@ -91,3 +93,7 @@ bindkey '^[[1;5C' forward-word
 #bindkey '^[[1;3C' emacs-forward-word
 
 export VAGRANT_LOG=warn
+
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/code
+source $HOME/.local/bin/virtualenvwrapper.sh
