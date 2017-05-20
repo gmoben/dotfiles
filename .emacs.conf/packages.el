@@ -57,7 +57,6 @@ Return a list of installed packages or nil for every skipped package."
 			    encourage-mode
 			    epc
 			    epl
-			    eruby-mode
 			    exec-path-from-shell
 			    feature-mode
 			    firecode-theme
@@ -123,7 +122,7 @@ Return a list of installed packages or nil for every skipped package."
 			    magit
 			    magit-gh-pulls
 			    magit-popup
-			    markdown-mode
+;;			    markdown-mode
 			    marshal
 			    memoize
 			    multi
@@ -146,7 +145,6 @@ Return a list of installed packages or nil for every skipped package."
 			    py-yapf
 			    pydoc
 			    pydoc-info
-			    pymacs
 			    pytest
 			    python-docstring
 			    python-environment
