@@ -23,13 +23,15 @@
 (setq org-default-notes-file (concat org-directory "ben/refile.org"))
 
 ;; Folder and file location variables
-(defvar ben/org/ben (concat org-directory "ben/"))
-(defvar ben/org/ben/quests (concat ben/org/ben "quests.org"))
-(defvar ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
+(defconst ben/org/ben (concat org-directory "ben/"))
+(defconst ben/org/ben/quests (concat ben/org/ben "quests.org"))
+(defconst ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
+(defconst ben/org/ben/refile (concat ben/org/ben "refile.org"))
 
-(defvar ben/org/work (concat org-directory "work/"))
-(defvar ben/org/work/quests (concat ben/org/work "quests.org"))
-(defvar ben/org/work/snippets (concat ben/org/work "snippets.org"))
+(defconst ben/org/work (concat org-directory "work/"))
+(defconst ben/org/work/quests (concat ben/org/work "quests.org"))
+(defconst ben/org/work/snippets (concat ben/org/work "snippets.org"))
+(defconst ben/org/work/refile (concat ben/org/work "refile.org"))
 
 ;; Add agenda files if directories exist
 (setq org-agenda-files (list))
@@ -49,17 +51,17 @@
      :clock-in t :clock-resume t)
     ("bp" "Project"
      entry
-     (file+olp ben/org/ben/quests "Refile" "Projects")
+     (file+olp ben/org/ben/refile "Refile" "Projects")
      (file "~/.emacs.conf/org-templates/project.orgtmpl")
      :clock-in t :clock-resume t)
     ("bt" "Todo"
      entry
-     (file+olp ben/org/ben/quests "Refile" "Todos")
+     (file+olp ben/org/ben/refile "Refile" "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
      :clock-in t :clock-resume t)
     ("bb" "Buy"
      entry
-     (file+olp ben/org/ben/quests "Refile" "Buy")
+     (file+olp ben/org/ben/refile "Refile" "Buy")
      (file "~/.emacs.conf/org-templates/buy.orgtmpl")
      :clock-in t :clock-resume t)
     ("ws" "Code Snippet"
@@ -78,12 +80,12 @@
      :clock-in t :clock-resume t)
     ("wp" "Project"
      entry
-     (file+olp ben/org/work/quests "Refile" "Projects")
+     (file+olp ben/org/work/refile "Refile" "Projects")
      (file "~/.emacs.conf/org-templates/project.orgtmpl")
      :clock-in t :clock-resume t)
     ("wt" "Todo"
      entry
-     (file+olp ben/org/work/quests "Refile" "Todos")
+     (file+olp ben/org/work/refile "Refile" "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
      :clock-in t :clock-resume t)
     ("ws" "Code Snippet"
