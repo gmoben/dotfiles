@@ -65,8 +65,9 @@ Position the cursor at it's beginning, according to the current mode."
 (global-set-key (kbd "M--")
 		'(lambda () (interactive) (global-text-scale-adjust -1)))
 
-;; delete-selection-mode
+;; Globally enabled modes
 (delete-selection-mode 1)
+(xterm-mouse-mode 1)
 
 ;; easier movement
 (global-set-key (kbd "M-n") 'forward-paragraph)
