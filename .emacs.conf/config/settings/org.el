@@ -46,67 +46,88 @@
 (setq org-refile-use-outline-path t) ;; Show full paths when refiling
 (setq org-refile-allow-creating-parent-nodes 'confirm) ;; Allow refile to create parent tasks with confirmation
 (setq org-directory "~/org/")
-(setq org-default-notes-file (concat org-directory "refile.org"))
+(setq org-default-notes-file (concat org-directory "ben/refile.org"))
 
+;; Folder and file location variables
+(defvar ben/org/ben (concat org-directory "ben/"))
+(defvar ben/org/ben/quests (concat ben/org/ben "quests.org"))
+(defvar ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
+
+(defvar ben/org/work (concat org-directory "work/"))
+(defvar ben/org/work/quests (concat ben/org/work "quests.org"))
+(defvar ben/org/work/snippets (concat ben/org/work "snippets.org"))
+
+;; Add agenda files if directories exist
 (setq org-agenda-files (list))
-(dolist (folder '("ben/" "work/") nil)
-  (let (path)
-    (setq path (concat org-directory folder))
-    (if (or (file-exists-p path) (file-symlink-p path))
-	(add-to-list 'org-agenda-files path))))
+(dolist (path '(ben/org/ben ben/org/work) nil)
+  (if (or (file-exists-p path) (file-symlink-p path))
+      (add-to-list 'org-agenda-files path)))
 
 (setq org-refile-targets '((nil :maxlevel . 9)
 			   (org-agenda-files :maxlevel . 9)))
 
-(defvar ben/org-templates/standalone
-  '(("b" "Buy"
+(defvar ben/org/capture/ben
+  '(("b" "Ben (Personal)")
+    ("bq" "Quest"
      entry
-     (file+headline "~/org/ben/refile.org" "Shopping")
+     (file+headline ben/org/ben/quests "Quests")
+     (file "~/.emacs.conf/org-templates/quest.orgtmpl")
+     :clock-in t :clock-resume t)
+    ("bp" "Project"
+     entry
+     (file+olp ben/org/ben/quests "Refile" "Projects")
+     (file "~/.emacs.conf/org-templates/project.orgtmpl")
+     :clock-in t :clock-resume t)
+    ("bt" "Todo"
+     entry
+     (file+olp ben/org/ben/quests "Refile" "Todos")
+     (file "~/.emacs.conf/org-templates/todo.orgtmpl")
+     :clock-in t :clock-resume t)
+    ("bb" "Buy"
+     entry
+     (file+olp ben/org/ben/quests "Refile" "Buy")
      (file "~/.emacs.conf/org-templates/buy.orgtmpl")
      :clock-in t :clock-resume t)
-    ("q" "Quest"
+    ("ws" "Code Snippet"
      entry
-     (file+headline "~/org/ben/quests.org" "Incoming")
-     (file "~/.emacs.conf/org-templates/quest.orgtmpl")
-     :clock-in t :clock-resume t)))
-
-(defvar ben/org-templates/general
-  ;; General
-  '(("p" "Personal")
-    ("pt" "Todo"
-     entry
-     (file+headline "~/org/ben/refile.org" "Tasks")
-     (file "~/.emacs.conf/org-templates/todo.orgtmpl")
+     (file ben/org/ben/snippets)
+     (file "~/.emacs.conf/org-templates/snippet.orgtmpl")
      :clock-in t :clock-resume t)
-    ("pi" "Project Idea"
-     entry
-     (file+headline "~/org/ben/refile.org" "Ideas")
-     (file "~/.emacs.conf/org-templates/idea.orgtmpl")
-     :clock-in t :clock-resume t)))
+    ))
 
-(defvar ben/org-templates/work
-  ;; Work-specific
+(defvar ben/org/capture/work
   '(("w" "Work")
+    ("wq" "Quest"
+     entry
+     (file+headline ben/org/work/quests "Quests")
+     (file "~/.emacs.conf/org-templates/quest.orgtmpl")
+     :clock-in t :clock-resume t)
+    ("wp" "Project"
+     entry
+     (file+olp ben/org/work/quests "Refile" "Projects")
+     (file "~/.emacs.conf/org-templates/project.orgtmpl")
+     :clock-in t :clock-resume t)
     ("wt" "Todo"
      entry
-     (file+headline "~/org/work/refile.org" "Tasks")
+     (file+olp ben/org/work/quests "Refile" "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
      :clock-in t :clock-resume t)
-    ("wi" "Project Idea"
+    ("ws" "Code Snippet"
      entry
-     (file+headline "~/org/work/refile.org" "Ideas")
-     (file "~/.emacs.conf/org-templates/idea.orgtmpl")
-     :clock-in t :clock-resume t)))
+     (file ben/org/work/snippets)
+     (file "~/.emacs.conf/org-templates/snippet.orgtmpl")
+     :clock-in t :clock-resume t)
+    ))
 
+;; Conditionally set capture templates
 (setq org-capture-templates
       (let (tmpl (list))
-	(if (member "~/org/ben/" org-agenda-files)
-	    (dolist (group (list ben/org-templates/standalone ben/org-templates/general))
-	      (dolist (elem group)
-		(add-to-list 'tmpl elem 'append))))
+	(if (member ben/org/ben org-agenda-files)
+	    (dolist (elem ben/org/capture/ben)
+	      (add-to-list 'tmpl elem 'append)))
 
-	(if (member "~/org/work/" org-agenda-files)
-	    (dolist (elem ben/org-templates/work)
+	(if (member ben/org/work org-agenda-files)
+	    (dolist (elem ben/org/capture/ben)
 	      (add-to-list 'tmpl elem 'append)))
 	tmpl))
 

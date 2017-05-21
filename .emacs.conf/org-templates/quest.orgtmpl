@@ -1,7 +1,8 @@
-* %? %^G %^{Domain|Home|Work|Social|Career}p %^{Type|Main Quest|Side Quest|DLC}p %^{Difficulty|Easy|Normal|Expert|Hero}p :QUEST:
+* %? :QUEST:
 :PROPERTIES:
 :Created: %U
-:Purpose: %?
-:Description: %?
-:Goal: %?
+:Origin: %^{Origin|Self}
+:Domain: %^{Domain|Personal|Work|Social|Career}
+:Type: %^{Type|Main|Side|DLC}
+:Difficulty: %^{Difficulty|Easy|Normal|Expert|Hero}
 :END:

@@ -1,6 +1,6 @@
-* %? %^G %^{CATEGORY}p
+* %? %^G :SNIPPET:
 :PROPERTIES:
-:CREATED:  %U
+:Created:  %U
 :END:
 #+NAME: <name>
 #+BEGIN_SRC %^{language|python|bash|c} %^{switches} %^{header arguments}
