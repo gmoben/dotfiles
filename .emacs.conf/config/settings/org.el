@@ -6,23 +6,18 @@
 (require 'org-clock)
 (require 'ox) ;; org-export http://orgmode.org/worg/exporters/ox-docstrings.html
 
-;; Settings
-(org-clock-persistence-insinuate)
+
+;; General
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|orgtmpl\\)$" . org-mode))
+(add-to-list 'org-modules 'org-habit)
 (setq org-startup-indented t)
 (setq org-export-coding-system 'utf-8)
-(setq org-log-reschedule 'time) ;; Add annotations when a task is rescheduled
-(setq org-enforce-todo-dependencies t)
-(setq org-enforce-todo-checkbox-dependencies t)
-(setq org-use-fast-todo-selection t) ;; C-c C-t <shortcut key>
-(setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; Use S-<left> and S-<right> to cycle TODO states without ! or @
-(setq org-clock-persist 'history)
-(setq org-refile-use-outline-path t) ;; Show full paths when refiling
-(setq org-refile-allow-creating-parent-nodes 'confirm) ;; Allow refile to create parent tasks with confirmation
 (setq org-directory "~/org/")
 (setq org-default-notes-file (concat org-directory "ben/refile.org"))
+(setq org-outline-path-complete-in-steps t)
 
 ;; Folder and file location variables
+;; TODO: Generate these
 (defconst ben/org/ben (concat org-directory "ben/"))
 (defconst ben/org/ben/quests (concat ben/org/ben "quests.org"))
 (defconst ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
@@ -35,35 +30,55 @@
 (defconst ben/org/ben/habits (concat ben/org/work "habits.org"))
 (defconst ben/org/work/refile (concat ben/org/work "refile.org"))
 
-;; Add agenda files if directories exist
-(setq org-agenda-files (list))
-(dolist (path '("~/org/ben" "~/org/work") nil)
-  (if (or (file-exists-p path) (file-symlink-p path))
-      (add-to-list 'org-agenda-files path)))
+;; Clock
+(org-clock-persistence-insinuate)
+(setq org-clock-persist 'history)
 
+;; Todo
+(setq org-log-reschedule 'time) ;; Add annotations when a task is rescheduled
+(setq org-enforce-todo-dependencies t)
+(setq org-enforce-todo-checkbox-dependencies t)
+(setq org-use-fast-todo-selection t) ;; C-c C-t <shortcut key>
+(setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; Use S-<left> and S-<right> to cycle TODO states without ! or @
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "NEXT(n)" "BLOCKED(b@/@)" "|" "DONE(d!)" "CANCELED(c@/@)") ;; General
+	(sequence "BUY($!)" "|" "PURCHASED(p@)" "ARRIVED(a@)") ;; Grocery, Amazon, etc.
+	(sequence "DESIGN(D/@)" "IMPLEMENT(I/@)" "REFACTOR(R/@)" "|" "MERGED(M!/@)" "CLOSED(C@/@)"))) ;; Projects
+
+
+;; Refile
+(defun ben/org/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+(setq org-refile-target-verify-function 'ben/org/verify-refile-target)
+(setq org-refile-use-outline-path t) ;; Show full paths when refiling
+(setq org-refile-allow-creating-parent-nodes 'confirm) ;; Allow refile to create parent tasks with confirmation
 (setq org-refile-targets '((nil :maxlevel . 9)
 			   (org-agenda-files :maxlevel . 9)))
 
+
+;; Capture
+;; TODO: Generate these
 (defvar ben/org/capture/ben
   '(("b" "Ben (Personal)")
     ("bq" "Quest"
      entry
-     (file+headline ben/org/ben/quests "Quests")
+     (file ben/org/ben/quests)
      (file "~/.emacs.conf/org-templates/quest.orgtmpl")
      :clock-in t :clock-resume t)
     ("bp" "Project"
      entry
-     (file+olp ben/org/ben/refile "Refile" "Projects")
+     (file+headline ben/org/ben/refile "Projects")
      (file "~/.emacs.conf/org-templates/project.orgtmpl")
      :clock-in t :clock-resume t)
     ("bt" "Todo"
      entry
-     (file+olp ben/org/ben/refile "Refile" "Todos")
+     (file+headline ben/org/ben/refile "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
      :clock-in t :clock-resume t)
     ("bb" "Buy"
      entry
-     (file+olp ben/org/ben/refile "Refile" "Buy")
+     (file+headline ben/org/ben/refile "Buy")
      (file "~/.emacs.conf/org-templates/buy.orgtmpl")
      :clock-in t :clock-resume t)
     ("bs" "Code Snippet"
@@ -73,7 +88,7 @@
      :clock-in t :clock-resume t)
     ("bh" "Habit"
      entry
-     (file+headline ben/org/ben/habits "Habits")
+     (file+headline ben/org/ben/refile "Habits")
      (file "~/.emacs.conf/org-templates/habit.orgtmpl")
      :clock-in t :clock-resume t)
     ))
@@ -82,17 +97,17 @@
   '(("w" "Work")
     ("wq" "Quest"
      entry
-     (file+headline ben/org/work/quests "Quests")
+     (file ben/org/work/quests)
      (file "~/.emacs.conf/org-templates/quest.orgtmpl")
      :clock-in t :clock-resume t)
     ("wp" "Project"
      entry
-     (file+olp ben/org/work/refile "Refile" "Projects")
+     (file+headline ben/org/work/refile "Projects")
      (file "~/.emacs.conf/org-templates/project.orgtmpl")
      :clock-in t :clock-resume t)
     ("wt" "Todo"
      entry
-     (file+olp ben/org/work/refile "Refile" "Todos")
+     (file+headline ben/org/work/refile "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
      :clock-in t :clock-resume t)
     ("ws" "Code Snippet"
@@ -102,7 +117,7 @@
      :clock-in t :clock-resume t)
     ("wh" "Habit"
      entry
-     (file+headline ben/org/work/habits "Habits")
+     (file+headline ben/org/work/refile "Habits")
      (file "~/.emacs.conf/org-templates/habit.orgtmpl")
      :clock-in t :clock-resume t)
     ))
@@ -119,28 +134,48 @@
 	      (add-to-list 'tmpl elem 'append)))
 	tmpl))
 
-(setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "BLOCKED(b@/@)" "|" "DONE(d!)" "CANCELED(c@/@)") ;; General
-	(sequence "BUY($!)" "|" "PURCHASED(p@)" "ARRIVED(a@)") ;; Grocery, Amazon, etc.
-	(sequence "DESIGN(D/@)" "IMPLEMENT(I/@)" "REFACTOR(R/@)" "|" "MERGED(M!/@)" "CLOSED(C@/@)"))) ;; Projects
+;; Agenda
+(setq org-agenda-compact-blocks t)
+(setq org-agenda-files (list))
+(dolist (path '("~/org/ben" "~/org/work") nil)
+  (if (or (file-exists-p path) (file-symlink-p path))
+      (add-to-list 'org-agenda-files path)))
 
-; Exclude DONE state tasks from refile targets
-(defun ben/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets"
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+(setq org-agenda-custom-commands
+      '(("h" "Habits" tags-todo "STYLE=\"habit\""
+	 ((org-agenda-overriding-header "Habits")
+	  (org-agenda-sorting-strategy
+	   '(todo-state-down effort-up category-keep))
+	  ))
+	(" " "Agenda"
+	 ((agenda "" nil)
+	  (tags "REFILE+CREATED={.+}"
+		((org-agenda-overriding-header "Refile")
+		 (org-tags-match-list-sublevels t)
+		 ))
+	  (todo "NEXT"
+		     ((org-agenda-overriding-header "Next")
+		      ))
 
-(setq org-refile-target-verify-function 'ben/verify-refile-target)
+	  ))
+	;; ("N" "Notes" tags "NOTE"
+	;;  ((org-agenda-overriding-header "Notes")
+	;;   (org-tags-match-list-sublevels t)))
+	))
+
 
 ;; Global Key Bindings
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c o a") 'org-agenda)
 (global-set-key (kbd "C-c o b") 'org-iswitchb) ;; TODO Find/write a helm plugin
 (global-set-key (kbd "C-c o c") 'org-capture)
 
-(global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file org-directory)))
-(global-set-key (kbd "C-c o q") (lambda() (interactive) (find-file ben/org/ben/quests)))
-(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file ben/org/ben/snippets)))
-(global-set-key (kbd "C-c o w q") (lambda() (interactive) (find-file ben/org/work/quests)))
-(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/snippets)))
+(global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file 'org-directory)))
+(global-set-key (kbd "C-c o q") (lambda() (interactive) (find-file 'ben/org/ben/quests)))
+(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file 'ben/org/ben/snippets)))
+(global-set-key (kbd "C-c o w q") (lambda() (interactive) (find-file 'ben/org/work/quests)))
+(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file 'ben/org/work/snippets)))
 
 ;; Org-mode bindings
 (define-key org-mode-map (kbd "C-c o h") 'org-insert-heading-after-current)
@@ -164,8 +199,6 @@
 (define-key org-mode-map (kbd "<C-f12>") 'org-insert-heading-respect-content)
 (define-key org-mode-map (kbd "<C-S-f12>") 'org-insert-todo-heading-respect-content)
 (define-key org-mode-map (kbd "<M-S-f12>") 'org-insert-todo-heading)
-
-(add-to-list 'org-modules 'org-habit)
 
 ;; (setq org-todo-state-tags-triggers
 ;;       '(("BLOCKED" ("BLOCKED" . t))
