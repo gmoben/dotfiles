@@ -1,8 +1,8 @@
-* %? :QUEST:
+* %?
 :PROPERTIES:
-:Created: %U
-:Origin: %^{Origin|Self}
-:Domain: %^{Domain|Personal|Work|Social|Career}
-:Type: %^{Type|Main|Side|DLC}
-:Difficulty: %^{Difficulty|Easy|Normal|Expert|Hero}
+:CREATED: %U
+:ORIGIN: %^{Origin|Self}
+:DOMAIN: %^{Domain|Personal|Work|Social|Career}
+:TYPE: %^{Type|Main|Side|DLC}
+:DIFFICULTY: %^{Difficulty|Easy|Normal|Expert|Hero}
 :END:
