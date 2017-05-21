@@ -58,6 +58,7 @@ plugins=(git)
 source $ZSH/oh-my-zsh.sh
 
 source $HOME/.aliases
+source $HOME/.localrc
 
 # You may need to manually s#et your language environment
 # export LANG=en_US.UTF-8
