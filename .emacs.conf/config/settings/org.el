@@ -26,11 +26,13 @@
 (defconst ben/org/ben (concat org-directory "ben/"))
 (defconst ben/org/ben/quests (concat ben/org/ben "quests.org"))
 (defconst ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
+(defconst ben/org/ben/habits (concat ben/org/ben "habits.org"))
 (defconst ben/org/ben/refile (concat ben/org/ben "refile.org"))
 
 (defconst ben/org/work (concat org-directory "work/"))
 (defconst ben/org/work/quests (concat ben/org/work "quests.org"))
 (defconst ben/org/work/snippets (concat ben/org/work "snippets.org"))
+(defconst ben/org/ben/habits (concat ben/org/work "habits.org"))
 (defconst ben/org/work/refile (concat ben/org/work "refile.org"))
 
 ;; Add agenda files if directories exist
@@ -64,10 +66,15 @@
      (file+olp ben/org/ben/refile "Refile" "Buy")
      (file "~/.emacs.conf/org-templates/buy.orgtmpl")
      :clock-in t :clock-resume t)
-    ("ws" "Code Snippet"
+    ("bs" "Code Snippet"
      entry
      (file ben/org/ben/snippets)
      (file "~/.emacs.conf/org-templates/snippet.orgtmpl")
+     :clock-in t :clock-resume t)
+    ("bh" "Habit"
+     entry
+     (file+headline ben/org/ben/habits "Habits")
+     (file "~/.emacs.conf/org-templates/habit.orgtmpl")
      :clock-in t :clock-resume t)
     ))
 
@@ -92,6 +99,11 @@
      entry
      (file ben/org/work/snippets)
      (file "~/.emacs.conf/org-templates/snippet.orgtmpl")
+     :clock-in t :clock-resume t)
+    ("wh" "Habit"
+     entry
+     (file+headline ben/org/work/habits "Habits")
+     (file "~/.emacs.conf/org-templates/habit.orgtmpl")
      :clock-in t :clock-resume t)
     ))
 
@@ -153,6 +165,7 @@
 (define-key org-mode-map (kbd "<C-S-f12>") 'org-insert-todo-heading-respect-content)
 (define-key org-mode-map (kbd "<M-S-f12>") 'org-insert-todo-heading)
 
+(add-to-list 'org-modules 'org-habit)
 
 ;; (setq org-todo-state-tags-triggers
 ;;       '(("BLOCKED" ("BLOCKED" . t))

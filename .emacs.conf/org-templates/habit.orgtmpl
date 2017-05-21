@@ -1,0 +1,6 @@
+* TODO %? %^G
+:PROPERTIES:
+:CREATED:  %U
+:STYLE:    habit
+:END:
+SCHEDULED: %^{Start date}t
