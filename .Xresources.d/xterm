@@ -1,0 +1,7 @@
+xterm*metaSendsEscape: true
+xterm*eightBitInput: false
+xterm*background: #2b2b2b
+xterm*foreground: #e7e7e7
+xterm*pointerColor: #16A085
+xterm*faceName: Monospace
+xterm*faceSize: 12

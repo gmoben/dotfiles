@@ -24,19 +24,26 @@ esac
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 case $yn in
     y|Y) echo "Removing existing symlinks..."
-	rm $DEST/{.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc,.zshrc} || true
+	rm $DEST/{.i3,.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc,.zshrc,.Xresources.d,.Xresources,extend.Xresources} || true
 	;;
     *) echo "Not replacing existing symlinks"
 	exit 1
 	;;
 esac
 
+ln -s ${DOTFILES,$DEST}/.i3
 ln -s {$DOTFILES,$DEST}/.tmux
 ln -s {$DOTFILES,$DEST}/.tmux.conf
 ln -s {$DOTFILES,$DEST}/.aliases
 ln -s {$DOTFILES,$DEST}/.emacs.conf
 ln -s {$DOTFILES,$DEST}/.pylintrc
 ln -s {$DOTFILES,$DEST}/.zshrc
+ln -s {$DOTFILES,$DEST}/.xsession
+ln -s {$DOTFILES,$DEST}/.extend.Xresources
+ln -s {$DOTFILES,$DEST}/.Xresources
+ln -s {$DOTFILES,$DEST}/.Xresources.d
+
+ln -s $DEST/{.xsession,.xinitrc}
 
 if [ -d $DEST/.emacs.d ]; then
     read -n 1 -p "The directory $DEST/.emacs.d already exists. Delete and replace? (y/n)" yn
