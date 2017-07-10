@@ -44,7 +44,7 @@ if [ -d $DEST/.emacs.d ]; then
 	y|Y) echo "Removing $DEST/emacs.d"
 	     rm -rf $DEST/.emacs.d
 	     echo "Copying $DOTFILES/.emacs.d to $DEST"
-	     ln -s $DOTFILES/.emacs.d $DEST/.emacs.d
+	     cp $DOTFILES/.emacs.d $DEST/.emacs.d
 	     ;;
 	* ) "Skipping .emacs.d installation";;
     esac
