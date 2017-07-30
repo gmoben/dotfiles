@@ -1,0 +1,9 @@
+rofi.separator-style: solid
+rofi.sidebar-mode: true
+rofi.lines: 5
+rofi.font: monospace 12
+rofi.bw: 1
+rofi.columns: 1
+rofi.padding: 5
+rofi.fixed-num-lines: true
+rofi.hide-scrollbar: true

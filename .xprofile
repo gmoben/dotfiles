@@ -1,0 +1,3 @@
+xset mouse 2 0
+xmodmap ~/.xmodmap
+xscreensaver -no-splash &

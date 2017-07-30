@@ -42,8 +42,13 @@ ln -s {$DOTFILES,$DEST}/.xsession
 ln -s {$DOTFILES,$DEST}/.extend.Xresources
 ln -s {$DOTFILES,$DEST}/.Xresources
 ln -s {$DOTFILES,$DEST}/.Xresources.d
+ln -s {$DOTFILES,$DEST}/.profile
+ln -s {$DOTFILES,$DEST}/.xprofile
 
 ln -s $DEST/{.xsession,.xinitrc}
+
+echo "Downloading antigen.zsh"
+curl -L git.io/antigen > $DEST/antigen.zsh
 
 if [ -d $DEST/.emacs.d ]; then
     read -n 1 -p "The directory $DEST/.emacs.d already exists. Delete and replace? (y/n)" yn
@@ -51,7 +56,7 @@ if [ -d $DEST/.emacs.d ]; then
 	y|Y) echo "Removing $DEST/emacs.d"
 	     rm -rf $DEST/.emacs.d
 	     echo "Copying $DOTFILES/.emacs.d to $DEST"
-	     cp $DOTFILES/.emacs.d $DEST/.emacs.d
+	     cp -R $DOTFILES/.emacs.d/* $DEST/.emacs.d
 	     ;;
 	* ) "Skipping .emacs.d installation";;
     esac
