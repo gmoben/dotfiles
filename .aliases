@@ -25,8 +25,8 @@ alias emacs='TERM=xterm-256color emacs -nw'
 alias gmacs='emacs -c'
 alias emacsd='TERM=xterm-256color emacs --daemon'
 alias emacsc='TERM=xterm-256color emacsclient -t'
-alias tmuxconf='emacsc $HOME/.tmux.conf'
-alias emacsconf='emacsc $HOME/.emacs.conf'
+alias tmuxconf='emacsclient $HOME/.tmux.conf'
+alias emacsconf='emacsclient $HOME/.emacs.conf'
 
 # Tmux
 alias tmux='TERM=xterm-256color tmux -2'
@@ -50,7 +50,6 @@ alias psg='ps -ef | grep '
 # Expand aliases after using sudo
 alias sudo='sudo '
 
-alias pm='pacman'
-alias pms='pacman -S'
-
 alias locks='xscreensaver-command --lock'
+
+alias e='emacsclient ."'

@@ -1,0 +1,10 @@
+[Unit]
+Description=XScreenSaver
+
+[Service]
+ExecStart=/usr/bin/xscreensaver -no-splash
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=default.target
