@@ -72,3 +72,21 @@ Position the cursor at it's beginning, according to the current mode."
 ;; easier movement
 (global-set-key (kbd "M-n") 'forward-paragraph)
 (global-set-key (kbd "M-p") 'backward-paragraph)
+
+(defun scroll-up-some-lines ()
+  "Move page up 3 logical lines"
+  (interactive)
+  (scroll-down 3)
+  )
+
+(defun scroll-down-some-lines ()
+  "Move page down 10 logical lines"
+  (interactive)
+  (scroll-up 3))
+
+(when (string-equal system-type "gnu/linux")
+  (progn
+    (global-set-key (kbd "<mouse-4>") 'scroll-up-some-lines) ; wheel up
+    (global-set-key (kbd "<mouse-5>") 'scroll-down-some-lines) ; wheel down
+    )
+  )
