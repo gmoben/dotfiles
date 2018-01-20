@@ -33,6 +33,12 @@ alias tmux='TERM=xterm-256color tmux -2'
 alias tml='tmux list-sessions'
 alias tma='tmux attach -t'
 
+# Wemux
+alias wemux='TERM=xterm-256color wemux'
+alias wml='wemux list-sessions'
+alias wma='wemux attach -t'
+alias wmr='wemux r'
+
 # Tmuxinator
 alias mux='tmuxinator'
 alias muxs='tmuxinator start'
@@ -44,6 +50,7 @@ alias gpu='git pull upstream'
 alias gcm='git commit -m'
 
 # Utils
+alias _ls='ls'
 alias ls='ls --color=auto -Flah'
 alias psg='ps -ef | grep '
 
@@ -52,4 +59,19 @@ alias sudo='sudo '
 
 alias locks='xscreensaver-command --lock'
 
-alias e='emacsclient ."'
+alias dired='emacsclient ."'
+
+# Kubectl
+alias kg='kubectl get'
+alias kgp='kubectl get pods'
+alias kgn='kubectl get namespaces'
+alias kc='kubectl'
+alias kgc='kubectl config get-context'
+alias ksc='kubectl config set-context'
+alias kuc='kubectl config use-context'
+alias kdd='kubectl describe deployment'
+alias kdp='kubectl describe pod'
+alias kd='kubectl describe'
+alias kl='kubectl logs'
+alias klf='kubectl logs --follow'
+alias kxit='kubectl exec -it'
