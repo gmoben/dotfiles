@@ -11,3 +11,5 @@
 (global-set-key [remap list-buffers] 'helm-buffers-list)
 (global-set-key [remap yank-pop] 'helm-show-kill-ring)
 (global-set-key [remap describe-mode] 'helm-describe-modes)
+
+(global-set-key (kbd "C-c s") 'helm-semantic-or-imenu)
