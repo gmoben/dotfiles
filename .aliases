@@ -3,7 +3,6 @@
 #alias npm='noglob npm'
 
 # Vagrant
-
 vagrant() {
     if [[ $1 == "remake" ]]; then
 	shift $((2 > $# ? $# : 2))
@@ -20,13 +19,20 @@ alias vrl='vagrant reload'
 alias vrm='vagrant destroy'
 alias vrb='vagrant rebuild'
 
+# Docker
+alias dlogs='docker logs'
+alias dps='docker ps'
+
 # Emacs
 alias emacs='TERM=xterm-256color emacs -nw'
 alias gmacs='emacs -c'
 alias emacsd='TERM=xterm-256color emacs --daemon'
 alias emacsc='TERM=xterm-256color emacsclient -t'
-alias tmuxconf='emacsclient $HOME/.tmux.conf'
-alias emacsconf='emacsclient $HOME/.emacs.conf'
+alias tmuxconf='TERM=xterm-256color emacsclient -t $HOME/.tmux.conf'
+alias emacsconf='TERM=xterm-256color emacsclient -t $HOME/.emacs.conf'
+alias e='TERM=xterm-256color emacsclient -t .'
+alias ecode='TERM=xterm-256color emacsclient -t /code'
+alias ehome='TERM=xterm-256color emacsclient -t $HOME'
 
 # Tmux
 alias tmux='TERM=xterm-256color tmux -2'
