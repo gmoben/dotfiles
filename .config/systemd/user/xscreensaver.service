@@ -2,7 +2,7 @@
 Description=XScreenSaver
 
 [Service]
-ExecStart=/usr/bin/xscreensaver -no-splash
+ExecStart=/usr/bin/xscreensaver -no-splash -display :0
 Restart=always
 RestartSec=2
 
