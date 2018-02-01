@@ -1,9 +1,9 @@
-#-*- mode:shell-script -*-
+#-*- mode: shell-script -*-
 source $HOME/.aliases
 source /usr/bin/virtualenvwrapper.sh
 
-export EDITOR=emacsc
-export SYSTEMD_EDITOR=emacsc
+export EDITOR=emacs
+export SYSTEMD_EDITOR=emacs
 export SSH_KEY_PATH=$HOME/.ssh/rsa_id
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/code
