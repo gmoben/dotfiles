@@ -1,6 +1,9 @@
 #-*- mode: shell-script -*-
 source $HOME/.aliases
-source /usr/bin/virtualenvwrapper.sh
+
+if [[ -f /usr/bin/virtualenvwrapper.sh ]] ; then
+    source /usr/bin/virtualenvwrapper.sh
+fi
 
 export EDITOR=emacs
 export SYSTEMD_EDITOR=emacs

@@ -12,6 +12,8 @@ vagrant() {
     fi
 }
 
+[ -f $HOME/.work.aliases ] && source $HOME/.work.aliases
+
 alias vsh='vagrant ssh'
 alias vup='vagrant up'
 alias vhalt='vagrant halt'
@@ -82,5 +84,40 @@ alias kd='kubectl describe'
 alias kl='kubectl logs'
 alias klf='kubectl logs --follow'
 alias kxit='kubectl exec -it'
+
+kgplabel() {
+    if [[ $# = 1 ]]; then
+	index=*
+	selector=$@
+    elif [[ $# = 2 && $2 =~ ^[0-9]+$ ]]; then
+	index=$2
+	selector=${@:1:1}
+    else
+	echo "Usage: kgpl [label_selector] ([pod index])"
+	exit 1
+    fi
+
+    command kubectl get pods -o=jsonpath="{.items[${index}].metadata.name}" -l $selector
+}
+
+kllabel() {
+    if [[ $# = 1 ]]; then
+	args=$@
+	args+=(0)
+    else
+	args=$@
+    fi
+    command kubectl logs `kgplabel ${args}`
+}
+
+klflabel() {
+    if [[ $# = 1 ]]; then
+	args=$@
+	args+=(0)
+    else
+	args=$@
+    fi
+    command kubectl logs --follow `kgplabel ${args}`
+}
 
 alias ethereum='GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth'
