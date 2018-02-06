@@ -12,7 +12,7 @@ export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/code
 
 export GOPATH=/code/go
-export PATH=$GOPATH/bin:$HOME/.cabal/bin:$HOME/.yarn/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/.cargo/bin:$GOPATH/bin:$HOME/.cabal/bin:$HOME/.yarn/bin:$HOME/.local/bin:$PATH
 
 bindkey '^[[1;5D' backward-word
 bindkey '^[[1;5C' forward-word

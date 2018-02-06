@@ -65,6 +65,7 @@ Return a list of installed packages or nil for every skipped package."
 			    flycheck
 			    flycheck-flow
 			    flycheck-gometalinter
+			    flycheck-rust
 ;;			    flycheck-protobuf
 			    format-sql
 			    ggtags
@@ -152,6 +153,7 @@ Return a list of installed packages or nil for every skipped package."
 			    realgud
 			    request
 			    rotate
+			    rust-mode
 			    s
 			    semi
 			    seq
