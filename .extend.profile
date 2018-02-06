@@ -23,3 +23,5 @@ export GPG_TTY=$(tty)
 if [[ -n "$SSH_CONNECTION" ]] ;then
     export PINENTRY_USER_DATA="USE_CURSES=1"
 fi
+
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"

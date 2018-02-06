@@ -67,6 +67,15 @@ for $link in $SYMLINKS; do
     ln -s ${DOTFILES,$DEST}/$link
 done
 
+read -n 1 -p "Auto-add ssh keys to ssh-agent? (y/n)" yn
+case $yn in
+    y|Y)
+	sed '/s/AddKeysToAgent.+//'
+	echo 'AddKeysToAgent  yes' >> $DEST/.ssh/config
+	;;
+    *)
+	echo "Not altering ssh config"
+
 
 echo "Downloading antigen.zsh"
 curl -L git.io/antigen > $DEST/antigen.zsh
