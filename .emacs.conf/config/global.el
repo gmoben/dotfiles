@@ -72,3 +72,16 @@ Position the cursor at it's beginning, according to the current mode."
 ;; easier movement
 (global-set-key (kbd "M-n") 'forward-paragraph)
 (global-set-key (kbd "M-p") 'backward-paragraph)
+
+;; tabs
+;; https://stackoverflow.com/questions/5528349/emacs-makefile-tab-size#5528393
+; Turn on tabs
+(setq indent-tabs-mode t)
+(setq-default indent-tabs-mode t)
+
+;; Bind the TAB key
+(global-set-key (kbd "TAB") 'self-insert-command)
+
+;; Set the tab width
+(setq tab-width 4)
+(setq c-basic-indent 4)
