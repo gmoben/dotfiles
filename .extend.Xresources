@@ -68,13 +68,20 @@ URxvt*background:                 black
 URxvt*foreground:                 grey
 URxvt*saveLines:                  10000
 
+URxvt*internalBorder:             0
+URxvt*borderLess:                 false
+
+!! iso14755 keybindings need to be disabled for resize-font to work correctly
+URxvt.perl-ext-common:             ...,clipboard,resize-font
+URxvt.iso14755: 		  false
+URxvt.iso14755_52: 		  false
+
 ! for 'fake' transparency (without Compton) uncomment the following three lines
 ! URxvt*inheritPixmap:            true
 ! URxvt*transparent:              true
 ! URxvt*shading:                  138
 
 ! other possible settings:
-URxvt.perl-ext-common:             ...,clipboard,font-size
 ! URxvt.keysym.M-C-c:              perl:clipboard:copy
 ! URxvt.keysym.M-v:                perl:clipboard:paste
 ! URxvt.keysym.M-C-v:              perl:clipboard:paste_escaped
@@ -157,8 +164,7 @@ URxvt.perl-ext-common:             ...,clipboard,font-size
 ! URxvt*override-redirect:         boolean
 ! URxvt*hold:                      boolean
 ! URxvt*externalBorder:            number
-URxvt*internalBorder:            0
-URxvt*borderLess:                  false
+
 ! URxvt*lineSpace:                 number
 ! URxvt*letterSpace:               number
 ! URxvt*skipBuiltinGlyphs:         boolean
@@ -173,10 +179,8 @@ URxvt*borderLess:                  false
 ! URxvt*secondaryScroll:           boolean
 ! URxvt*perl-lib:                  string
 ! URxvt*perl-eval:                 perl-eval
-! URxvt*perl-ext-common:           string
+!
 ! URxvt*perl-ext:                  string
-! URxvt*iso14755:                  boolean
-! URxvt*iso14755_52:               boolean
 ! URxvt*xrm:                       string
 ! URxvt*keysym.sym:                keysym
 ! URxvt*background.border:         boolean
