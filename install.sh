@@ -2,7 +2,7 @@
 
 # Usage: ./install.sh [project_path ($HOME/code/ben/dotfiles/)] [destination ($HOME)]
 
-DOTFILES=$HOME/code/ben/dotfiles
+DOTFILES=$PWD
 DEST=$HOME
 
 if [ $# -ge 1 ]; then
@@ -11,6 +11,28 @@ fi
 if [ $# -ge 2 ]; then
     DEST=$2
 fi
+
+SYMLINKS=(
+    .i3
+    .Xresources
+    .Xresources.d
+    .aliases
+    .config/systemd/user/emacs.service
+    .config/systemd/user/ssh-agent.service
+    .config/systemd/user/xscreensaver.service
+    .emacs.conf
+    .extend.Xresources
+    .extend.profile
+    .pam_environment
+    .pylintrc
+    .tmux
+    .tmux.conf
+    .xinitrc
+    .xmodmap
+    .xprofile
+    .xsession
+    .zshrc
+)
 
 echo "This script will attempt to create symlinks from files/folders in $DOTFILES to $DEST"
 read -n 1 -p "Are you sure? (y/n)" yn
@@ -23,29 +45,28 @@ esac
 
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 case $yn in
-    y|Y) echo "Removing existing symlinks..."
-	rm $DEST/{.i3,.tmux,.tmux.conf,.aliases,.emacs.conf,.pylintrc,.zshrc,.Xresources.d,.Xresources,extend.Xresources} || true
+    y|Y)
+	echo "Removing existing symlinks..."
+	for $link in $SYMLINKS; do
+	    if [ -L $DEST/$link ]; then
+	    	rm $DEST/$link
+	    elif [ -f $DEST/$link ] || [-d $DEST/$link ]; then
+	        echo "$DEST/$link is not a symlink. Aborting!"
+	        exit 1
+	    fi
+	done
 	;;
-    *) echo "Not replacing existing symlinks"
+    *)
+	echo "Not replacing existing symlinks. Aborting!"
 	exit 1
 	;;
 esac
 
-ln -s ${DOTFILES,$DEST}/.i3
-ln -s {$DOTFILES,$DEST}/.tmux
-ln -s {$DOTFILES,$DEST}/.tmux.conf
-ln -s {$DOTFILES,$DEST}/.aliases
-ln -s {$DOTFILES,$DEST}/.emacs.conf
-ln -s {$DOTFILES,$DEST}/.pylintrc
-ln -s {$DOTFILES,$DEST}/.zshrc
-ln -s {$DOTFILES,$DEST}/.xsession
-ln -s {$DOTFILES,$DEST}/.extend.Xresources
-ln -s {$DOTFILES,$DEST}/.Xresources
-ln -s {$DOTFILES,$DEST}/.Xresources.d
-ln -s {$DOTFILES,$DEST}/.profile
-ln -s {$DOTFILES,$DEST}/.xprofile
+echo "Creating symlinks..."
+for $link in $SYMLINKS; do
+    ln -s ${DOTFILES,$DEST}/$link
+done
 
-ln -s $DEST/{.xsession,.xinitrc}
 
 echo "Downloading antigen.zsh"
 curl -L git.io/antigen > $DEST/antigen.zsh
@@ -58,7 +79,9 @@ if [ -d $DEST/.emacs.d ]; then
 	     echo "Copying $DOTFILES/.emacs.d to $DEST"
 	     cp -R $DOTFILES/.emacs.d/* $DEST/.emacs.d
 	     ;;
-	* ) "Skipping .emacs.d installation";;
+	*)
+	    echo "Skipping .emacs.d installation"
+	    ;;
     esac
 fi
 
