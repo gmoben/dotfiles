@@ -13,6 +13,7 @@ vagrant() {
 }
 
 [ -f $HOME/.work.aliases ] && source $HOME/.work.aliases
+[ -f $HOME/.extend.aliases ] && source $HOME/.extend.aliases
 
 alias vsh='vagrant ssh'
 alias vup='vagrant up'
@@ -67,8 +68,7 @@ alias sudo='sudo '
 
 alias locks='xscreensaver-command --lock'
 
-
-alias dired='emacsclient ."'
+alias dired='emacsclient .'
 
 # Kubectl
 alias kg='kubectl get'

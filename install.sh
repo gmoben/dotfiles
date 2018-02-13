@@ -47,10 +47,10 @@ read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 case $yn in
     y|Y)
 	echo "Removing existing symlinks..."
-	for $link in $SYMLINKS; do
+	for link in $SYMLINKS; do
 	    if [ -L $DEST/$link ]; then
 	    	rm $DEST/$link
-	    elif [ -f $DEST/$link ] || [-d $DEST/$link ]; then
+	    elif [ -f $DEST/$link ] || [ -d $DEST/$link ]; then
 	        echo "$DEST/$link is not a symlink. Aborting!"
 	        exit 1
 	    fi
@@ -63,19 +63,20 @@ case $yn in
 esac
 
 echo "Creating symlinks..."
-for $link in $SYMLINKS; do
-    ln -s ${DOTFILES,$DEST}/$link
+for link in $SYMLINKS; do
+    ln -s {$DOTFILES,$DEST}/$link
 done
 
 read -n 1 -p "Auto-add ssh keys to ssh-agent? (y/n)" yn
 case $yn in
     y|Y)
-	sed '/s/AddKeysToAgent.+//'
+	sed -i '/s/AddKeysToAgent.+//' $DEST/.ssh/config
 	echo 'AddKeysToAgent  yes' >> $DEST/.ssh/config
 	;;
     *)
 	echo "Not altering ssh config"
-
+	;;
+esac
 
 echo "Downloading antigen.zsh"
 curl -L git.io/antigen > $DEST/antigen.zsh
@@ -95,4 +96,3 @@ if [ -d $DEST/.emacs.d ]; then
 fi
 
 echo "Installation complete."
-echo "NOTE: iTerm configuration must be manually set to $DOTFILES/com.googlecode.iterm2.plist in iTerm settings"
