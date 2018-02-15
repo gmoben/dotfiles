@@ -6,7 +6,6 @@
 ;; handle tmux's xterm-keys
 ;; put the following line in your ~/.tmux.conf:
 ;;   setw -g xterm-keys on
-(if (getenv "TMUX")
     (progn
       (let ((x 2) (tkey ""))
 	(while (<= x 8)
@@ -95,4 +94,3 @@
 	  (setq x (+ x 1))
 	  ))
       )
-  )

@@ -60,7 +60,7 @@ URxvt.font:                       9x15
 !! terminus names see end of file!
 
 URxvt.depth:                      32
-URxvt.background:                 [80]#000000
+URxvt.background:                 black
 URxvt*scrollBar:                  false
 URxvt*mouseWheelScrollPage:       false
 URxvt*cursorBlink:                true

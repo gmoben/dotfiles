@@ -33,6 +33,7 @@ Return a list of installed packages or nil for every skipped package."
 			    bliss-theme
 			    boron-theme
 			    buffer-move
+			    cargo
 			    coffee-mode
 			    colonoscopy-theme
 			    company
@@ -123,7 +124,7 @@ Return a list of installed packages or nil for every skipped package."
 			    magit
 			    magit-gh-pulls
 			    magit-popup
-;;			    markdown-mode
+			    markdown-mode
 			    marshal
 			    memoize
 			    multi
@@ -150,6 +151,7 @@ Return a list of installed packages or nil for every skipped package."
 			    python-docstring
 			    python-environment
 			    python-mode
+			    racer
 			    realgud
 			    request
 			    rotate

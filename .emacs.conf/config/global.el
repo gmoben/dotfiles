@@ -84,4 +84,4 @@ Position the cursor at it's beginning, according to the current mode."
 
 ;; Set the tab width
 (setq tab-width 4)
-(setq c-basic-indent 4)
+(setq c-basic-offset 4)

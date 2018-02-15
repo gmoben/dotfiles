@@ -34,8 +34,10 @@ SYMLINKS=(
     .zshrc
 )
 
+
 echo "This script will attempt to create symlinks from files/folders in $DOTFILES to $DEST"
 read -n 1 -p "Are you sure? (y/n)" yn
+echo
 case $yn in
     y|Y) ;;
     *) echo "Aborting"
@@ -44,6 +46,7 @@ case $yn in
 esac
 
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
+echo
 case $yn in
     y|Y)
 	echo "Removing existing symlinks..."

@@ -66,9 +66,25 @@ alias psg='ps -ef | grep '
 # Expand aliases after using sudo
 alias sudo='sudo '
 
+# Xscreensaver
 alias locks='xscreensaver-command --lock'
 
-alias dired='emacsclient .'
+# Systemd
+alias sc='systemctl'
+alias scr='systemctl restart'
+alias scstat='systemctl status'
+alias scstart='systemctl start'
+alias scstop='systemctl stop'
+alias sce='systemctl enable'
+alias scd='systemctl disable'
+
+alias scu='systemctl --user'
+alias scur='systemctl --user restart'
+alias scus='systemctl --user status'
+alias scuon='systemctl --user start'
+alias scuoff='systemctl --user stop'
+alias scue='systemctl --user enable'
+alias scud='systemctl --user disable'
 
 # Kubectl
 alias kg='kubectl get'
