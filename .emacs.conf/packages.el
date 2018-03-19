@@ -67,7 +67,6 @@ Return a list of installed packages or nil for every skipped package."
 			    flycheck-flow
 			    flycheck-gometalinter
 			    flycheck-rust
-;;			    flycheck-protobuf
 			    format-sql
 			    ggtags
 			    gh
@@ -107,8 +106,7 @@ Return a list of installed packages or nil for every skipped package."
 			    hydra
 			    import-js
 			    isend-mode
-;;			    jdee
-			    jedi-core
+			    jedi
 			    jenkins-watch
 			    js2-mode
 			    js3-mode

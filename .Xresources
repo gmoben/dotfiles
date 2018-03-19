@@ -2,6 +2,8 @@
 #include ".extend.Xresources"
 #endif
 
+#if __has_include(".Xresources.d")
 #include ".Xresources.d/xterm"
 #include ".Xresources.d/xft"
 #include ".Xresources.d/rofi"
+#endif
