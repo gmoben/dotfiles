@@ -7,8 +7,8 @@ fi
 
 export CODE=/code
 
-export EDITOR=emacs
-export SYSTEMD_EDITOR=emacs
+export EDITOR="emacs -nw"
+export SYSTEMD_EDITOR="emacs -nw"
 export SSH_KEY_PATH=$HOME/.ssh/rsa_id
 export WORKON_HOME=$HOME/.virtualenvs
 export PROJECT_HOME=$HOME/code
