@@ -67,7 +67,7 @@ esac
 
 echo "Creating symlinks..."
 for link in $SYMLINKS; do
-    ln -s {$DOTFILES,$DEST}/$link
+    ln -s $DOTFILES/$link $DEST/$link
 done
 
 read -n 1 -p "Auto-add ssh keys to ssh-agent? (y/n)" yn
