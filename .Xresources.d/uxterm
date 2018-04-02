@@ -1,0 +1,15 @@
+!! -*- mode: conf -*-
+
+UXTerm*backarrowKey:		false
+UXTerm*background: 			#2b2b2b
+UXTerm*borderWidth: 		0
+UXTerm*eightBitInput: 		false
+UXTerm*faceName: 			monospace
+UXTerm*faceSize: 			8
+UXTerm*foreground: 			#e7e7e7
+UXTerm*metaSendsEscape: 	true
+UXTerm*pointerColor: 		#16A085
+UXTerm*selectToClipboard: 	true
+UXTerm*saveLines:			8192
+UXTerm.termName: 			xterm-256color
+UXTerm.ttyModes:			erase ^?

@@ -1,57 +1,5 @@
 !! -*- mode: conf -*-
 
-*background:                      #272827
-*foreground:                      #657b83
-*fading:                          15
-*fadeColor:                       black
-*cursorColor:                     #16A085
-*pointerColorBackground:          #2B2C2B
-*pointerColorForeground:          #16A085
-
-!! black dark/light
-*color0:                          #232423
-*color8:                          #282928
-
-!! red dark/light
-*color1:                          #BA2922
-*color9:                          #CC372C
-
-!! green dark/light
-*color2:                          #7E807E
-*color10:                         #8D8F8D
-
-!! yellow dark/light
-*color3:                          #4C4F4D
-*color11:                         #4E524F
-
-!! blue dark/light
-*color4:                          #16A085
-*color12:                         #13BF9D
-
-!! magenta dark/light
-*color5:                          #43746A
-*color13:                         #487D72
-
-!! cyan dark/light
-*color6:                          #00CCCC
-*color14:                         #00D1D1
-
-!! white dark/light
-*color7:                          #E0E0E0
-*color15:                         #E8E8E8
-
-Xcursor.theme: Breeze
-Xcursor.size:                     0
-
-XTerm*faceName:                   Terminus:size=10
-XTerm*selectToClipboard:          true
-
-XTerm.termName:		  	  xterm-256color
-XTerm.ttyModes:			  erase ^?
-XTerm*backarrowKey:		  false
-XTerm*metaSendsEscape:	  	  true
-XTerm*saveLines:		  4096
-
 URxvt.font:                       9x15
 
 ! alternative font settings with 'terminus':
@@ -222,13 +170,3 @@ URxvt.iso14755_52: 		  false
 ! -xos4-terminus-bold-r-normal--24-240-72-72-c-120-iso10646-1
 ! -xos4-terminus-bold-r-normal--28-280-72-72-c-140-iso10646-1
 ! -xos4-terminus-bold-r-normal--32-320-72-72-c-160-iso10646-1
-
-! Enable the extended coloring options
-
-rofi.color-enabled: true
-!                  bg       border   separator
-rofi.color-window: #1c1c22, #3e646f, #3e646f
-!                  bg       fg       bg-alt   hl-bg    hl-fg
-rofi.color-normal: #1c1c22, #bcbcbc, #1c1c22, #3e646f, #bcbcbc
-rofi.color-active: #1c1c22, #bcbcbc, #1c1c22, #3e646f, #bcbcbc
-rofi.color-urgent: #1c1c22, #bcbcbc, #1c1c22, #3e646f, #bcbcbc

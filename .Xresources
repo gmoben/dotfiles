@@ -1,9 +1,5 @@
-#if __has_include(".extend.Xresources")
-#include ".extend.Xresources"
-#endif
-
-#if __has_include(".Xresources.d")
-#include ".Xresources.d/xterm"
-#include ".Xresources.d/xft"
+#include ".Xresources.d/colors"
 #include ".Xresources.d/rofi"
-#endif
+#include ".Xresources.d/uxterm"
+#include ".Xresources.d/xft"
+#include ".Xresources.d/xterm"

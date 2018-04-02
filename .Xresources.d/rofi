@@ -1,3 +1,5 @@
+!! -*- mode: conf -*-
+
 rofi.separator-style: solid
 rofi.sidebar-mode: true
 rofi.lines: 5
@@ -7,3 +9,11 @@ rofi.columns: 1
 rofi.padding: 5
 rofi.fixed-num-lines: true
 rofi.hide-scrollbar: true
+
+rofi.color-enabled: true
+!                  bg       border   separator
+rofi.color-window: #1c1c22, #3e646f, #3e646f
+!                  bg       fg       bg-alt   hl-bg    hl-fg
+rofi.color-normal: #1c1c22, #bcbcbc, #1c1c22, #3e646f, #bcbcbc
+rofi.color-active: #1c1c22, #bcbcbc, #1c1c22, #3e646f, #bcbcbc
+rofi.color-urgent: #1c1c22, #bcbcbc, #1c1c22, #3e646f, #bcbcbc
