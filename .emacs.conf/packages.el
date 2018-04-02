@@ -47,7 +47,7 @@ Return a list of installed packages or nil for every skipped package."
 			    dash
 			    dash-at-point
 			    deferred
-			    dired+
+;;			    dired+
 			    dired-hacks-utils
 			    dired-single
 			    dired-subtree
@@ -101,7 +101,7 @@ Return a list of installed packages or nil for every skipped package."
 			    helm-swoop
 			    hemisu-theme
 			    highlight
-			    highlight-tail
+;;			    highlight-tail
 			    ht
 			    hydra
 			    import-js
@@ -129,10 +129,10 @@ Return a list of installed packages or nil for every skipped package."
 			    multi-term
 			    neotree
 			    nhexl-mode
-			    org
-			    org-jira
+;;			    org
+;;			    org-jira
 			    osx-trash
-			    ox-impress-js
+;;			    ox-impress-js
 			    paradox
 			    pcache
 			    pkg-info
