@@ -12,6 +12,24 @@ if [ $# -ge 2 ]; then
     DEST=$2
 fi
 
+DISTRO=$(eval python -mplatform | grep -iE 'arch|Ubuntu')
+
+case $DISTRO in
+	Ubuntu)
+		sudo wget -O /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt
+		sudo chmod 755 /usr/local/bin/pacapt
+		sudo ln -sv /usr/local/bin/pacapt /usr/local/bin/pacman || true
+
+		sudo pacman -S python3 python-pip zsh-antigen
+		;;
+	arch)
+		echo "Downloading antigen.zsh"
+		sudo mkdir -p /usr/share/zsh-antigen
+		sudo curl -L git.io/antigen > /usr/share/zsh-antigen/antigen.zsh
+		;;
+	*) ;;
+esac
+
 SYMLINKS=(.i3 .Xresources .Xresources.d .aliases .config/systemd/user/emacs.service .config/systemd/user/ssh-agent.service .config/systemd/user/xscreensaver.service .emacs.conf .extend.Xresources .extend.profile .pam_environment .pylintrc .tmux .tmux.conf .xinitrc .xmodmap .Xresources .Xresources.d .xprofile .xsession .zshrc)
 
 
@@ -24,6 +42,8 @@ case $yn in
 	exit 1
 	;;
 esac
+
+
 
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 echo
@@ -61,8 +81,9 @@ case $yn in
 	;;
 esac
 
-echo "Downloading antigen.zsh"
-curl -L git.io/antigen > $DEST/antigen.zsh
+
+case $DISTRO in
+	Ubuntu)
 
 if [ -d $DEST/.emacs.d ]; then
     read -n 1 -p "The directory $DEST/.emacs.d already exists. Delete and replace? (y/n)" yn

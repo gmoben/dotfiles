@@ -151,10 +151,11 @@ export LESS=-r
 
 
 ## Plugins section: Enable fish style features
-# Use syntax highlighting
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# Use history substring search
-source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+source /usr/share/zsh-antigen/antigen.zsh
+
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-history-substring-search
+
 # bind UP and DOWN arrow keys to history substring search
 zmodload zsh/terminfo
 bindkey "$terminfo[kcuu1]" history-substring-search-up
@@ -170,7 +171,6 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
   urxvt)
     	RPROMPT='$(git_prompt_string)'
     	# Use autosuggestion
-    	source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
     	ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
     	ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
     ;;
@@ -194,7 +194,7 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
 		#BASE16_SHELL="/usr/share/zsh/scripts/base16-shell/base16-$theme.$shade.sh"
 		#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
 		# Use autosuggestion
-		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
 		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
   		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
   	fi
@@ -205,7 +205,6 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
     else
         RPROMPT='$(git_prompt_string)'
 		# Use autosuggestion
-		source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
 		ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
   		ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
   	fi

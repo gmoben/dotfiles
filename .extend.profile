@@ -1,8 +1,10 @@
 #-*- mode: shell-script -*-
 source $HOME/.aliases
 
-if [[ -f /usr/bin/virtualenvwrapper.sh ]] ; then
-    source /usr/bin/virtualenvwrapper.sh
+xmodmap $HOME/.xmodmap
+
+if [[ -f /usr/local/bin/virtualenvwrapper.sh ]] ; then
+    source /usr/local/bin/virtualenvwrapper.sh
 fi
 
 export CODE=/code
