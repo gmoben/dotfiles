@@ -53,7 +53,7 @@ bindsym $mod+Ctrl+m exec --no-startup-id pavucontrol
 
 # Start Applications
 bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
-bindsym $mod+F2 exec firefox
+bindsym $mod+F2 exec firefox -P
 bindsym $mod+F3 exec pcmanfm
 # bindsym $mod+F3 exec ranger
 bindsym $mod+Shift+F3 exec gksu pcmanfm
@@ -245,7 +245,7 @@ mode "$mode_system" {
 bindsym $mod+9 exec --no-startup-id xscreensaver-command --lock
 
 # Application shortcuts
-bindsym $mod+i exec --no-startup-id firefox
+bindsym $mod+i exec --no-startup-id firefox -P
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
@@ -281,7 +281,7 @@ exec --no-startup-id nitrogen --restore; sleep 1; compton -b
 #exec --no-startup-id clipit
 # exec --no-startup-id blueman
 # exec_always --no-startup-id sbxkb
-exec --no-startup-id start_conky_maia
+# exec --no-startup-id start_conky_maia
 # exec --no-startup-id start_conky_green
 exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
 exec --no-startup-id dex -ae i3

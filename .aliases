@@ -12,9 +12,6 @@ vagrant() {
     fi
 }
 
-[ -f $HOME/.work.aliases ] && source $HOME/.work.aliases
-[ -f $HOME/.extend.aliases ] && source $HOME/.extend.aliases
-
 alias vsh='vagrant ssh'
 alias vup='vagrant up'
 alias vhalt='vagrant halt'
@@ -137,3 +134,6 @@ klflabel() {
 }
 
 alias ethereum='GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth'
+
+[ -f $HOME/.work.aliases ] && source $HOME/.work.aliases
+[ -f $HOME/.extend.aliases ] && source $HOME/.extend.aliases
