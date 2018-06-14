@@ -1,9 +1,11 @@
 #-*- mode: shell-script -*-
 source $HOME/.aliases
 
-xmodmap $HOME/.xmodmap
+if [[ -f $HOME/.xmodmap ]]; then
+    xmodmap $HOME/.xmodmap
+fi
 
-if [[ -f /usr/local/bin/virtualenvwrapper.sh ]] ; then
+if [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi
 
