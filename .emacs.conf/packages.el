@@ -129,6 +129,14 @@ Return a list of installed packages or nil for every skipped package."
 			    multi-term
 			    neotree
 			    nhexl-mode
+			    ob-async
+			    ob-browser
+			    ob-go
+			    ob-http
+			    ob-ipython
+			    ob-restclient
+			    ob-rust
+			    org-babel-eval-in-repl
 ;;			    org
 ;;			    org-jira
 			    osx-trash
