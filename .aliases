@@ -22,6 +22,7 @@ alias vrb='vagrant rebuild'
 # Docker
 alias dlogs='docker logs'
 alias dps='docker ps'
+alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 
 # Emacs
 alias emacs='TERM=xterm-256color emacs -nw'
@@ -98,7 +99,7 @@ alias kl='kubectl logs'
 alias klf='kubectl logs --follow'
 alias kxit='kubectl exec -it'
 
-kgplabel() {
+kgpl() {
     if [[ $# = 1 ]]; then
 		index=*
 		selector=$@
@@ -120,17 +121,17 @@ kllabel() {
     else
 		args=$@
     fi
-    command kubectl logs `kgplabel ${args}`
+    command kubectl logs `kgpl ${args}`
 }
 
-klflabel() {
+klfl() {
     if [[ $# = 1 ]]; then
 		args=$@
 		args+=(0)
     else
 		args=$@
     fi
-    command kubectl logs --follow `kgplabel ${args}`
+    command kubectl logs --follow `kgpl ${args}`
 }
 
 alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
@@ -138,10 +139,10 @@ alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 alias ethereum='GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth'
 
 
-if [ -f $HOME/.work.aliases ]; then
+if [[ -f $HOME/.work.aliases ]]; then
 	source $HOME/.work.aliases
 fi
 
-if [ -l $HOME/.extend.aliases ]; then
+if [[ -f $HOME/.extend.aliases ]]; then
     source $HOME/.extend.aliases
 fi
