@@ -108,8 +108,6 @@ Return a list of installed packages or nil for every skipped package."
 			    isend-mode
 			    jedi
 			    jenkins-watch
-			    js2-mode
-			    js3-mode
 			    json-mode
 			    json-reformat
 			    json-snatcher
@@ -160,6 +158,7 @@ Return a list of installed packages or nil for every skipped package."
 			    racer
 			    realgud
 			    request
+			    rjsx-mode
 			    rotate
 			    rust-mode
 			    s
