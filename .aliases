@@ -5,8 +5,8 @@
 # Vagrant
 vagrant() {
     if [[ $1 == "remake" ]]; then
-		shift $((2 > $# ? $# : 2))
-		command vagrant destroy -f "$@" && vagrant up "$@" && vagrant ssh "$@"
+        shift $((2 > $# ? $# : 2))
+        command vagrant destroy -f "$@" && vagrant up "$@" && vagrant ssh "$@"
     else
         command vagrant "$@"
     fi
@@ -101,14 +101,14 @@ alias kxit='kubectl exec -it'
 
 kgpl() {
     if [[ $# = 1 ]]; then
-		index=*
-		selector=$@
+        index=*
+        selector=$@
     elif [[ $# = 2 && $2 =~ ^[0-9]+$ ]]; then
-		index=$2
-		selector=${@:1:1}
+        index=$2
+        selector=${@:1:1}
     else
-		echo "Usage: kgpl [label_selector] ([pod index])"
-		exit 1
+        echo "Usage: kgpl [label_selector] ([pod index])"
+        exit 1
     fi
 
     command kubectl get pods -o=jsonpath="{.items[${index}].metadata.name}" -l $selector
@@ -116,33 +116,33 @@ kgpl() {
 
 kllabel() {
     if [[ $# = 1 ]]; then
-		args=$@
-		args+=(0)
+        args=$@
+        args+=(0)
     else
-		args=$@
+        args=$@
     fi
     command kubectl logs `kgpl ${args}`
 }
 
 klfl() {
     if [[ $# = 1 ]]; then
-		args=$@
-		args+=(0)
+        args=$@
+        args+=(0)
     else
-		args=$@
+        args=$@
     fi
     command kubectl logs --follow `kgpl ${args}`
 }
 
+# Docker
 alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
+alias dclbr='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 
+# GPG
+alias gpgtty='echo UPDATESTARTUPTTY | gpg-connect-agent'
+
+# ??? Profit
 alias ethereum='GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth'
 
-
-if [[ -f $HOME/.work.aliases ]]; then
-	source $HOME/.work.aliases
-fi
-
-if [[ -f $HOME/.extend.aliases ]]; then
-    source $HOME/.extend.aliases
-fi
+[[ -f $HOME/.work.aliases ]] && source $HOME/.work.aliases
+[[ -f $HOME/.extend.aliases ]] && source $HOME/.extend.aliases
