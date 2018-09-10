@@ -43,8 +43,6 @@ case $yn in
         ;;
 esac
 
-
-
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 echo
 case $yn in
