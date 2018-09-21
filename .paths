@@ -1,0 +1,12 @@
+#-*- mode: shell-script -*-
+
+### Rust ###
+if [ -x $(which rustc) ] ; then
+    export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
+fi
+
+### Mac ###
+if [[ $OSTYPE == 'darwin' ]]; then
+	export PYTHONPATH=$HOME/.local/lib/python2.7/site-packages:$HOME/Library/Python/2.7/lib/python/site-packages:$PYTHONPATH
+	export PATH=$HOME/.local/bin:$PATH
+fi
