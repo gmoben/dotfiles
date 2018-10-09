@@ -5,7 +5,9 @@ if [[ -f $HOME/.xmodmap ]]; then
     xmodmap $HOME/.xmodmap
 fi
 
-if [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
+if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
+    source /usr/bin/virtualenvwrapper.sh
+elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi
 

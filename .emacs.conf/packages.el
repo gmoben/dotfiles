@@ -24,12 +24,10 @@ Return a list of installed packages or nil for every skipped package."
 
 (ensure-package-installed '(
 			    airline-themes
-			    alert
 			    apel
 			    async
 			    auto-complete
 			    badwolf-theme
-			    beginend
 			    bliss-theme
 			    boron-theme
 			    buffer-move
@@ -120,7 +118,6 @@ Return a list of installed packages or nil for every skipped package."
 			    magit
 			    magit-gh-pulls
 			    magit-popup
-			    markdown-mode
 			    marshal
 			    memoize
 			    multi

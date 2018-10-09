@@ -1,4 +1,5 @@
 ## Options section
+
 setopt correct                                                  # Auto correct mistakes
 setopt extendedglob                                             # Extended globbing. Allows using regular expressions with *
 setopt nocaseglob                                               # Case insensitive globbing
@@ -151,10 +152,11 @@ export LESS=-r
 
 
 ## Plugins section: Enable fish style features
-source /usr/share/zsh-antigen/antigen.zsh
+source $HOME/antigen.zsh
 
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search
+antigen apply
 
 # bind UP and DOWN arrow keys to history substring search
 zmodload zsh/terminfo

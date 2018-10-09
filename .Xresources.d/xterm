@@ -1,13 +1,13 @@
-XTerm*backarrowKey:			false
-XTerm*background: 			#2b2b2b
-XTerm*borderWidth: 			0
+XTerm*backarrowKey:		false
+XTerm*background: 		#000000
+XTerm*borderWidth: 		0
 XTerm*eightBitInput: 		false
-XTerm*faceName: 			monospace
-XTerm*faceSize: 			8
-XTerm*foreground: 			#e7e7e7
+XTerm*faceName: 		monospace
+XTerm*faceSize: 		8
+XTerm*foreground: 		#e7e7e7
 XTerm*metaSendsEscape:		true
 XTerm*pointerColor: 		#16A085
-XTerm*saveLines:			8192
-XTerm*selectToClipboard:    true
-XTerm.termName: 			xterm-256color
-XTerm.ttyModes:			  	erase ^?
+XTerm*saveLines:		8192
+XTerm*selectToClipboard:	true
+XTerm.termName: 		xterm-256color
+XTerm.ttyModes:		    	erase ^?
