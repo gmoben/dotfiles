@@ -41,29 +41,7 @@ Position the cursor at it's beginning, according to the current mode."
 (global-set-key (kbd "C-x <down>") 'smart-open-line)
 (global-set-key (kbd "C-x <up>") 'smart-open-line-above)
 
-;; Scale all buffers
-(define-globalized-minor-mode
-  global-text-scale-mode
-  text-scale-mode
-  (lambda () (text-scale-mode 1)))
-
-(defun global-text-scale-adjust (inc)
-  (interactive)
-  (text-scale-set 1)
-  (kill-local-variable 'text-scale-mode-amount)
-  (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
-  (global-text-scale-mode 1))
-
 (set-face-attribute 'default (selected-frame) :height 135)
-
-(global-set-key (kbd "M-0")
-		'(lambda () (interactive)
-		   (global-text-scale-adjust (- text-scale-mode-amount))
-		   (global-text-scale-mode -1)))
-(global-set-key (kbd "M-+")
-		'(lambda () (interactive) (global-text-scale-adjust 1)))
-(global-set-key (kbd "M--")
-		'(lambda () (interactive) (global-text-scale-adjust -1)))
 
 ;; Globally enabled modes
 (delete-selection-mode 1)
@@ -87,3 +65,8 @@ Position the cursor at it's beginning, according to the current mode."
 (setq tab-width 4)
 (setq c-basic-indent 4)
 (setq c-basic-offset 4)
+
+(defun file-if-exists (filename) "return file if it exists, else nil" nil
+       (if (file-exists-p filename)
+           filename
+         nil))

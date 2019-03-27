@@ -11,6 +11,9 @@ elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi
 
+
+# Shortcuts
+export CODEBEN=/code/ben/
 # Paths
 export GMOCODE=/code
 export GOPATH=$GMOCODE/go

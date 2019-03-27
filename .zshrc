@@ -59,6 +59,8 @@ alias df='df -h'                                                # Human-readable
 alias free='free -m'                                            # Show sizes in MB
 alias gitu='git add . && git commit && git push'
 
+fpath+=~/.zfunc
+
 # Theming section
 autoload -U compinit colors zcalc
 compinit -d
@@ -152,7 +154,7 @@ export LESS=-r
 
 
 ## Plugins section: Enable fish style features
-source $HOME/antigen.zsh
+source /usr/share/zsh-antigen/antigen.zsh
 
 antigen bundle zsh-users/zsh-syntax-highlighting
 antigen bundle zsh-users/zsh-history-substring-search

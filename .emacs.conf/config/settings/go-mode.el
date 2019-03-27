@@ -1,5 +1,0 @@
-(setenv "PATH" (concat (getenv "PATH") ":" "/code/go/bin"))
-(setenv "GOPATH" "/code/go")
-(setq exec-path (append exec-path (list (expand-file-name "/code/go/bin"))))
-(setq gofmt-command "goimports")
-(add-hook 'before-save-hook 'gofmt-before-save)
