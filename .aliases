@@ -60,7 +60,7 @@ alias gcm='git commit -m'
 alias _ls='ls'
 alias ls='ls --color=auto -Flah'
 alias psg='ps -ef | grep '
-
+alias diff-files='git diff --no-index'
 # Expand aliases after using sudo
 alias sudo='sudo '
 

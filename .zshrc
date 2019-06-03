@@ -19,10 +19,10 @@ zstyle ':completion:*' accept-exact '*(N)'
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' cache-path ~/.zsh/cache
 HISTFILE=~/.zhistory
-HISTSIZE=1000
-SAVEHIST=500
+HISTSIZE=100000
+SAVEHIST=50000
 export EDITOR="/usr/bin/emacs -nw"
-export VISUAL=/usr/bin/emacs
+export VISUAL="/usr/bin/emacs -nw"
 WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
 
 
