@@ -45,7 +45,45 @@
          (python-mode . lsp))
   :config
   (setq lsp-clients-go-imports-local-prefix "github.atl.pdrop.net")
-  )
+  (setq lsp-auto-guess-root t)
+  (setq lsp-clients-python-settings
+        '(
+          :configurationSources ("flake8")
+          :plugins\.jedi_completion\.enabled t
+          :plugins\.jedi_definition\.enabled t
+          :plugins\.jedi_definition\.follow_builtin_imports nil
+          :plugins\.jedi_definition\.follow_imports nil
+          :plugins\.jedi_definition\.follow_imports t
+          :plugins\.jedi_hover\.enabled t
+          :plugins\.jedi_references\.enabled t
+          :plugins\.jedi_signature_help\.enabled nil
+          :plugins\.jedi_symbols\.all_scopes t
+          :plugins\.jedi_symbols\.enabled nil
+          :plugins\.mccabe\.enabled nil
+          :plugins\.mccabe\.threshold 15
+          :plugins\.preload\.enabled true
+          :plugins\.preload\.modules nil
+          :plugins\.pycodestyle\.enabled nil
+          :plugins\.pycodestyle\.exclude nil
+          :plugins\.pycodestyle\.filename nil
+          :plugins\.pycodestyle\.hangClosing nil
+          :plugins\.pycodestyle\.ignore nil
+          :plugins\.pycodestyle\.maxLineLength nil
+          :plugins\.pycodestyle\.select nil
+          :plugins\.pydocstyle\.addIgnore nil
+          :plugins\.pydocstyle\.addSelect nil
+          :plugins\.pydocstyle\.convention nil
+          :plugins\.pydocstyle\.enabled t
+          :plugins\.pydocstyle\.ignore nil
+          :plugins\.pydocstyle\.match "(?!test_).*\\.py"
+          :plugins\.pydocstyle\.matchDir nil
+          :plugins\.pydocstyle\.select nil
+          :plugins\.pyflakes\.enabled t
+          :plugins\.pyls_mypy\.enabled nil
+          :plugins\.rope_completion\.enabled t
+          :plugins\.yapf\.enabled t
+          :rope\.extensionModules nil
+          :rope\.ropeFolder nil)))
 
 (use-package go-mode
   :ensure t
