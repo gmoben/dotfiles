@@ -38,7 +38,7 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Editors
 get_path() {
-    echo $(env which --skip-alias $1)
+    echo $(env which $1)
     return $?
 }
 
@@ -47,6 +47,6 @@ if [[ `get_path emacs` ]]; then
 elif [[ `get_path vim` ]]; then
     export EDITOR=$(get_path vim)
 else
-    export EDITOR=$(get_path vim)
+    export EDITOR=$(get_path nano)
 fi
 export SYSTEMD_EDITOR=$EDITOR

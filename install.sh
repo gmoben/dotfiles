@@ -30,18 +30,12 @@ case $DISTRO in
         *) ;;
 esac
 
-SYMLINKS=(.i3 .Xresources .Xresources.d .aliases .config/systemd/user/emacs.service .config/systemd/user/ssh-agent.service .config/systemd/user/xscreensaver.service .emacs.conf .extend.Xresources .extend.profile .pam_environment .pylintrc .tmux .tmux.conf .xinitrc .xmodmap .Xresources .Xresources.d .xprofile .xsession .zshrc)
+SYMLINKS=(.i3 .aliases .config/systemd/user/emacs.service .config/systemd/user/ssh-agent.service .config/systemd/user/xscreensaver.service .emacs.conf .extend.Xresources .extend.profile .pam_environment .pylintrc .tmux .tmux.conf .xinitrc .xmodmap .Xresources .Xresources.d .xprofile .xsession .zshrc)
 
 
-echo "This script will attempt to create symlinks from files/folders in $DOTFILES to $DEST"
-read -n 1 -p "Are you sure? (y/n)" yn
-echo
-case $yn in
-    y|Y) ;;
-    *) echo "Aborting"
-        exit 1
-        ;;
-esac
+echo "This script to create symlinks from files/folders in $DOTFILES
+to $DEST" read -n 1 -p "Are you sure? (y/n)" yn echo case $yn in y|Y)
+;; *) echo "Aborting" exit 1 ;; esac
 
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
 echo

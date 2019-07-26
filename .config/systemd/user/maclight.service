@@ -2,7 +2,7 @@
 Description=Maclight - Changes keyboard backlight based on ambient light
 
 [Service]
-ExecStart=$HOME/.cargo/bin/maclight
+ExecStart=/bin/maclight
 Restart=always
 RestartSec=2
 
