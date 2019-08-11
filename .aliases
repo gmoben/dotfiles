@@ -42,6 +42,7 @@ alias tma='tmux attach -t'
 
 # Wemux
 alias wemux='TERM=xterm-256color wemux'
+alias wmn='wemux new-session'
 alias wml='wemux list-sessions'
 alias wma='wemux attach -t'
 alias wmr='wemux r'
@@ -57,32 +58,44 @@ alias gpu='git pull upstream'
 alias gcm='git commit -m'
 
 # Utils
-alias _ls='ls'
-alias ls='ls --color=auto -Flah'
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    alias _ls='/bin/ls'
+    alias ls='ls -G -Flah'
+elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+    alias _ls='ls'
+    alias ls='ls --color=auto -Flah'
+else
+    echo "Unknown OSTYPE $OSTYPE"
+    exit 1
+fi
+
 alias psg='ps -ef | grep '
 alias diff-files='git diff --no-index'
 # Expand aliases after using sudo
 alias sudo='sudo '
 
-# Xscreensaver
-alias locks='xscreensaver-command --lock'
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+   # Xscreensaver
+   alias locks='xscreensaver-command --lock'
 
-# Systemd
-alias sc='systemctl'
-alias scr='systemctl restart'
-alias scstat='systemctl status'
-alias scstart='systemctl start'
-alias scstop='systemctl stop'
-alias sce='systemctl enable'
-alias scd='systemctl disable'
+   # Systemd
+   alias sc='systemctl'
+   alias scr='systemctl restart'
+   alias scstat='systemctl status'
+   alias scstart='systemctl start'
+   alias scstop='systemctl stop'
+   alias sce='systemctl enable'
+   alias scd='systemctl disable'
 
-alias scu='systemctl --user'
-alias scur='systemctl --user restart'
-alias scus='systemctl --user status'
-alias scuon='systemctl --user start'
-alias scuoff='systemctl --user stop'
-alias scue='systemctl --user enable'
-alias scud='systemctl --user disable'
+   alias scu='systemctl --user'
+   alias scur='systemctl --user restart'
+   alias scus='systemctl --user status'
+   alias scuon='systemctl --user start'
+   alias scuoff='systemctl --user stop'
+   alias scue='systemctl --user enable'
+   alias scud='systemctl --user disable'
+fi
 
 # Kubectl
 alias kg='kubectl get'

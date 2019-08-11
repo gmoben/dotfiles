@@ -34,7 +34,16 @@ export SSH_KEY_PATH=$HOME/.ssh/rsa_id
 
 # GPG
 export GPG_TTY=$(tty)
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+fi
+
+# OSX PATH specifics
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # nodejs dependency icu4u is keg-only
+    export PATH="/usr/local/opt/icu4c/bin:/usr/local/opt/icu4c/sbin:$PATH"
+fi
 
 # Editors
 get_path() {

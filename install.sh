@@ -15,26 +15,38 @@ fi
 DISTRO=$(eval python -mplatform | grep -iE 'arch|Ubuntu')
 
 case $DISTRO in
-        Ubuntu)
-                sudo wget -O /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt
-                sudo chmod 755 /usr/local/bin/pacapt
-                sudo ln -sv /usr/local/bin/pacapt /usr/local/bin/pacman || true
+    Ubuntu)
+        echo "$DISTRO installation detected"
+        echo "Installing pacapt + symlinking to /usr/local/bin/pacman..."
+        sudo wget -O /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt
+        sudo chmod 755 /usr/local/bin/pacapt
+        sudo ln -sv /usr/local/bin/pacapt /usr/local/bin/pacman || true
 
-                sudo pacman -S python3 python-pip zsh-antigen
-                ;;
-        arch)
-                echo "Downloading antigen.zsh"
-                sudo mkdir -p /usr/share/zsh-antigen
-                sudo curl -L git.io/antigen > /usr/share/zsh-antigen/antigen.zsh
-                ;;
-        *) ;;
+        echo "Installing python3 + pip + antigen.zsh"
+        sudo pacman -S python3 python-pip zsh-antigen
+        ;;
+    arch)
+        echo "$DISTRO installation detected"
+        echo "Downloading antigen.zsh"
+        sudo mkdir -p /usr/share/zsh-antigen
+        sudo curl -L git.io/antigen > /usr/share/zsh-antigen/antigen.zsh
+        ;;
+    Darwin*)
+        echo "$DISTRO installation detected"
+        ;;
+    *) ;;
 esac
 
-SYMLINKS=(.i3 .aliases .config/systemd/user/emacs.service .config/systemd/user/ssh-agent.service .config/systemd/user/xscreensaver.service .emacs.conf .extend.Xresources .extend.profile .pam_environment .pylintrc .tmux .tmux.conf .xinitrc .xmodmap .Xresources .Xresources.d .xprofile .xsession .zshrc)
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    SYMLINKS=(.i3 .aliases .config/systemd/user/emacs.service .config/systemd/user/ssh-agent.service .config/systemd/user/xscreensaver.service .emacs.conf .extend.Xresources .extend.profile .pam_environment .pylintrc .tmux .tmux.conf .xinitrc .xmodmap .Xresources .Xresources.d .xprofile .xsession .zshrc)
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+    SYMLINKS=(.aliases .emacs.conf .extend.profile .profile .pylintrc .tmux .tmux.conf)
+else
+    echo "Unknown OSTYPE $OSTYPE"
+    exit 1
+fi
 
-
-echo "This script to create symlinks from files/folders in $DOTFILES
-to $DEST" read -n 1 -p "Are you sure? (y/n)" yn echo case $yn in y|Y)
+read -n 1 -p "Create symlinks from files/folders in $DOTFILES to $DEST? (y/n)" yn echo case $yn in y|Y)
 ;; *) echo "Aborting" exit 1 ;; esac
 
 read -n 1 -p "Clobber existing symlinks? (y/n)" yn
