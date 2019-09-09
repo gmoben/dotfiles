@@ -44,7 +44,6 @@
          (go-mode . lsp)
          (python-mode . lsp))
   :config
-  (setq lsp-clients-go-imports-local-prefix "github.atl.pdrop.net")
   (setq lsp-auto-guess-root t)
   (setq lsp-clients-python-settings
         '(
@@ -83,7 +82,27 @@
           :plugins\.rope_completion\.enabled t
           :plugins\.yapf\.enabled t
           :rope\.extensionModules nil
-          :rope\.ropeFolder nil)))
+          :rope\.ropeFolder nil))
+  (global-set-key (kbd "C-c l a") 'lsp-execute-code-action))
+
+(use-package lsp-java
+  :ensure t
+  :after lsp-mode
+  :config
+  (add-hook 'java-mode-hook 'lsp)
+  (defvar richajn/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
+  (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" richajn/lsp-java-lombok-jar-location))
+  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" richajn/lsp-java-lombok-jar-location))
+)
+
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-mode t)
+  (dap-ui-mode t))
+
+(use-package dap-java :after (lsp-java))
 
 (use-package go-mode
   :ensure t
@@ -137,6 +156,11 @@
 
   (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu)
   )
+
+(use-package helm-lsp
+  :ensure t
+  :after (helm lsp-mode))
+
 
 (use-package helm-ag
   :ensure t
@@ -206,7 +230,6 @@
   (add-to-list 'company-backends 'company-lsp)
   )
 
-
 (use-package lsp-ui
   :ensure t
   :after (lsp-mode)
@@ -222,3 +245,20 @@
   :hook ((flycheck-mode . flycheck-rust-setup)
          (rust-mode . flycheck-mode))
   )
+
+(use-package yasnippet
+  :ensure t
+  :config
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets :ensure t :after yasnippet)
+
+(use-package treemacs
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c t") 'treemacs)
+  )
+(use-package treemacs-projectile :ensure t :after (treemacs))
+(use-package lsp-treemacs :ensure t :after (lsp-mode treemacs))
+
+(setq compilation-scroll-output t)
