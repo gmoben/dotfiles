@@ -8,7 +8,7 @@ set $mod Mod4
 # workspace_layout tabbed <stacking|tabbed>
 
 # Configure border style <normal|1pixel|pixel xx|none|pixel>
-new_window pixel 1
+new_window none
 new_float normal
 
 # Hide borders
@@ -27,7 +27,7 @@ font xft:Noto Sans 10
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec i3-sensible-terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -67,7 +67,7 @@ bindsym $mod+Shift+Print --release exec --no-startup-id i3-scrot -s
 bindsym $mod+Shift+h exec xdg-open /usr/share/doc/manjaro/i3_help.pdf
 bindsym $mod+Ctrl+x --release exec --no-startup-id xkill
 
-# focus_follows_mouse no
+focus_follows_mouse yes
 
 # change focus
 bindsym $mod+j focus left
@@ -87,11 +87,11 @@ bindsym $mod+Shift+k move down
 bindsym $mod+Shift+l move up
 bindsym $mod+Shift+semicolon move right
 
-# alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+# move workspaces
+bindsym $mod+Mod1+Left move workspace to output left
+bindsym $mod+Mod1+Down move workspace to output down
+bindsym $mod+Mod1+Up move workspace to output up
+bindsym $mod+Mod1+Right move workspace to output right
 
 # workspace back and forth (with/without active container)
 workspace_auto_back_and_forth yes
@@ -237,6 +237,16 @@ mode "$mode_system" {
     bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
 
     # exit system mode: "Enter" or "Escape"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+bindsym $mod+p mode "$display_layout"
+set $display_layout (l)aptop, (w)orkstation, (m)eeting
+mode "$display_layout" {
+	bindsym l exec --no-startup-id ~/.screenlayout/laptop.sh, mode "default"
+	bindsym w exec --no-startup-id ~/.screenlayout/workstation.sh, mode "default"
+	bindsym m exec --no-startup-id ~/.screenlayout/meeting.sh, mode "default"
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }
