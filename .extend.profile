@@ -17,7 +17,7 @@ export CODEBEN=/code/ben/
 # Paths
 export GMOCODE=/code
 export GOPATH=$GMOCODE/go
-export PATH=$HOME/.cargo/bin:$GOPATH/bin:$HOME/.cabal/bin:$HOME/.yarn/bin:$HOME/.local/bin:$PATH
+export PATH=$HOME/.cargo/bin:$GOPATH/bin:$HOME/.cabal/bin:${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/bin:$HOME/.yarn/bin:$HOME/.local/bin:$PATH
 
 # Virtualenv
 export WORKON_HOME=$HOME/.virtualenvs

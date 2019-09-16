@@ -8,6 +8,7 @@ company-go
 company-jedi
 company-lsp
 company-shell
+dap-mode
 dockerfile-mode
 emms
 flycheck

@@ -37,13 +37,23 @@
   (add-hook 'python-mode-hook #'my:flycheck-python-setup)
   )
 
+(use-package rust-mode :ensure t)
+(use-package lsp-go :ensure t :after go)
+(use-package lsp-haskell :ensure t)
+(use-package lsp-java :ensure t)
+(use-package lsp-python :ensure t :after python)
+(use-package lsp-rust :ensure t :after rust)
+
 (use-package lsp-mode
   :ensure t
-  :after (rust-mode go-mode python-mode)
-  :hook ((rust-mode . lsp)
-         (go-mode . lsp)
-         (python-mode . lsp))
+  :commands (lsp lsp-deferred)
+  :after (go-mode java-mode python-mode rust-mode)
+  :hook ((go-mode . lsp)
+         (java-mode . lsp)
+         (python-mode . lsp)
+         (rust-mode . lsp))
   :config
+  (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
   (setq lsp-clients-python-settings
         '(
@@ -90,9 +100,9 @@
   :after lsp-mode
   :config
   (add-hook 'java-mode-hook 'lsp)
-  (defvar richajn/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
-  (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" richajn/lsp-java-lombok-jar-location))
-  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" richajn/lsp-java-lombok-jar-location))
+  (defvar bewarre/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
+  (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" bewarre/lsp-java-lombok-jar-location))
+  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" bewarre/lsp-java-lombok-jar-location))
 )
 
 (use-package dap-mode
@@ -104,8 +114,16 @@
 
 (use-package dap-java :after (lsp-java))
 
+(use-package dap-mode
+  :ensure t
+  :after lsp-mode
+  :config
+  (dap-mode 1)
+  (dap-ui-mode 1))
+
 (use-package go-mode
   :ensure t
+  :after lsp
   :init
   (setenv "GOPATH" "/code/go" t)
   (setenv "PATH" (concat (getenv "PATH") ":" "$GOPATH/bin") t)
@@ -113,6 +131,7 @@
                                            "/code/go/bin"))))
   (add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "RET") 'newline-and-indent)))
   (add-hook 'go-mode-hook '(lambda () (setq tab-width 4)))
+  (add-hook 'go-mode-hook #'lsp-deferred)
   :hook ((before-save . gofmt-before-save))
   :config
   (setq gofmt-command "goimports")
@@ -226,6 +245,7 @@
 (use-package company-lsp
   :ensure t
   :after (company lsp-mode)
+  :commands company-lsp
   :config
   (add-to-list 'company-backends 'company-lsp)
   )
@@ -235,6 +255,7 @@
   :after (lsp-mode)
   :hook ((lsp-mode . lsp-ui-mode)
          (lsp-mode . flycheck-mode))
+  :commands lsp-ui-mode
   :config
   (setq lsp-prefer-flymake nil)
   )
