@@ -38,18 +38,14 @@
   )
 
 (use-package rust-mode :ensure t)
-(use-package lsp-go :ensure t :after go)
 (use-package lsp-haskell :ensure t)
-(use-package lsp-java :ensure t)
 (use-package lsp-python :ensure t :after python)
-(use-package lsp-rust :ensure t :after rust)
 
 (use-package lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
   :after (go-mode java-mode python-mode rust-mode)
   :hook ((go-mode . lsp)
-         (java-mode . lsp)
          (python-mode . lsp)
          (rust-mode . lsp))
   :config
@@ -97,7 +93,7 @@
 
 (use-package lsp-java
   :ensure t
-  :after lsp-mode
+  :after lsp
   :config
   (add-hook 'java-mode-hook 'lsp)
   (defvar bewarre/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
@@ -116,7 +112,7 @@
 
 (use-package dap-mode
   :ensure t
-  :after lsp-mode
+  :after lsp
   :config
   (dap-mode 1)
   (dap-ui-mode 1))
