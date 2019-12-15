@@ -39,12 +39,10 @@
 
 (use-package rust-mode :ensure t)
 (use-package lsp-haskell :ensure t)
-(use-package lsp-python :ensure t :after python)
 
 (use-package lsp-mode
   :ensure t
   :commands (lsp lsp-deferred)
-  :after (go-mode java-mode python-mode rust-mode)
   :hook ((go-mode . lsp)
          (python-mode . lsp)
          (rust-mode . lsp))
@@ -89,7 +87,8 @@
           :plugins\.yapf\.enabled t
           :rope\.extensionModules nil
           :rope\.ropeFolder nil))
-  (global-set-key (kbd "C-c l a") 'lsp-execute-code-action))
+  (global-set-key (kbd "C-c l a") 'lsp-execute-code-action)
+  (global-set-key (kbd "C-c l r") 'lsp-rename))
 
 (use-package lsp-java
   :ensure t

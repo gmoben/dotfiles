@@ -88,3 +88,5 @@ See `sort-regexp-fields'."
 (defun display-ansi-colors ()
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
+
+(global-eldoc-mode -1)

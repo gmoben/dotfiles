@@ -27,7 +27,7 @@ mkdir /code/go
 
 ## [dotfiles](https://github.com/gmoben/dotfiles) ##
 ```bash
-cd /code/ben && git checkout --recursive https://github.com/gmoben/dotfiles && cd dotfiles
+cd /code/ben && git clone --recursive https://github.com/gmoben/dotfiles && cd dotfiles
 ./install.sh
 source ~/.profile
 ```

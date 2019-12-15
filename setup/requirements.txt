@@ -1,0 +1,5 @@
+virtualenv
+virtualenvwrapper
+python-language-server[all]
+ipython
+ipdb
