@@ -1,8 +1,0 @@
-* %?
-:PROPERTIES:
-:CREATED: %U
-:ORIGIN: %^{Origin|Self}
-:DOMAIN: %^{Domain|Personal|Work|Social|Career}
-:TYPE: %^{Type|Main|Side|DLC}
-:DIFFICULTY: %^{Difficulty|Easy|Normal|Expert|Hero}
-:END:

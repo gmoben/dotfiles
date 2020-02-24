@@ -12,20 +12,20 @@
 (add-to-list 'org-modules 'org-habit)
 (setq org-startup-indented t)
 (setq org-export-coding-system 'utf-8)
-(setq org-directory "~/org/")
+(setq org-directory "/code/org/")
 (setq org-default-notes-file (concat org-directory "ben/refile.org"))
 (setq org-outline-path-complete-in-steps t)
 
 ;; Folder and file location variables
 ;; TODO: Generate these
 (defconst ben/org/ben (concat org-directory "ben/"))
-(defconst ben/org/ben/quests (concat ben/org/ben "quests.org"))
+(defconst ben/org/ben/epics (concat ben/org/ben "epics.org"))
 (defconst ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
 (defconst ben/org/ben/habits (concat ben/org/ben "habits.org"))
 (defconst ben/org/ben/refile (concat ben/org/ben "refile.org"))
 
 (defconst ben/org/work (concat org-directory "work/"))
-(defconst ben/org/work/quests (concat ben/org/work "quests.org"))
+(defconst ben/org/work/epics (concat ben/org/work "epics.org"))
 (defconst ben/org/work/snippets (concat ben/org/work "snippets.org"))
 (defconst ben/org/ben/habits (concat ben/org/work "habits.org"))
 (defconst ben/org/work/refile (concat ben/org/work "refile.org"))
@@ -41,9 +41,7 @@
 (setq org-use-fast-todo-selection t) ;; C-c C-t <shortcut key>
 (setq org-treat-S-cursor-todo-selection-as-state-change nil) ;; Use S-<left> and S-<right> to cycle TODO states without ! or @
 (setq org-todo-keywords
-      '((sequence "TODO(t)" "NEXT(n)" "BLOCKED(b@/@)" "|" "DONE(d!)" "CANCELED(c@/@)") ;; General
-	(sequence "BUY($!)" "|" "PURCHASED(p@)" "ARRIVED(a@)") ;; Grocery, Amazon, etc.
-	(sequence "DESIGN(D/@)" "IMPLEMENT(I/@)" "REFACTOR(R/@)" "|" "MERGED(M!/@)" "CLOSED(C@/@)"))) ;; Projects
+      '((sequence "TODO(t)" "BLOCKED(b@/@)" "|" "DONE(d!)" "CANCELED(c@/@)"))) ;; General
 
 
 ;; Refile
@@ -54,32 +52,22 @@
 (setq org-refile-use-outline-path t) ;; Show full paths when refiling
 (setq org-refile-allow-creating-parent-nodes 'confirm) ;; Allow refile to create parent tasks with confirmation
 (setq org-refile-targets '((nil :maxlevel . 9)
-			   (org-agenda-files :maxlevel . 9)))
+               (org-agenda-files :maxlevel . 9)))
 
 
 ;; Capture
 ;; TODO: Generate these
 (defvar ben/org/capture/ben
   '(("b" "Ben (Personal)")
-    ("bq" "Quest"
+    ("bq" "Epic"
      entry
-     (file ben/org/ben/quests)
-     (file "~/.emacs.conf/org-templates/quest.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("bp" "Project"
-     entry
-     (file+headline ben/org/ben/refile "Projects")
-     (file "~/.emacs.conf/org-templates/project.orgtmpl")
+     (file ben/org/ben/epics)
+     (file "~/.emacs.conf/org-templates/epic.orgtmpl")
      :clock-in t :clock-resume t)
     ("bt" "Todo"
      entry
      (file+headline ben/org/ben/refile "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("bb" "Buy"
-     entry
-     (file+headline ben/org/ben/refile "Buy")
-     (file "~/.emacs.conf/org-templates/buy.orgtmpl")
      :clock-in t :clock-resume t)
     ("bs" "Code Snippet"
      entry
@@ -95,10 +83,10 @@
 
 (defvar ben/org/capture/work
   '(("w" "Work")
-    ("wq" "Quest"
+    ("wq" "Epic"
      entry
-     (file ben/org/work/quests)
-     (file "~/.emacs.conf/org-templates/quest.orgtmpl")
+     (file ben/org/work/epics)
+     (file "~/.emacs.conf/org-templates/epic.orgtmpl")
      :clock-in t :clock-resume t)
     ("wp" "Project"
      entry
@@ -125,43 +113,43 @@
 ;; Conditionally set capture templates
 (setq org-capture-templates
       (let (tmpl (list))
-	(if (member "~/org/ben" org-agenda-files)
-	    (dolist (elem ben/org/capture/ben)
-	      (add-to-list 'tmpl elem 'append)))
+    (if (member "/code/org/ben" org-agenda-files)
+        (dolist (elem ben/org/capture/ben)
+          (add-to-list 'tmpl elem 'append)))
 
-	(if (member "~/org/work" org-agenda-files)
-	    (dolist (elem ben/org/capture/ben)
-	      (add-to-list 'tmpl elem 'append)))
-	tmpl))
+    (if (member "/code/org/work" org-agenda-files)
+        (dolist (elem ben/org/capture/ben)
+          (add-to-list 'tmpl elem 'append)))
+    tmpl))
 
 ;; Agenda
 (setq org-agenda-compact-blocks t)
 (setq org-agenda-files (list))
-(dolist (path '("~/org/ben" "~/org/work") nil)
+(dolist (path '("/code/org/ben" "/code/org/work") nil)
   (if (or (file-exists-p path) (file-symlink-p path))
       (add-to-list 'org-agenda-files path)))
 
 (setq org-agenda-custom-commands
       '(("h" "Habits" tags-todo "STYLE=\"habit\""
-	 ((org-agenda-overriding-header "Habits")
-	  (org-agenda-sorting-strategy
-	   '(todo-state-down effort-up category-keep))
-	  ))
-	(" " "Agenda"
-	 ((agenda "" nil)
-	  (tags "REFILE+CREATED={.+}"
-		((org-agenda-overriding-header "Refile")
-		 (org-tags-match-list-sublevels t)
-		 ))
-	  (todo "NEXT"
-		     ((org-agenda-overriding-header "Next")
-		      ))
+     ((org-agenda-overriding-header "Habits")
+      (org-agenda-sorting-strategy
+       '(todo-state-down effort-up category-keep))
+      ))
+    (" " "Agenda"
+     ((agenda "" nil)
+      (tags "REFILE+CREATED={.+}"
+        ((org-agenda-overriding-header "Refile")
+         (org-tags-match-list-sublevels t)
+         ))
+      (todo "NEXT"
+             ((org-agenda-overriding-header "Next")
+              ))
 
-	  ))
-	;; ("N" "Notes" tags "NOTE"
-	;;  ((org-agenda-overriding-header "Notes")
-	;;   (org-tags-match-list-sublevels t)))
-	))
+      ))
+    ;; ("N" "Notes" tags "NOTE"
+    ;;  ((org-agenda-overriding-header "Notes")
+    ;;   (org-tags-match-list-sublevels t)))
+    ))
 
 
 ;; Global Key Bindings
@@ -171,18 +159,18 @@
 (global-set-key (kbd "C-c o b") 'org-iswitchb) ;; TODO Find/write a helm plugin
 (global-set-key (kbd "C-c o c") 'org-capture)
 
-(global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file 'org-directory)))
-(global-set-key (kbd "C-c o q") (lambda() (interactive) (find-file 'ben/org/ben/quests)))
-(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file 'ben/org/ben/snippets)))
-(global-set-key (kbd "C-c o w q") (lambda() (interactive) (find-file 'ben/org/work/quests)))
-(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file 'ben/org/work/snippets)))
+(global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file org-directory)))
+(global-set-key (kbd "C-c o e") (lambda() (interactive) (find-file ben/org/ben/epics)))
+(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file ben/org/ben/snippets)))
+(global-set-key (kbd "C-c o w e") (lambda() (interactive) (find-file ben/org/work/epics)))
+(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/snippets)))
 
 ;; Org-mode bindings
 (define-key org-mode-map (kbd "C-c o h") 'org-insert-heading-after-current)
 (define-key org-mode-map (kbd "C-c o s") (lambda ()
-					   (interactive)
-					   (end-of-line)
-					   (org-insert-subheading nil))) ;; Insert after current line
+                       (interactive)
+                       (end-of-line)
+                       (org-insert-subheading nil))) ;; Insert after current line
 (define-key org-mode-map (kbd "C-c o t") 'org-insert-todo-heading)
 (define-key org-mode-map (kbd "C-c o p s") 'org-set-property)
 (define-key org-mode-map (kbd "C-c o p d") 'org-delete-property)
