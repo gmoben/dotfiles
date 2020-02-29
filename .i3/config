@@ -47,17 +47,13 @@ bindsym $mod+Ctrl+m exec --no-startup-id pavucontrol
 
 ################################################################################################
 
-# Screen brightness controls
-# bindsym XF86MonBrightnessUp exec "xbacklight -inc 10; notify-send 'brightness up'"
-# bindsym XF86MonBrightnessDown exec "xbacklight -dec 10; notify-send 'brightness down'"
-
 # Start Applications
-bindsym $mod+Ctrl+b exec terminal -e 'bmenu'
+bindsym $mod+Ctrl+b exec alacritty -e 'bmenu'
 bindsym $mod+F2 exec firefox -P
 bindsym $mod+F3 exec pcmanfm
 # bindsym $mod+F3 exec ranger
 bindsym $mod+Shift+F3 exec pcmanfm_pkexec
-bindsym $mod+F5 exec terminal -e 'mocp'
+bindsym $mod+F5 exec alacritty -e 'mocp'
 bindsym $mod+t exec --no-startup-id pkill picom
 bindsym $mod+Ctrl+t exec --no-startup-id picom -b
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
@@ -465,9 +461,9 @@ mode "$mode_gaps_outer" {
 # bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute 0 toggle # Mute
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+bindsym XF86MonBrightnessUp exec "xbacklight -ctrl acpi_video0 -steps 100 -inc 5; notify-send 'brightness up'"
+bindsym XF86MonBrightnessDown exec "xbacklight -ctrl acpi_video0 -steps 100 -dec 5; notify-send 'brightness down'"
 
 # Keyboard brightness controls
-bindsym XF86KbdBrightnessDown exec kb-backlight down
-bindsym XF86KbdBrightnessUp exec kb-backlight up
+bindsym XF86KbdBrightnessUp exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -inc 10 -steps 100; notify-send 'Keyboard Brightness Up'"
+bindsym XF86KbdBrightnessDown exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -dec 10 -steps 100; notify-send 'Keyboard Brightness Down'"

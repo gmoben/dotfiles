@@ -278,3 +278,8 @@
 (use-package lsp-treemacs :ensure t :after (lsp-mode treemacs))
 
 (setq compilation-scroll-output t)
+
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))

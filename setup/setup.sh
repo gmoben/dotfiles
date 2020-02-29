@@ -31,6 +31,18 @@ case $DISTRO in
         ;;
 esac
 
+
+split() {
+    if [[ $1 == "" ]]; then
+        1="()"
+    else
+        1="('$1')"
+    fi
+
+    python -c "import sys; sys.stdout.write('\n'.join([x for line in sys.stdin.readlines() for x in line.split$1]))"
+}
+
+
 function bootstrap {
     sudo mkdir -m777 -p /code
 
@@ -69,26 +81,39 @@ function mbp_packages {
         cd linux-mbp-arch && \
         makepkg --skipinteg -si
 
-    # # Patch apple-bce-dkms-git AUR package
-    # # Ensure KVERSION is `uname -r` and remove non-DKMS target
-    # git clone https://aur.archlinux.org/apple-bce-git.git && \
-        #     cd apple-bce-git && \
-        #     sed -i -r 's/(_kernver=|KVERSION=)\S+/\1$(uname -r)/' PKGBUILD && \
-        #     cat PKGBUILD | python -c "import sys, re; sys.stdout.write(re.sub(r'package_apple-bce-git().+?}$\n\n', '', sys.stdin.read(), flags=re.M|re.S))" > PKGBUILD && \
-        #     makepkg -si
-
     pacaur -S --noconfirm $MBPPKGS
 
+    # Install BCE/touchbar/keyboard modules
     sudo git clone --branch mbp15 https://github.com/roadrunner2/macbook12-spi-driver.git /usr/src/apple-ibridge-0.1
     sudo dkms install -m apple-ibridge -v 0.1
-    sudo modprobe apple-ib-tb
-    sudo modprobe apple-ib-als
 
-    cd /code/ext
-    git clone https://github.com/MCMrARM/mbp2018-etc.git
-    cd mbp2018-etc/applesmc
-    make
-    sudo insmod applesmc_t2_kmod.ko
+    mods=("apple-bce" "apple-ib-tb" "apple-ib-als")
+    for mod in "${arr[@]}"; do
+        sudo modprobe $mod
+        sudo echo $mod >> /etc/modules-load.d/apple.conf
+
+    # Setup pulseaudio
+    # https://gist.github.com/MCMrARM/c357291e4e5c18894bea10665dcebffb
+    sudo cp ${$SETUPDIR/mbp,}/usr/share/alsa/cards/AppleT2.conf
+    sudo cp ${$SETUPDIR/mbp,}/usr/share/pulseaudio/alsa-mixer/profile-sets/apple-t2.conf
+    sudo cp ${$SETUPDIR/mbp,}/usr/lib/udev/rules.d/91-pulseaudio-custom.rules
+
+    read -n 1 -p "Do you have a Macbook15,1? (y/n) " yn
+    case $yn in
+        y)
+            sudo cp ${$SETUPDIR/mbp,}/lib/firmware/bcrm/* /lib/firmware/bcrm
+            sudo modprobe -r bcrmfmac; sudo modprobe bcrmfmac
+            sudo echo bcrmfmac >> /etc/modules-load.d/apple.conf
+
+            sudo cat << EOF >> /etc/NetworkManager/NetworkManager.conf
+[device]
+wifi.backend=iwd
+EOF
+            sudo scre iwd
+            sudo scre NetworkManager
+        ;;
+        *) echo "Skipping wifi driver installation" ;;
+    esac
 }
 
 function pip_packages {

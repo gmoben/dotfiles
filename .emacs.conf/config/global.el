@@ -90,3 +90,7 @@ See `sort-regexp-fields'."
   (ansi-color-apply-on-region (point-min) (point-max)))
 
 (global-eldoc-mode -1)
+
+
+;; Duplicate line
+(global-set-key "\C-x\C-d" "\C-a\C-k\C-k\C-y\C-y\C-b\C-a")

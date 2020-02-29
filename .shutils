@@ -1,0 +1,11 @@
+#! -*- shell-script -*-
+
+split() {
+    if [[ $1 == "" ]]; then
+        1="()"
+    else
+        1="('$1')"
+    fi
+
+    python -c "import sys; sys.stdout.write('\n'.join([x for line in sys.stdin.readlines() for x in line.split$1]))"
+}
