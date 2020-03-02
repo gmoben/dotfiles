@@ -1,4 +1,4 @@
-#
+#!/bin/sh
 # ~/.xprofile
 #
 #
@@ -9,5 +9,9 @@
 
 # Environment variables
 #
+
+if [[ -f /usr/bin/wal ]]; then
+	wal -R
+fi
 
 [[ -f ~/.extend.xprofile ]] && . ~/.extend.xprofile

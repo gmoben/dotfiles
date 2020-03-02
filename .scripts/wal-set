@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+(wal -i $@ --backend haishoku || wal -i $@) && \
+    tmux source-file $HOME/.tmux.conf

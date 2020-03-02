@@ -76,6 +76,9 @@ alias diff-files='git diff --no-index'
 # Expand aliases after using sudo
 alias sudo='sudo '
 
+# pywal
+alias wsp='wal-set ~/Pictures'
+
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
    # Xscreensaver
    alias locks='xscreensaver-command --lock'

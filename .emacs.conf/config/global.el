@@ -89,7 +89,7 @@ See `sort-regexp-fields'."
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
 
-(global-eldoc-mode -1)
+(global-eldoc-mode nil)
 
 
 ;; Duplicate line

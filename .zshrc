@@ -216,3 +216,8 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
 esac
 
 source $HOME/.profile
+
+if [[ -f /usr/bin/wal ]]; then
+    (cat ~/.cache/wal/sequences &)
+    source ~/.cache/wal/colors-tty.sh
+fi
