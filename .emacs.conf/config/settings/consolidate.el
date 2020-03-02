@@ -42,10 +42,10 @@
 
 (use-package lsp-mode
   :ensure t
-  :commands (lsp lsp-deferred)
-  :hook ((go-mode . lsp)
-         (python-mode . lsp)
-         (rust-mode . lsp))
+  :hook (python-mode go-mode rust-mode)
+  :bind (:map lsp-mode-map
+			  ("C-c l a" . lsp-execute-code-action)
+			  ("C-c l r" . lsp-rename))
   :config
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
@@ -86,15 +86,13 @@
           :plugins\.rope_completion\.enabled t
           :plugins\.yapf\.enabled t
           :rope\.extensionModules nil
-          :rope\.ropeFolder nil))
-  (global-set-key (kbd "C-c l a") 'lsp-execute-code-action)
-  (global-set-key (kbd "C-c l r") 'lsp-rename))
+          :rope\.ropeFolder nil)))
 
 (use-package lsp-java
   :ensure t
   :after lsp
+  :hook (java-mode . lsp)
   :config
-  (add-hook 'java-mode-hook 'lsp)
   (defvar bewarre/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
   (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" bewarre/lsp-java-lombok-jar-location))
   (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" bewarre/lsp-java-lombok-jar-location))

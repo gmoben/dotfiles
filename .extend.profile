@@ -2,7 +2,7 @@
 source $HOME/.aliases
 
 if [[ -f $HOME/.xmodmap ]]; then
-    xmodmap $HOME/.xmodmap &>/dev/null
+   (xmodmap $HOME/.xmodmap &>/dev/null 2>&1)
 fi
 
 if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
