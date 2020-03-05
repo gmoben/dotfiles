@@ -202,13 +202,6 @@
   (global-set-key [remap describe-mode] 'helm-describe-modes)
   )
 
-(use-package helm-google
-  :ensure t
-  :after (helm)
-  :config
-  (global-set-key (kbd "C-c h g") 'helm-google)
-  )
-
 (use-package helm-org-rifle
   :ensure t
   :after (helm org)
@@ -226,16 +219,14 @@
   :init
   (setq helm-swoop-split-with-multiple-windows t)
   (setq helm-swoop-use-fuzzy-match t)
-  :bind (:map isearch-mode-map
-              ("M-i" . helm-swoop-from-isearch)
+  :bind (("C-c h s s" . 'helm-swoop)
+         ("C-c h s b" . 'helm-swoop-back-to-last-point)
+         ("C-c h s m" . 'helm-multi-swoop)
+         ("C-c h s a" . 'helm-multi-swoop-all)
+         :map isearch-mode-map
+         ("M-i" . helm-swoop-from-isearch)
          :map helm-swoop-map
-              ("M-i" . helm-multi-swoop-all-from-helm-swoop))
-  :config
-  (global-set-key (kbd "C-c h s s") 'helm-swoop)
-  (global-set-key (kbd "C-c h s b") 'helm-swoop-back-to-last-point)
-  (global-set-key (kbd "C-c h s m") 'helm-multi-swoop)
-  (global-set-key (kbd "C-c h s a") 'helm-multi-swoop-all)
-)
+         ("M-i" . helm-multi-swoop-all-from-helm-swoop)))
 
 (use-package company-lsp
   :ensure t

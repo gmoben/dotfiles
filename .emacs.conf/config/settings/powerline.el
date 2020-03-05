@@ -1,5 +1,6 @@
 ;; Powerline
-(require 'spaceline-config)
-(add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
-(require 'powerline)
-(spaceline-emacs-theme)
+(use-package 'powerline' :ensure t)
+(use-package 'spaceline-config
+  :ensure t
+  :after (powerline)
+  :init (('spaceline-emacs-theme)))

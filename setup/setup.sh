@@ -128,8 +128,7 @@ function activate_systemd {
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
     services="$services pulseaudio keybase keybase-redirector keybase-gui kbfs"
     echo "Enabling and starting systemd user services: $services"
-    systemctl --user enable $services
-    systemctl --user start $services
+    systemctl --user --now enable $services
 }
 
 function install_packages {
@@ -155,6 +154,7 @@ function main {
     bootstrap
     install_packages
     activate_systemd
+    xdg-settings set default-web-browser firefox.app
 }
 
 main

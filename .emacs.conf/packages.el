@@ -34,7 +34,6 @@ Return a list of installed packages or nil for every skipped package."
   (package-refresh-contents))
 
 (ensure-package-installed '(
-                            airline-themes
                             apel
                             async
                             auto-complete
@@ -173,7 +172,6 @@ Return a list of installed packages or nil for every skipped package."
                             s
                             semi
                             seq
-                            spaceline
                             speed-type
                             sphinx-doc
                             spinner

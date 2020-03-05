@@ -338,7 +338,7 @@ set_from_resource $term_color15    color15
 # effect all the areas with the same color.
 set_from_resource $i3_background 	  background
 set_from_resource $i3_text            foreground
-set_from_resource $i3_separator       color2
+set_from_resource $i3_separator       color4
 set_from_resource $i3_color1          color1
 set_from_resource $i3_color2          color2
 set_from_resource $i3_color3          color3

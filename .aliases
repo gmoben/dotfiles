@@ -161,10 +161,22 @@ alias dclbr='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 # GPG
 alias gpgtty='echo UPDATESTARTUPTTY | gpg-connect-agent'
 
+# Bookmarks
+alias org='cd /code/org && emacsc .'
+alias ben='cd /code/ben && emacsc .'
+alias ext='cd /code/ext && emacsc .'
+alias dotfiles='cd /code/ben/dotfiles && emacsc .'
+
+# Quick sourcing
+alias srcz='source $HOME/.zshrc'
+
+# Quick clone
+alias gcext='cd /code/ext && git clone'
+alias gcben='cd /code/ben && git clone'
 
 # ??? Profit
 alias ethereum='GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth'
 
+# Work/Local aliases
 [[ -f $HOME/.work.aliases ]] && source $HOME/.work.aliases
-
 [[ -f $HOME/.extend.aliases ]] && source $HOME/.extend.aliases

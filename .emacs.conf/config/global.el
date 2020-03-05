@@ -43,9 +43,10 @@ Position the cursor at it's beginning, according to the current mode."
 
 (set-face-attribute 'default (selected-frame) :height 135)
 
-;; Globally enabled modes
+;; Global modes
 (delete-selection-mode 1)
 (semantic-mode 1)
+(global-eldoc-mode nil)
 
 ;; easier movement
 (global-set-key (kbd "M-n") 'forward-paragraph)
@@ -83,14 +84,14 @@ See `sort-regexp-fields'."
   (interactive "*P\nr")
   (sort-regexp-fields reverse "[\\w\\-_\\+]+" "\\&" beg end))
 
-
 (require 'ansi-color)
 (defun display-ansi-colors ()
   (interactive)
   (ansi-color-apply-on-region (point-min) (point-max)))
 
-(global-eldoc-mode nil)
-
 
 ;; Duplicate line
 (global-set-key "\C-x\C-d" "\C-a\C-k\C-k\C-y\C-y\C-b\C-a")
+
+;; Follow symlinks without asking
+(setq vc-follow-symlinks t)
