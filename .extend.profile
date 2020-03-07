@@ -41,7 +41,7 @@ get_path() {
 }
 
 if [[ `get_path emacs` ]]; then
-    export EDITOR="$(get_path emacs) -nw"
+    export EDITOR="$(get_path emacsclient) -nw"
 elif [[ `get_path vim` ]]; then
     export EDITOR=$(get_path vim)
 else

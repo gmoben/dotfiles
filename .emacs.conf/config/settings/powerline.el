@@ -1,7 +1,6 @@
 ;; Powerline
-(use-package powerline :ensure t)
-(use-package spaceline-config
+(use-package powerline
   :ensure t
-  :after (powerline)
-  :init (
-		 (load-theme 'spaceline-emacs-theme)))
+  :commands (powerline-default-theme)
+  :init (powerline-default-theme)
+)
