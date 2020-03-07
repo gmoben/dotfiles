@@ -94,4 +94,4 @@ See `sort-regexp-fields'."
 (global-set-key "\C-x\C-d" "\C-a\C-k\C-k\C-y\C-y\C-b\C-a")
 
 ;; Follow symlinks without asking
-(setq vc-follow-symlinks t)
+(setq vc-follow-symlinks nil)
