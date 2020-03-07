@@ -3,6 +3,12 @@
 
 #alias npm='noglob npm'
 
+# Return if a file exists
+exists() {
+    env which $1 &>/dev/null 2>&1
+    return $?
+}
+
 # Vagrant
 vagrant() {
     if [[ $1 == "remake" ]]; then
@@ -77,7 +83,10 @@ alias diff-files='git diff --no-index'
 alias sudo='sudo '
 
 # pywal
-alias wsp='wal-set ~/Pictures'
+if `exists wal-set` ; then
+    alias wsp='wal-set ~/Pictures'
+    alias wsw='wal-set ~/Pictures/wallpaper'
+fi
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
    # Xscreensaver
