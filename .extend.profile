@@ -1,17 +1,6 @@
 #-*- mode: shell-script -*-
 source $HOME/.aliases
 
-if [[ -f $HOME/.xmodmap ]]; then
-   (xmodmap $HOME/.xmodmap &>/dev/null 2>&1)
-fi
-
-if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
-    source /usr/bin/virtualenvwrapper.sh
-elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
-    source /usr/local/bin/virtualenvwrapper.sh
-fi
-
-
 # Shortcuts
 export CODEBEN=/code/ben/
 # Paths
@@ -59,3 +48,24 @@ else
     export EDITOR=$(get_path nano)
 fi
 export SYSTEMD_EDITOR=$EDITOR
+
+[[ `get_path thefuck` ]] && eval $(thefuck --alias)
+
+if [[ -f $HOME/.xmodmap ]]; then
+   (xmodmap $HOME/.xmodmap &>/dev/null 2>&1)
+fi
+
+if [[ -f $HOME/.Xmodmap ]]; then
+    (xmodmap $HOME/.Xmodmap &>/dev/null 2>&1)
+fi
+
+if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
+    source /usr/bin/virtualenvwrapper.sh
+elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
+    source /usr/local/bin/virtualenvwrapper.sh
+fi
+
+if [[ `get_path wal` ]]; then
+    (cat ~/.cache/wal/sequences &)
+    source ~/.cache/wal/colors-tty.sh
+fi

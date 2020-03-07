@@ -1,4 +1,3 @@
-.i3
 .Xresources
 .Xresources.d
 .aliases
@@ -6,6 +5,9 @@
 .config/systemd/user/emacs.service
 .config/systemd/user/ssh-agent.service
 .config/systemd/user/xscreensaver.service
+.config/neofetch
+.config/wal
+.config/compton.conf
 .emacs.conf
 .extend.Xresources
 .extend.profile
@@ -15,7 +17,7 @@
 .tmux
 .tmux.conf
 .xinitrc
-.xmodmap
+.Xmodmap
 .Xresources
 .Xresources.d
 .xprofile

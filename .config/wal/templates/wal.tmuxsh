@@ -1,0 +1,3 @@
+set -gq @powerline-color-main-1 "{color3}"
+set -gq @powerline-color-main-2 "{color4}"
+set -gq @powerline-color-main-3 "{color1}"
