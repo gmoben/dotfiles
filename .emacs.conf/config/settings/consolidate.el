@@ -7,7 +7,7 @@
 (use-package python-mode
   :ensure t
   :after (projectile)
-  :config
+  :init
   (defvar my:virtualenv-directory "~/.virtualenvs/"
     "The directory of virtualenvs.")
 
@@ -34,8 +34,7 @@
               nil 'local))
 
   (add-hook 'python-mode-hook #'my:configure-python-venv)
-  (add-hook 'python-mode-hook #'my:flycheck-python-setup)
-  )
+  (add-hook 'python-mode-hook #'my:flycheck-python-setup))
 
 (use-package rust-mode :ensure t)
 (use-package lsp-haskell :ensure t)
@@ -44,8 +43,8 @@
   :ensure t
   :hook (python-mode go-mode rust-mode)
   :bind (:map lsp-mode-map
-			  ("C-c l a" . lsp-execute-code-action)
-			  ("C-c l r" . lsp-rename))
+              ("C-c l a" . lsp-execute-code-action)
+              ("C-c l r" . lsp-rename))
   :config
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
@@ -203,13 +202,12 @@
 (use-package helm-org-rifle
   :ensure t
   :after (helm org)
-  :config
-  (global-set-key (kbd "C-c o r a") 'helm-org-rifle-agenda-files)
-  (global-set-key (kbd "C-c o r b") 'helm-org-rifle-current-buffer)
-  (global-set-key (kbd "C-c o r d") 'helm-org-rifle-directories)
-  (global-set-key (kbd "C-c o r f") 'helm-org-rifle-files)
-  (global-set-key (kbd "C-c o r r") 'helm-org-rifle-org-directory)
-  )
+  :bind
+  ("C-c o r a" . 'helm-org-rifle-agenda-files)
+  ("C-c o r b" . 'helm-org-rifle-current-buffer)
+  ("C-c o r d" . 'helm-org-rifle-directories)
+  ("C-c o r f" . 'helm-org-rifle-files)
+  ("C-c o r r" . 'helm-org-rifle-org-directory))
 
 (use-package helm-swoop
   :ensure t

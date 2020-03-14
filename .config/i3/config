@@ -4,6 +4,8 @@
 # Set mod key (Mod1=<Alt>, Mod4=<Super>)
 set $mod Mod4
 
+set $terminal kitty
+
 # set default desktop layout (default is tiling)
 # workspace_layout tabbed <stacking|tabbed>
 
@@ -27,7 +29,7 @@ font xft:URWGothic-Book 11
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec $terminal
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -48,12 +50,12 @@ bindsym $mod+Ctrl+m exec --no-startup-id pavucontrol
 ################################################################################################
 
 # Start Applications
-bindsym $mod+Ctrl+b exec alacritty -e 'bmenu'
+bindsym $mod+Ctrl+b exec $terminal -e 'bmenu'
 bindsym $mod+F2 exec firefox -P
 bindsym $mod+F3 exec pcmanfm
 # bindsym $mod+F3 exec ranger
 bindsym $mod+Shift+F3 exec pcmanfm_pkexec
-bindsym $mod+F5 exec alacritty -e 'mocp'
+bindsym $mod+F5 exec $terminal -e 'mocp'
 bindsym $mod+t exec --no-startup-id pkill picom
 bindsym $mod+Ctrl+t exec --no-startup-id picom -b
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
@@ -385,6 +387,8 @@ bar {
     }
 }
 
+# exec_always "killall powerline-lemonbar; powerline-lemonbar -H 28 -- -t -f 'DejaVu Sans Mono-11' -f 'PowerlineSymbols-12' -f 'FontAwesome-11'"
+
 # hide/unhide i3status bar
 bindsym $mod+m bar mode toggle
 
@@ -461,8 +465,8 @@ mode "$mode_gaps_outer" {
 # bindsym XF86AudioMute exec --no-startup-id pactl set_from_resource-sink-mute 0 toggle # Mute
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; xbacklight -ctrl acpi_video0 -inc 10"
-bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down'; xbacklight -ctrl acpi_video0 -dec 10"
+bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; xbacklight -ctrl acpi_video0 -inc 3"
+bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down'; xbacklight -ctrl acpi_video0 -dec 3"
 
 # Keyboard brightness controls
 bindsym XF86KbdBrightnessUp exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -inc 10 -steps 100; notify-send 'Keyboard Brightness Up'"

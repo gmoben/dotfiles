@@ -162,8 +162,12 @@ antigen apply
 
 # bind UP and DOWN arrow keys to history substring search
 zmodload zsh/terminfo
-bindkey "$terminfo[kcuu1]" history-substring-search-up
-bindkey "$terminfo[kcud1]" history-substring-search-down
+if [[ "${terminfo[kcuu1]}" != "" ]]; then
+    bindkey "${terminfo[kcuu1]}" history-substring-search-up
+fi
+if [[ "${terminfo[kcud1]}" != "" ]]; then
+    bindkey "${terminfo[kcud1]}" history-substring-search-down
+fi
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 

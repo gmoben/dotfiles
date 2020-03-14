@@ -1,5 +1,4 @@
 acpica
-alacritty
 arandr
 cool-retro-term
 cpio
@@ -12,6 +11,8 @@ google-chrome
 keybase-bash-completion-git
 keybase-bin
 keybase-zsh-completion-git
+kitty
+kitty-terminfo
 libu2f-host
 lutris
 mosh
