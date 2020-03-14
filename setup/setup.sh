@@ -62,6 +62,14 @@ function bootstrap {
             sudo ln -sv /usr/local/bin/pacapt /usr/local/bin/pacman || true
             sudo echo "sudo /usr/local/bin/pacapt" > /usr/local/bin/pacaur && \
                 sudo chmod 755 /usr/local/bin/pacaur
+
+            echo "Adding PPAs..."
+            sudo add-apt-repository ppa:kgilmer/speed-ricer
+            sudo apt-get update
+
+            echo "Installing kitty..."
+            curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+            ln -s $HOME/.local/kitty.app/bin/kitty $HOME/.local/bin/
            ;;
         *) ;;
     esac

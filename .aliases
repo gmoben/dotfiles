@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/usr/bin/env bash
 # -*- mode: shell-script -*-
 
 #alias npm='noglob npm'
@@ -100,8 +100,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
    alias scstop='systemctl stop'
    alias sce='systemctl enable'
    alias scd='systemctl disable'
-   scer() { sce $@ && scr $@ }
-
 
    alias scu='systemctl --user'
    alias scur='systemctl --user restart'
@@ -110,7 +108,6 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
    alias scuoff='systemctl --user stop'
    alias scue='systemctl --user enable'
    alias scud='systemctl --user disable'
-   scer() { scue $@ && scur $@ }
 fi
 
 # Kubectl
@@ -174,6 +171,7 @@ alias gpgtty='echo UPDATESTARTUPTTY | gpg-connect-agent'
 alias org='cd /code/org && emacsc .'
 alias ben='cd /code/ben && emacsc .'
 alias ext='cd /code/ext && emacsc .'
+alias notes='cd /code/ben/notes && emacsc .'
 alias dotfiles='cd /code/ben/dotfiles && emacsc .'
 
 # Quick sourcing

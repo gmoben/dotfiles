@@ -11,7 +11,7 @@
 #
 
 if [[ -f /usr/bin/wal ]]; then
-	wal -R
+    wal -R
 fi
 
 [[ -f ~/.extend.xprofile ]] && . ~/.extend.xprofile

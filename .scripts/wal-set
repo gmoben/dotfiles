@@ -1,7 +1,33 @@
 #!/usr/bin/env bash
 
-(wal -i $@ -n --backend haishoku || wal -i $@ -n) && \
-    tmux source-file $HOME/.tmux.conf && \
-    emacsclient -e "(load-theme 'ewal-spacemacs-classic)"
+emacs_theme=ewal-spacemacs-classic
 
-source $HOME/.cache/wal/set_nitrogen.sh
+reload_themes() {
+
+    # If active tmux session, reload
+    if (tmux list-sessions &>/dev/null); then
+        tmux source-file $HOME/.tmux.conf
+        echo "Reloaded tmux"
+    fi
+
+    # If i3status template is installed
+    if [[ -f $HOME/.cache/wal/i3status.conf ]]; then
+        mkdir -p $HOME/.config/i3status
+        cp -rf $HOME/.cache/wal/i3status.conf $HOME/.config/i3status/config
+        i3 reload &>/dev/null
+        echo "Reloaded i3status.conf"
+    fi
+
+    # If emacs daemon is running, reload theme
+    if (ps -ef | grep emacs | grep daemon &>/dev/null); then
+        emacsclient -e "(load-theme '$emacs_theme)" &>/dev/null
+        echo "Reloaded emacs theme ($emacs_theme)"
+    fi
+}
+
+(wal -i $@ -n --backend haishoku || wal -i $@ -n) && reload_themes
+
+if [[ -f $HOME/.cache/wal/set_nitrogen.sh ]]; then
+    chmod a+x $HOME/.cache/wal/set_nitrogen.sh
+    $HOME/.cache/wal/set_nitrogen.sh
+fi
