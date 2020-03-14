@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-emacs_theme=ewal-spacemacs-classic
+emacs_theme=ewal-doom-one
 
 reload_themes() {
 
@@ -13,7 +13,7 @@ reload_themes() {
     # If i3status template is installed
     if [[ -f $HOME/.cache/wal/i3status.conf ]]; then
         mkdir -p $HOME/.config/i3status
-        cp -rf $HOME/.cache/wal/i3status.conf $HOME/.config/i3status/config
+        cp -r $HOME/.cache/wal/i3status.conf $HOME/.config/i3status/config
         i3 reload &>/dev/null
         echo "Reloaded i3status.conf"
     fi
@@ -25,9 +25,12 @@ reload_themes() {
     fi
 }
 
-(wal -i $@ -n --backend haishoku || wal -i $@ -n) && reload_themes
+args=$@
+[[ !($1 =~ $-) && -e $1 ]] && args="-i $@"
+
+(wal -n $args || wal $args) && reload_themes
 
 if [[ -f $HOME/.cache/wal/set_nitrogen.sh ]]; then
     chmod a+x $HOME/.cache/wal/set_nitrogen.sh
-    $HOME/.cache/wal/set_nitrogen.sh
+    ($HOME/.cache/wal/set_nitrogen.sh &)
 fi

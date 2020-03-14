@@ -155,7 +155,14 @@ function install_packages {
 
     pip_packages
     install_dotfiles
+    compile_terminfo
 }
+
+function compile_terminfo {
+    # Compiles xterm-24bit terminfo for emacs -nw
+    tic -x -o $HOME/.terminfo $SETUPDIR/xterm-24bit.terminfo
+}
+
 
 
 function main {

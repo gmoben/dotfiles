@@ -32,23 +32,22 @@ alias dps='docker ps'
 alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 
 # Emacs
-alias emacs='TERM=xterm-256color emacs -nw'
-alias gmacs='emacs -c'
-alias emacsd='TERM=xterm-256color emacs --daemon'
-alias emacsc='TERM=xterm-256color emacsclient -t'
-alias tmuxconf='TERM=xterm-256color emacsclient -t $HOME/.tmux.conf'
-alias emacsconf='TERM=xterm-256color emacsclient -t $HOME/.emacs.conf'
-alias e='TERM=xterm-256color emacsclient -t .'
-alias ecode='TERM=xterm-256color emacsclient -t /code'
-alias ehome='TERM=xterm-256color emacsclient -t $HOME'
+alias emacs='TERM=xterm-24bit emacs -nw'
+alias gmacs='TERM=xterm-24bit emacs -c'
+alias emacsd='TERM=xterm-24bit emacs --daemon'
+alias emacsc='TERM=xterm-24bit emacsclient -t'
+alias tmuxconf='TERM=xterm-24bit emacsclient -t $HOME/.tmux.conf'
+alias emacsconf='TERM=xterm-24bit emacsclient -t $HOME/.emacs.conf'
+alias e='TERM=xterm-24bit emacsclient -t .'
+alias ecode='TERM=xterm-24bit emacsclient -t /code'
+alias ehome='TERM=xterm-24bit emacsclient -t $HOME'
 
 # Tmux
-alias tmux='TERM=xterm-256color tmux -2'
 alias tml='tmux list-sessions'
 alias tma='tmux attach -t'
 
 # Wemux
-alias wemux='TERM=xterm-256color wemux'
+alias wemux='TERM=xterm-24bit wemux'
 alias wmn='wemux new-session'
 alias wml='wemux list-sessions'
 alias wma='wemux attach -t'
