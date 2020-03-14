@@ -46,6 +46,9 @@ split() {
 function bootstrap {
     sudo mkdir -m777 -p /code
 
+    mkdir -p /code/ben && \
+        mkdir -p /code/ext
+
     case $DISTRO in
         Arch)
             echo "Installing pacaur..."
@@ -64,8 +67,10 @@ function bootstrap {
                 sudo chmod 755 /usr/local/bin/pacaur
 
             echo "Adding PPAs..."
-            sudo add-apt-repository ppa:kgilmer/speed-ricer
-            sudo add-apt-repository ppa:kelleyk/emacs
+            for src in $(cat $SETUPDIR/ubuntu.ppa); do
+                sudo add-apt-repository $src
+            done
+
             sudo apt-get update
 
             echo "Installing kitty..."
@@ -84,22 +89,16 @@ function base_packages {
 }
 
 function mbp_packages {
-    mkdir /code/ext && cd /code/ext
-
-    git clone https://github.com/aunali1/linux-mbp-arch.git && \
-        cd linux-mbp-arch && \
-        makepkg --skipinteg -si
+    sudo cp -f {$SETUPDIR/mbp,}/etc/pacman.conf && \
+        chown root:root /etc/pacman.conf
 
     pacaur -S --noconfirm $MBPPKGS
 
-    # Install BCE/touchbar/keyboard modules
-    sudo git clone --branch mbp15 https://github.com/roadrunner2/macbook12-spi-driver.git /usr/src/apple-ibridge-0.1
-    sudo dkms install -m apple-ibridge -v 0.1
-
-    mods=("apple-bce" "apple-ib-tb" "apple-ib-als")
-    for mod in "${arr[@]}"; do
+    mods=("apple-bce" "apple-ib-tb" "apple-ib-als" "applesmc")
+    for mod in "${mods[@]}"; do
         sudo modprobe $mod
-        sudo echo $mod >> /etc/modules-load.d/apple.conf
+        sudo echo $mod >> /etc/modules-load.d/modules.conf
+    done
 
     # Setup pulseaudio
     # https://gist.github.com/MCMrARM/c357291e4e5c18894bea10665dcebffb
@@ -118,8 +117,10 @@ function mbp_packages {
 [device]
 wifi.backend=iwd
 EOF
-            sudo scre iwd
-            sudo scre NetworkManager
+            sudo systemctl enable --now iwd && \
+                systemctl restart NetworkManager && \
+                systemctl enable --now NetworkManager
+
         ;;
         *) echo "Skipping wifi driver installation" ;;
     esac
@@ -161,10 +162,8 @@ function install_packages {
 
 function compile_terminfo {
     # Compiles xterm-24bit terminfo for emacs -nw
-    tic -x -o $HOME/.terminfo $SETUPDIR/xterm-24bit.terminfo
+    sudo tic -x -o /usr/share/terminfo $SETUPDIR/xterm-24bit.terminfo
 }
-
-
 
 function main {
     bootstrap
