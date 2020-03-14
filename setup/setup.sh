@@ -65,6 +65,7 @@ function bootstrap {
 
             echo "Adding PPAs..."
             sudo add-apt-repository ppa:kgilmer/speed-ricer
+            sudo add-apt-repository ppa:kelleyk/emacs
             sudo apt-get update
 
             echo "Installing kitty..."

@@ -69,3 +69,5 @@ if [[ `get_path wal` ]]; then
     (cat ~/.cache/wal/sequences &)
     source ~/.cache/wal/colors-tty.sh
 fi
+
+export PATH=$PATH:$CODEBEN/dotfiles/.scripts

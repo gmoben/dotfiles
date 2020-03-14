@@ -6,7 +6,7 @@
   (setq ewal-use-built-in-on-failure-p nil))
 
 (use-package ewal-doom-themes
-  ;; :ensure t
+  :ensure t
   :config
   (load-theme 'ewal-doom-one t)
   (enable-theme 'ewal-doom-one))

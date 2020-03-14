@@ -5,11 +5,13 @@ blueman
 compton
 dconf-editor
 dex
+emacs26-nox
 firefox-geckodriver
 fonts-powerline
 gnupg-agent
 htop
 i2c-tools
+i3-gaps-wm
 keybase
 neofetch
 nitrogen
@@ -25,4 +27,3 @@ vlc
 volumeicon
 volumeicon-alsa
 zsh-antigen
-i3-gaps-wm
