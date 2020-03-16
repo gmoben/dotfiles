@@ -111,8 +111,8 @@ bindsym $mod+q split toggle
 bindsym $mod+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+# bindsym $mod+s layout stacking
+# bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -260,6 +260,8 @@ bindsym $mod+9 exec --no-startup-id xscreensaver-command --lock
 
 # Application shortcuts
 bindsym $mod+i exec --no-startup-id firefox -P
+bindsym $mod+Shift+i exec --no-startup-id firefox
+
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
