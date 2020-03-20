@@ -1,4 +1,5 @@
-#-*- mode: shell-script -*-
+#!/usr/bin/env zsh
+
 source $HOME/.aliases
 
 # Shortcuts
@@ -36,7 +37,7 @@ fi
 
 # Editors
 get_path() {
-    echo $(env which $1)
+    echo $(/usr/bin/env which $1)
     return $?
 }
 
@@ -49,7 +50,7 @@ else
 fi
 export SYSTEMD_EDITOR=$EDITOR
 
-[[ `get_path thefuck` ]] && eval $(thefuck --alias)
+[[ `get_path thefuck &>/dev/null 2>&1` ]] && eval $(thefuck --alias)
 
 if [[ -f $HOME/.xmodmap ]]; then
    (xmodmap $HOME/.xmodmap &>/dev/null 2>&1)
@@ -65,9 +66,15 @@ elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi
 
-if [[ `get_path wal` ]]; then
+if [[ `get_path wal &>/dev/null 2>&1` ]]; then
     (cat ~/.cache/wal/sequences &)
     source ~/.cache/wal/colors-tty.sh
 fi
 
 export PATH=$PATH:$CODEBEN/dotfiles/.scripts
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi

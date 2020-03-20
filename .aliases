@@ -31,23 +31,25 @@ alias dlogs='docker logs'
 alias dps='docker ps'
 alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 
+term=xterm-24bit
+
 # Emacs
-alias emacs='TERM=xterm-24bit emacs -nw'
-alias gmacs='TERM=xterm-24bit emacs -c'
-alias emacsd='TERM=xterm-24bit emacs --daemon'
-alias emacsc='TERM=xterm-24bit emacsclient -t'
-alias tmuxconf='TERM=xterm-24bit emacsclient -t $HOME/.tmux.conf'
-alias emacsconf='TERM=xterm-24bit emacsclient -t $HOME/.emacs.conf'
-alias e='TERM=xterm-24bit emacsclient -t .'
-alias ecode='TERM=xterm-24bit emacsclient -t /code'
-alias ehome='TERM=xterm-24bit emacsclient -t $HOME'
+alias emacs='TERM=$term emacs -nw'
+alias gmacs='TERM=$term emacs -c'
+alias emacsd='TERM=$term emacs --daemon'
+alias emacsc='TERM=$term emacsclient -t'
+alias tmuxconf='TERM=$term emacsclient -t $HOME/.tmux.conf'
+alias emacsconf='TERM=$term emacsclient -t $HOME/.emacs.conf'
+alias e='TERM=$term emacsclient -t .'
+alias ecode='TERM=$term emacsclient -t /code'
+alias ehome='TERM=$term emacsclient -t $HOME'
 
 # Tmux
 alias tml='tmux list-sessions'
 alias tma='tmux attach -t'
 
 # Wemux
-alias wemux='TERM=xterm-24bit wemux'
+alias wemux='TERM=$term wemux'
 alias wmn='wemux new-session'
 alias wml='wemux list-sessions'
 alias wma='wemux attach -t'

@@ -17,11 +17,6 @@ Return a list of installed packages or nil for every skipped package."
        (package-install package)))
    packages))
 
-;; make sure use-package is installed
-(require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-
 (unless package-archive-contents
   (package-refresh-contents))
 
