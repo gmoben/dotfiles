@@ -11,7 +11,7 @@ reload_themes() {
     fi
 
     # If i3status template is installed
-    if [[ -f $HOME/.cache/wal/i3status.conf ]]; then
+    if [[ -n `which i3 2>/dev/null` && -f $HOME/.cache/wal/i3status.conf ]]; then
         mkdir -p $HOME/.config/i3status
         cp -r $HOME/.cache/wal/i3status.conf $HOME/.config/i3status/config
         i3 reload &>/dev/null
@@ -33,4 +33,8 @@ args=$@
 if [[ -f $HOME/.cache/wal/set_nitrogen.sh ]]; then
     chmod a+x $HOME/.cache/wal/set_nitrogen.sh
     ($HOME/.cache/wal/set_nitrogen.sh &)
+fi
+
+if [[ -f $HOME/.config/wal/wal-set-post ]]; then
+    emacs_theme=$emacs_theme $HOME/.config/wal/wal-set-post
 fi

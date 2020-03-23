@@ -17,9 +17,9 @@ new_float normal
 hide_edge_borders none
 
 # change borders
-bindsym $mod+u border none
-bindsym $mod+y border pixel 1
-bindsym $mod+n border normal
+# bindsym $mod+u border none
+# bindsym $mod+y border pixel 1
+# bindsym $mod+n border normal
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -30,7 +30,7 @@ floating_modifier $mod
 
 # start a terminal
 bindsym $mod+Return exec $terminal
-
+bindcode $mod+48 exec $terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 
@@ -340,6 +340,7 @@ set_from_resource $term_color15    color15
 # https://i3wm.org/dovs/userguide.html#variables
 # Changing the value of one of the variables will
 # effect all the areas with the same color.
+
 set_from_resource $i3_background 	  background
 set_from_resource $i3_text            foreground
 set_from_resource $i3_separator       color4
@@ -364,16 +365,16 @@ set $i3_color17         #0c0c0c
 # Start i3bar to display a workspace bar (plus the system information i3status if available)
 bar {
 	status_command i3blocks
-	position bottom
+	position top
 
 ## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
-#	tray_output primary
-#	tray_output eDP1
+	tray_output DP1
+    tray_output primary1
+    tray_output eDP1
 
 	bindsym button4 nop
 	bindsym button5 nop
-	font -schumacher-clean-medium-r-normal-*-8-*-75-75-*-60-*-*
-	# font xft:Pokemon GB 14px
+	font xft:Lato 10 Light
 	strip_workspace_numbers yes
 
 	colors {
@@ -468,11 +469,11 @@ mode "$mode_gaps_outer" {
 # bindsym XF86AudioMute exec --no-startup-id pactl set_from_resource-sink-mute 0 toggle # Mute
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; xbacklight -ctrl acpi_video0 -inc 3"
-bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down'; xbacklight -ctrl acpi_video0 -dec 3"
+bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; xbacklight -inc 10"
+bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down'; xbacklight -dec 10"
 
 # Keyboard brightness controls
 bindsym XF86KbdBrightnessUp exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -inc 10 -steps 100; notify-send 'Keyboard Brightness Up'"
 bindsym XF86KbdBrightnessDown exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -dec 10 -steps 100; notify-send 'Keyboard Brightness Down'"
 
-bindsym $mod+Shift+w exec "wal-set ~/Pictures"
+bindsym $mod+Shift+w exec "wal-set ~/Pictures/wallpaper"
