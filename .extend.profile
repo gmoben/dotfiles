@@ -25,7 +25,7 @@ export SSH_KEY_PATH=$HOME/.ssh/rsa_id
 # GPG
 export GPG_TTY=$(tty)
 
-if [[ "$OSTYPE" == "linux-gnu" ]]; then
+if [[ "$OSTYPE" == "linux-gnu" && -n "$XDG_RUNTIME_DIR" && -e $XDG_RUNTIME_DIR/ssh-agent.socket ]]; then
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 fi
 

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+new_agent() {
+    ssh-agent > $HOME/.ssh-agent
+    source $HOME/.ssh-agent &>/dev/null
+    echo "Started new ssh-agent (SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID)"
+}
+
+if [[ -e $HOME/.ssh-agent ]]; then
+    source $HOME/.ssh-agent &>/dev/null
+    if [[ -n "$SSH_AUTH_SOCK" && ! -e $SSH_AUTH_SOCK ]]; then
+        echo "ssh-agent $SSH_AUTH_SOCK is dead"
+        new_agent
+    fi
+else
+    echo "Starting new agent using $HOME/.ssh-agent"
+    new_agent
+fi
+
+source $HOME/.ssh-agent &>/dev/null
+find ~/.ssh -name "id_rsa*" | grep -Ev "pub|cert" | xargs ssh-add &>/dev/null
