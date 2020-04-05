@@ -52,21 +52,13 @@ export SYSTEMD_EDITOR=$EDITOR
 
 [[ `get_path thefuck &>/dev/null 2>&1` ]] && eval $(thefuck --alias)
 
-if [[ -f $HOME/.xmodmap ]]; then
-   (xmodmap $HOME/.xmodmap &>/dev/null 2>&1)
-fi
-
-if [[ -f $HOME/.Xmodmap ]]; then
-    (xmodmap $HOME/.Xmodmap &>/dev/null 2>&1)
-fi
-
 if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
     source /usr/bin/virtualenvwrapper.sh
 elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
     source /usr/local/bin/virtualenvwrapper.sh
 fi
 
-if [[ `get_path wal &>/dev/null 2>&1` ]]; then
+if [[ -e `command -v wal` ]]; then
     (cat ~/.cache/wal/sequences &)
     source ~/.cache/wal/colors-tty.sh
 fi

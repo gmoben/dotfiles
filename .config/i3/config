@@ -364,12 +364,12 @@ set $i3_color17         #0c0c0c
 
 # Start i3bar to display a workspace bar (plus the system information i3status if available)
 bar {
-	status_command i3blocks
-	position top
+	status_command i3status
+	position bottom
 
 ## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
 	tray_output DP1
-    tray_output primary1
+    tray_output primary
     tray_output eDP1
 
 	bindsym button4 nop

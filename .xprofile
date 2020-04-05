@@ -1,17 +1,15 @@
-#!/bin/sh
-# ~/.xprofile
-#
-#
+#!/usr/bin/env bash
 
-# if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS"; then
-#     eval "$(dbus-launch --sh-syntax --exit-with-session)"
-# fi
+# Run global xprofile if it exists
+[[ -f /etc/xprofile ]] && . /etc/xprofile
 
-# Environment variables
-#
+# Import xrdb entries and reload previous Pywal colors
+[[ -f $HOME/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
+[[ -f $HOME/.Xdefaults ]] && xrdb -merge -I$HOME ~/.Xdefaults
+[[ -f /usr/bin/wal ]] && wal -R
 
-if [[ -f /usr/bin/wal ]]; then
-    wal -R
-fi
+# Map CapsLock to Ctrl
+[[ -f $HOME/.Xmodmap ]] && xmodmap $HOME/.Xmodmap
 
-[[ -f ~/.extend.xprofile ]] && . ~/.extend.xprofile
+# Run local additions if they exist
+[[ -f $HOME/.extend.xprofile ]] && . $HOME/.extend.xprofile
