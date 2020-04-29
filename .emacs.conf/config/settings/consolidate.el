@@ -1,11 +1,11 @@
 (use-package any-ini-mode
+  :load-path "../.emacs.conf/lisp"
   :config
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode))
   )
 
 (use-package python-mode
-  :ensure t
   :after (projectile)
   :init
   (defvar my:virtualenv-directory "~/.virtualenvs/"
@@ -34,7 +34,9 @@
               nil 'local))
 
   (add-hook 'python-mode-hook #'my:configure-python-venv)
-  (add-hook 'python-mode-hook #'my:flycheck-python-setup))
+  (add-hook 'python-mode-hook #'my:flycheck-python-setup)
+  (setq-local eldoc-documentation-function #'ignore)
+  (setq eldoc-mode nil))
 
 (use-package rust-mode :ensure t)
 (use-package lsp-haskell :ensure t)

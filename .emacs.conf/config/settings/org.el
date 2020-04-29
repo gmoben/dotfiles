@@ -13,22 +13,18 @@
 (setq org-startup-indented t)
 (setq org-export-coding-system 'utf-8)
 (setq org-directory "/code/org/")
-(setq org-default-notes-file (concat org-directory "ben/refile.org"))
+(setq org-default-notes-file (concat org-directory "work/incoming.org"))
 (setq org-outline-path-complete-in-steps t)
 
 ;; Folder and file location variables
 ;; TODO: Generate these
 (defconst ben/org/ben (concat org-directory "ben/"))
-(defconst ben/org/ben/epics (concat ben/org/ben "epics.org"))
-(defconst ben/org/ben/snippets (concat ben/org/ben "snippets.org"))
-(defconst ben/org/ben/habits (concat ben/org/ben "habits.org"))
-(defconst ben/org/ben/refile (concat ben/org/ben "refile.org"))
+(defconst ben/org/ben/stories (concat ben/org/ben "stories.org"))
+(defconst ben/org/ben/incoming (concat ben/org/ben "incoming.org"))
 
 (defconst ben/org/work (concat org-directory "work/"))
-(defconst ben/org/work/epics (concat ben/org/work "epics.org"))
-(defconst ben/org/work/snippets (concat ben/org/work "snippets.org"))
-(defconst ben/org/ben/habits (concat ben/org/work "habits.org"))
-(defconst ben/org/work/refile (concat ben/org/work "refile.org"))
+(defconst ben/org/work/stories (concat ben/org/work "stories.org"))
+(defconst ben/org/work/incoming (concat ben/org/work "incoming.org"))
 
 ;; Clock
 (org-clock-persistence-insinuate)
@@ -59,56 +55,48 @@
 ;; TODO: Generate these
 (defvar ben/org/capture/ben
   '(("b" "Ben (Personal)")
-    ("bq" "Epic"
+    ("bw" "Story"
      entry
-     (file ben/org/ben/epics)
-     (file "~/.emacs.conf/org-templates/epic.orgtmpl")
+     (file ben/org/ben/stories)
+     (file "~/.emacs.conf/org-templates/story.orgtmpl")
      :clock-in t :clock-resume t)
     ("bt" "Todo"
      entry
-     (file+headline ben/org/ben/refile "Todos")
+     (file+headline ben/org/ben/incoming "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("bs" "Code Snippet"
-     entry
-     (file ben/org/ben/snippets)
-     (file "~/.emacs.conf/org-templates/snippet.orgtmpl")
      :clock-in t :clock-resume t)
     ("bh" "Habit"
      entry
-     (file+headline ben/org/ben/refile "Habits")
+     (file+headline ben/org/ben/incoming "Habits")
      (file "~/.emacs.conf/org-templates/habit.orgtmpl")
      :clock-in t :clock-resume t)
     ))
 
 (defvar ben/org/capture/work
   '(("w" "Work")
-    ("wq" "Epic"
+    ("ws" "Story"
      entry
-     (file ben/org/work/epics)
-     (file "~/.emacs.conf/org-templates/epic.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("wp" "Project"
-     entry
-     (file+headline ben/org/work/refile "Projects")
-     (file "~/.emacs.conf/org-templates/project.orgtmpl")
+     (file ben/org/work/stories)
+     (file "~/.emacs.conf/org-templates/story.orgtmpl")
      :clock-in t :clock-resume t)
     ("wt" "Todo"
      entry
-     (file+headline ben/org/work/refile "Todos")
+     (file+headline ben/org/ben/incoming "Todos")
      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("ws" "Code Snippet"
-     entry
-     (file ben/org/work/snippets)
-     (file "~/.emacs.conf/org-templates/snippet.orgtmpl")
      :clock-in t :clock-resume t)
     ("wh" "Habit"
      entry
-     (file+headline ben/org/work/refile "Habits")
+     (file+headline ben/org/ben/incoming "Habits")
      (file "~/.emacs.conf/org-templates/habit.orgtmpl")
      :clock-in t :clock-resume t)
-    ))
+))
+
+;; Agenda
+(setq org-agenda-compact-blocks t)
+(setq org-agenda-files (list))
+(dolist (path '("/code/org/ben" "/code/org/work") nil)
+  (if (or (file-exists-p path) (file-symlink-p path))
+      (add-to-list 'org-agenda-files path)))
 
 ;; Conditionally set capture templates
 (setq org-capture-templates
@@ -122,12 +110,6 @@
           (add-to-list 'tmpl elem 'append)))
     tmpl))
 
-;; Agenda
-(setq org-agenda-compact-blocks t)
-(setq org-agenda-files (list))
-(dolist (path '("/code/org/ben" "/code/org/work") nil)
-  (if (or (file-exists-p path) (file-symlink-p path))
-      (add-to-list 'org-agenda-files path)))
 
 (setq org-agenda-custom-commands
       '(("h" "Habits" tags-todo "STYLE=\"habit\""
@@ -160,10 +142,10 @@
 (global-set-key (kbd "C-c o c") 'org-capture)
 
 (global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file org-directory)))
-(global-set-key (kbd "C-c o e") (lambda() (interactive) (find-file ben/org/ben/epics)))
-(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file ben/org/ben/snippets)))
-(global-set-key (kbd "C-c o w e") (lambda() (interactive) (find-file ben/org/work/epics)))
-(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/snippets)))
+(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file ben/org/ben/stories)))
+(global-set-key (kbd "C-c o n") (lambda() (interactive) (find-file ben/org/ben/snippets)))
+(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/stories)))
+(global-set-key (kbd "C-c o w n") (lambda() (interactive) (find-file ben/org/work/snippets)))
 
 ;; Org-mode bindings
 (define-key org-mode-map (kbd "C-c o h") 'org-insert-heading-after-current)

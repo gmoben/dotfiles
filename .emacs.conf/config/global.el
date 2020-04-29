@@ -46,7 +46,7 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Global modes
 (delete-selection-mode 1)
 (semantic-mode 1)
-(global-eldoc-mode nil)
+(global-eldoc-mode -1)
 
 ;; easier movement
 (global-set-key (kbd "M-n") 'forward-paragraph)
@@ -95,3 +95,6 @@ See `sort-regexp-fields'."
 
 ;; Follow symlinks without asking
 (setq vc-follow-symlinks nil)
+
+;; visual-line-mode for line wrapping
+(setq global-visual-line-mode 1)

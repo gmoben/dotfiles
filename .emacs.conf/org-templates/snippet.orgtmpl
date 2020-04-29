@@ -1,8 +1,0 @@
-* %? %^G
-:PROPERTIES:
-:CREATED:  %U
-:END:
-#+NAME: <name>
-#+BEGIN_SRC %^{language|python|bash|c} %^{switches} %^{header arguments}
-%^C
-#+END_SRC

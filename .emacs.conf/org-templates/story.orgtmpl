@@ -1,0 +1,8 @@
+* %?
+:PROPERTIES:
+:ASSIGNED: %n
+:CREATED: %U
+:TICKET: %:url
+:DOMAIN: %^{Domain|Feature|Bug|Ops|OnCall|}
+:TYPE: %^{Type|Spike|Code|Pipelines|Hardware|Follow Up|}
+:END:
