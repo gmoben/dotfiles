@@ -34,97 +34,104 @@ alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 term=xterm-24bit
 
 # Emacs
-alias emacs='TERM=$term emacs -nw'
-alias gmacs='TERM=$term emacs -c'
-alias emacsd='TERM=$term emacs --daemon'
-alias emacsc='TERM=$term emacsclient -t'
-alias tmuxconf='TERM=$term emacsclient -t $HOME/.tmux.conf'
-alias emacsconf='TERM=$term emacsclient -t $HOME/.emacs.conf'
-alias e='TERM=$term emacsclient -t .'
-alias ecode='TERM=$term emacsclient -t /code'
-alias ehome='TERM=$term emacsclient -t $HOME'
+alias emacs="TERM=$term emacs -nw"
+alias gmacs="TERM=$term emacs -c"
+alias emacsd="TERM=$term emacs --daemon"
+alias emacsc="TERM=$term emacsclient -t"
+alias tmuxconf="TERM=$term emacsclient -t $HOME/.tmux.conf"
+alias emacsconf="TERM=$term emacsclient -t $HOME/.emacs.conf"
+alias e="TERM=$term emacsclient -t ."
+alias ecode="TERM=$term emacsclient -t /code"
+alias ehome="TERM=$term emacsclient -t $HOME"
 
 # Tmux
-alias tml='tmux list-sessions'
-alias tma='tmux attach -t'
+alias tma="tmux attach -t"
+alias tmk="tmux kill-session -t"
+alias tml="tmux list-sessions"
+alias tmn="tmux new-session"
 
 # Wemux
-alias wemux='TERM=$term wemux'
-alias wmn='wemux new-session'
-alias wml='wemux list-sessions'
-alias wma='wemux attach -t'
-alias wmr='wemux r'
+alias wemux="TERM=$term wemux"
+alias wma="wemux attach -t"
+alias wmk="wemux kill-session -t"
+alias wml="wemux list-sessions"
+alias wmn="wemux new-session"
+alias wmr="wemux r"
 
 # Tmuxinator
-alias mux='tmuxinator'
-alias muxs='tmuxinator start'
-alias muxq='tmuxinator stop'
+alias mux="tmuxinator"
+alias muxs="tmuxinator start"
+alias muxq="tmuxinator stop"
 
 # Git
-alias gpo='git pull origin'
-alias gpu='git pull upstream'
-alias gcm='git commit -m'
+alias gpo="git pull origin"
+alias gpu="git pull upstream"
+alias gcm="git commit -m"
 
 # Utils
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
-    alias _ls='/bin/ls'
-    alias ls='ls -G -Flah'
+    alias _ls="/bin/ls"
+    alias ls="ls -G -Flah"
 elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-    alias _ls='ls'
-    alias ls='ls --color=auto -Flah'
+    alias _ls="ls"
+    alias ls="ls --color=auto -Flah"
 else
     echo "Unknown OSTYPE $OSTYPE"
     exit 1
 fi
 
-alias psg='ps -ef | grep '
-alias diff-files='git diff --no-index'
+alias psg="ps -ef | grep "
+alias diff-files="git diff --no-index"
 # Expand aliases after using sudo
-alias sudo='sudo '
+alias sudo="sudo "
 
 # pywal
 if `exists wal-set` ; then
-    alias wsp='wal-set ~/Pictures'
-    alias wsw='wal-set ~/Pictures/wallpaper'
+    alias wsp="wal-set ~/Pictures"
+    alias wsw="wal-set ~/Pictures/wallpaper"
 fi
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
    # Xscreensaver
-   alias locks='xscreensaver-command --lock'
+   alias locks="xscreensaver-command --lock"
 
    # Systemd
-   alias sc='systemctl'
-   alias scr='systemctl restart'
-   alias scstat='systemctl status'
-   alias scstart='systemctl start'
-   alias scstop='systemctl stop'
-   alias sce='systemctl enable'
-   alias scd='systemctl disable'
+   alias sc="systemctl"
+   alias scr="systemctl restart"
+   alias scstat="systemctl status"
+   alias scstart="systemctl start"
+   alias scstop="systemctl stop"
+   alias sce="systemctl enable"
+   alias scd="systemctl disable"
+   alias scen="systemctl enable --now"
+   alias scdn="systemctl disable --now"
 
-   alias scu='systemctl --user'
-   alias scur='systemctl --user restart'
-   alias scus='systemctl --user status'
-   alias scuon='systemctl --user start'
-   alias scuoff='systemctl --user stop'
-   alias scue='systemctl --user enable'
-   alias scud='systemctl --user disable'
+   alias scu="systemctl --user"
+   alias scur="systemctl --user restart"
+   alias scus="systemctl --user status"
+   alias scuon="systemctl --user start"
+   alias scuoff="systemctl --user stop"
+   alias scue="systemctl --user enable"
+   alias scuen="systemctl --user enable --now"
+   alias scud="systemctl --user disable"
+   alias scudn="systemctl --user disable --now"
 fi
 
 # Kubectl
-alias kg='kubectl get'
-alias kgp='kubectl get pods'
-alias kgn='kubectl get namespaces'
-alias kc='kubectl'
-alias kgc='kubectl config get-context'
-alias ksc='kubectl config set-context'
-alias kuc='kubectl config use-context'
-alias kdd='kubectl describe deployment'
-alias kdp='kubectl describe pod'
-alias kd='kubectl describe'
-alias kl='kubectl logs'
-alias klf='kubectl logs --follow'
-alias kxit='kubectl exec -it'
+alias kg="kubectl get"
+alias kgp="kubectl get pods"
+alias kgn="kubectl get namespaces"
+alias kc="kubectl"
+alias kgc="kubectl config get-context"
+alias ksc="kubectl config set-context"
+alias kuc="kubectl config use-context"
+alias kdd="kubectl describe deployment"
+alias kdp="kubectl describe pod"
+alias kd="kubectl describe"
+alias kl="kubectl logs"
+alias klf="kubectl logs --follow"
+alias kxit="kubectl exec -it"
 
 kgpl() {
     if [[ $# = 1 ]]; then
@@ -166,24 +173,36 @@ alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 alias dclbr='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 
 # GPG
-alias gpgtty='echo UPDATESTARTUPTTY | gpg-connect-agent'
+alias gpgtty="echo UPDATESTARTUPTTY | gpg-connect-agent"
 
 # Bookmarks
-alias org='cd /code/org && emacsc .'
-alias ben='cd /code/ben && emacsc .'
-alias ext='cd /code/ext && emacsc .'
-alias notes='cd /code/ben/notes && emacsc .'
-alias dotfiles='cd /code/ben/dotfiles && emacsc .'
+alias org="cd /code/org && emacsc ."
+alias ben="cd /code/ben && emacsc ."
+alias ext="cd /code/ext && emacsc ."
+alias notes="cd /code/ben/notes && emacsc ."
+alias dotfiles="cd /code/ben/dotfiles && emacsc ."
 
 # Quick sourcing
-alias srcz='source $HOME/.zshrc'
+alias srcz="source $HOME/.zshrc"
 
 # Quick clone
-alias gcext='cd /code/ext && git clone'
-alias gcben='cd /code/ben && git clone'
+alias gcext="cd /code/ext && git clone"
+alias gcben="cd /code/ben && git clone"
 
 # ??? Profit
-alias ethereum='GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth'
+alias ethereum="GPU_FORCE_64BIT_PTR=0 GPU_MAX_HEAP_SIZE=100 GPU_USE_SYNC_OBJECTS=1 GPU_MAX_ALLOC_PERCENT=100 GPU_SINGLE_ALLOC_PERCENT=100 ethminer --farm-recheck 200 -G -S us1.ethermine.org:4444 -FS us2.ethermine.org:4444 -O bdbea111a9cd0816ebdd86073bfd373e5b9c9099.meowth"
+
+# CLI timers
+if `exists termdown && exists play`; then
+raidtimer() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: raidtimer HH:MM|SECONDS [MSG]"
+    fi
+    local msg=${2-"Raid time!"}
+    local sound=${3-/code/ben/dotfiles/audio/chinpokomon.wav}
+    termdown $1 && notify-send "$msg" && echo "$msg" && play -q $sound &>/dev/null
+}
+fi
 
 # Work/Local aliases
 [[ -f $HOME/.work.aliases ]] && source $HOME/.work.aliases

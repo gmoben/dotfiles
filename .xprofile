@@ -6,10 +6,10 @@
 # Import xrdb entries and reload previous Pywal colors
 [[ -f $HOME/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 [[ -f $HOME/.Xdefaults ]] && xrdb -merge -I$HOME ~/.Xdefaults
-[[ -f /usr/bin/wal ]] && wal -R
+[[ -e `command -v wal-set` ]] && wal-set -R || true
 
 # Map CapsLock to Ctrl
-[[ -f $HOME/.Xmodmap ]] && xmodmap $HOME/.Xmodmap
+find $HOME -maxdepth 1 -name ".[Xx]modmap" | xargs -r xmodmap
 
 # Run local additions if they exist
 [[ -f $HOME/.extend.xprofile ]] && . $HOME/.extend.xprofile

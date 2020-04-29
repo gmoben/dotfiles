@@ -22,8 +22,8 @@ zstyle ':completion:*' cache-path ~/.zsh/cache
 HISTFILE=~/.zhistory
 HISTSIZE=100000
 SAVEHIST=50000
-export EDITOR="zsh -e 'TERM=xterm-24bit /usr/bin/emacsclient -t'"
-export VISUAL="zsh -e 'TERM=xterm-24bit /usr/bin/emacsclient -t'"
+export EDITOR="emacsclient -t"
+export VISUAL="emacsclient -t"
 WORDCHARS=${WORDCHARS//\/[&.;]}                                 # Don't consider certain characters part of the word
 
 

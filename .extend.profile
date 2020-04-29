@@ -41,16 +41,19 @@ get_path() {
     return $?
 }
 
-if [[ `get_path emacs` ]]; then
-    export EDITOR="$(get_path emacsclient) -nw"
-elif [[ `get_path vim` ]]; then
-    export EDITOR=$(get_path vim)
-else
-    export EDITOR=$(get_path nano)
+if [[ -z "$EDITOR" ]]; then
+    if [[ `get_path emacs` ]]; then
+        export EDITOR="$(get_path emacsclient) -t"
+    elif [[ `get_path vim` ]]; then
+        export EDITOR=$(get_path vim)
+    else
+        export EDITOR=$(get_path nano)
+    fi
 fi
+
 export SYSTEMD_EDITOR=$EDITOR
 
-[[ `get_path thefuck &>/dev/null 2>&1` ]] && eval $(thefuck --alias)
+[[ -e `command -v thefuck` ]] && eval $(thefuck --alias)
 
 if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
     source /usr/bin/virtualenvwrapper.sh

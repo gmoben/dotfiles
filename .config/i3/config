@@ -56,8 +56,8 @@ bindsym $mod+F3 exec pcmanfm
 # bindsym $mod+F3 exec ranger
 bindsym $mod+Shift+F3 exec pcmanfm_pkexec
 bindsym $mod+F5 exec $terminal -e 'mocp'
-bindsym $mod+t exec --no-startup-id pkill picom
-bindsym $mod+Ctrl+t exec --no-startup-id picom -b
+bindsym $mod+t exec --no-startup-id "pkill picom; exec notify-send 'Killed picom'"
+bindsym $mod+Ctrl+t exec --no-startup-id exec picom -b
 bindsym $mod+Shift+d --release exec "killall dunst; exec notify-send 'restart dunst'"
 bindsym Print exec --no-startup-id i3-scrot
 bindsym $mod+Print --release exec --no-startup-id i3-scrot -w
@@ -246,11 +246,13 @@ mode "$mode_system" {
 }
 
 bindsym $mod+p mode "$display_layout"
-set $display_layout (l)aptop, (w)orkstation, (m)eeting
+set $display_layout (h)ome, (l)aptop, (m)eeting, (w)ork, (q)uit
 mode "$display_layout" {
+	bindsym h exec --no-startup-id ~/.screenlayout/home.sh, mode "default"
 	bindsym l exec --no-startup-id ~/.screenlayout/laptop.sh, mode "default"
-	bindsym w exec --no-startup-id ~/.screenlayout/workstation.sh, mode "default"
 	bindsym m exec --no-startup-id ~/.screenlayout/meeting.sh, mode "default"
+	bindsym w exec --no-startup-id ~/.screenlayout/workstation.sh, mode "default"
+    bindsym q mode "default"
     bindsym Return mode "default"
     bindsym Escape mode "default"
 }

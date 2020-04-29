@@ -36,5 +36,9 @@ if [[ -f $HOME/.cache/wal/set_nitrogen.sh ]]; then
 fi
 
 if [[ -f $HOME/.config/wal/wal-set-post ]]; then
-    emacs_theme=$emacs_theme $HOME/.config/wal/wal-set-post
+    emacs_theme=$emacs_theme $HOME/.config/wal/wal-set-post || true
+fi
+
+if [[ -f /code/ext/Pywalfox/daemon/pywalfox.py ]]; then
+    /code/ext/Pywalfox/daemon/pywalfox.py update
 fi
