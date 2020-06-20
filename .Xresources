@@ -3,3 +3,4 @@
 #include ".Xresources.d/uxterm"
 #include ".Xresources.d/xft"
 #include ".Xresources.d/xterm"
+#include ".extend.Xresources"

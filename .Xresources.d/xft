@@ -1,6 +1,5 @@
 !! -*- mode: conf -*-
 
-Xft.dpi: 		165
 Xft.antialias: 	true
 Xft.hinting: 	true
 Xft.rgba: 		rgba
