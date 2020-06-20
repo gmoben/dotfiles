@@ -39,6 +39,6 @@ if [[ -f $HOME/.config/wal/wal-set-post ]]; then
     emacs_theme=$emacs_theme $HOME/.config/wal/wal-set-post || true
 fi
 
-if [[ -f /code/ext/Pywalfox/daemon/pywalfox.py ]]; then
-    /code/ext/Pywalfox/daemon/pywalfox.py update
+if [[ `pywalfox --help &>/dev/null` ]]; then
+    pywalfox update
 fi
