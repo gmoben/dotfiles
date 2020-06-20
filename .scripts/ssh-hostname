@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+
+import sys
+from os.path import expanduser, realpath
+
+path = realpath(expanduser('~/.ssh/config'))
+
+with open(path) as f:
+    line = f.readline()
+    while line:
+        if f'Host {sys.argv[1]}' in line:
+            print(f.readline().strip().split()[1])
+            break
+        line = f.readline()
