@@ -142,14 +142,14 @@ bindsym $mod+Ctrl+Left workspace prev
 # to display names or symbols instead of plain workspace numbers you can use
 # something like: set $ws1 1:mail
 #                 set $ws2 2:
-set $ws1 1
-set $ws2 2
-set $ws3 3
-set $ws4 4
-set $ws5 5
-set $ws6 6
-set $ws7 7
-set $ws8 8
+set $ws1 number 1
+set $ws2 number 2
+set $ws3 number 3
+set $ws4 number 4
+set $ws5 number 5
+set $ws6 number 6
+set $ws7 number 7
+set $ws8 number 8
 
 # switch to workspace
 bindsym $mod+1 workspace $ws1
@@ -305,6 +305,7 @@ exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
 exec --no-startup-id dex -ae i3
 exec_always --no-startup-id ff-theme-util
 exec_always --no-startup-id fix_xcursor
+exec_always --no-startup-id $HOME/.cargo/bin/i3wsr --config $HOME/.config/i3wsr/config.toml
 
 # Color palette used for the terminal ( ~/.extend.Xresources file )
 # Colors are gathered based on the documentation:
@@ -364,34 +365,36 @@ set_from_resource $i3_color15         color15
 set $i3_color16         #ffffff
 set $i3_color17         #0c0c0c
 
-# Start i3bar to display a workspace bar (plus the system information i3status if available)
-bar {
-	status_command i3status
-	position bottom
+# # Start i3bar to display a workspace bar (plus the system information i3status if available)
+# bar {
+# 	status_command i3status
+# 	position bottom
 
-## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
-	tray_output DP1
-    tray_output primary
-    tray_output eDP1
+# ## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
+# 	tray_output DP1
+#     tray_output primary
+#     tray_output eDP1
 
-	bindsym button4 nop
-	bindsym button5 nop
-	font xft:Lato 10 Light
-	strip_workspace_numbers yes
+# 	bindsym button4 nop
+# 	bindsym button5 nop
+# 	font pango:DejaVu Sans Mono, FontAwesome 12
+# 	strip_workspace_numbers yes
 
-	colors {
-    	# background $transparent
-        background $i3_background
-        statusline $i3_text
-        separator  $i3_separator
+# 	colors {
+#     	# background $transparent
+#         background $i3_background
+#         statusline $i3_text
+#         separator  $i3_separator
 
-#                                  border  backgr. text
-        focused_workspace   $i3_separator		$i3_background		$i3_text
-        active_workspace    $i3_separator		$i3_background		$i3_separator
-        inactive_workspace  $i3_background		$i3_background		$i3_color1
-        urgent_workspace    $i3_text			$i3_color6			$i3_background
-    }
-}
+# #                                  border  backgr. text
+#         focused_workspace   $i3_separator		$i3_background		$i3_text
+#         active_workspace    $i3_separator		$i3_background		$i3_separator
+#         inactive_workspace  $i3_background		$i3_background		$i3_color1
+#         urgent_workspace    $i3_text			$i3_color6			$i3_background
+#     }
+# }
+
+exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # exec_always "killall powerline-lemonbar; powerline-lemonbar -H 28 -- -t -f 'DejaVu Sans Mono-11' -f 'PowerlineSymbols-12' -f 'FontAwesome-11'"
 
