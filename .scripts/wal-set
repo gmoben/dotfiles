@@ -10,6 +10,12 @@ reload_themes() {
         echo "Reloaded tmux"
     fi
 
+    # If active tmux session, reload
+    if (wemux list-sessions &>/dev/null); then
+        wemux source-file $HOME/.tmux.conf
+        echo "Reloaded wemux"
+    fi
+
     # If i3status template is installed
     if [[ -n `which i3 2>/dev/null` && -f $HOME/.cache/wal/i3status.conf ]]; then
         mkdir -p $HOME/.config/i3status
@@ -39,6 +45,6 @@ if [[ -f $HOME/.config/wal/wal-set-post ]]; then
     emacs_theme=$emacs_theme $HOME/.config/wal/wal-set-post || true
 fi
 
-if [[ `pywalfox --help &>/dev/null` ]]; then
+if [[ `pywalfox --help 2>/dev/null` ]]; then
     pywalfox update
 fi

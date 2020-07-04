@@ -7,6 +7,7 @@
 
 (use-package python-mode
   :after (projectile)
+  :hook (python-mode . lsp)
   :init
   (defvar my:virtualenv-directory "~/.virtualenvs/"
     "The directory of virtualenvs.")
@@ -38,16 +39,23 @@
   (setq-local eldoc-documentation-function #'ignore)
   (setq eldoc-mode nil))
 
-(use-package rust-mode :ensure t)
-(use-package lsp-haskell :ensure t)
+(use-package rust-mode :hook (rust-mode . lsp)
+  :init
+  (defvar gmoben:cargo_bin (substitute-in-file-name "$HOME/.cargo/bin"))
+  (setenv "PATH" (concat (getenv "PATH") ":" gmoben:cargo_bin t))
+  (setq exec-path (append exec-path (list gmoben:cargo_bin))))
+
+(use-package cargo :hook (rust-mode . cargo-minor-mode))
+
+(use-package lsp-haskell)
 
 (use-package lsp-mode
-  :ensure t
-  :hook (python-mode go-mode rust-mode)
+  :commands lsp
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
   :config
+  (require 'lsp-clients)
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
   (setq lsp-clients-python-settings
@@ -90,39 +98,26 @@
           :rope\.ropeFolder nil)))
 
 (use-package lsp-java
-  :ensure t
   :after lsp
   :hook (java-mode . lsp)
   :config
-  (defvar bewarre/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
+  (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
   (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" bewarre/lsp-java-lombok-jar-location))
   (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" bewarre/lsp-java-lombok-jar-location))
 )
 
 (use-package dap-mode
-  :ensure t
-  :after lsp-mode
-  :config
-  (dap-mode t)
-  (dap-ui-mode t))
-
-(use-package dap-java :after (lsp-java))
-
-(use-package dap-mode
-  :ensure t
   :after lsp
-  :config
-  (dap-mode 1)
-  (dap-ui-mode 1))
+  :config (dap-auto-configure-mode))
+
+(use-package dap-java :ensure f :after (lsp-java))
 
 (use-package go-mode
-  :ensure t
   :after lsp
   :init
   (setenv "GOPATH" "/code/go" t)
   (setenv "PATH" (concat (getenv "PATH") ":" "$GOPATH/bin") t)
-  (setq exec-path (append exec-path (list (expand-file-name
-                                           "/code/go/bin"))))
+  (setq exec-path (append exec-path (list (expand-file-name "/code/go/bin"))))
   (add-hook 'go-mode-hook '(lambda () (local-set-key (kbd "RET") 'newline-and-indent)))
   (add-hook 'go-mode-hook '(lambda () (setq tab-width 4)))
   (add-hook 'go-mode-hook #'lsp-deferred)
@@ -132,7 +127,6 @@
   )
 
 (use-package company
-  :ensure t
   :after (company-jedi company-go)
   :hook ((after-init . global-company-mode))
   :config
@@ -143,23 +137,18 @@
          :map company-active-map
          ("C-:" . helm-company)
          ("C-n" . company-select-next-or-abort)
-         ("C-p" . company-select-previous-or-abort))
-  )
+         ("C-p" . company-select-previous-or-abort)))
 
 (use-package flycheck
-  :ensure t
   :after (helm lsp-ui)
   :hook ((after-init . global-flycheck-mode))
   :bind (:map flycheck-mode-map
               ("C-c ! h" . helm-flycheck))
   :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  )
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (use-package helm
-  :ensure t
-  :init
-  (setq helm-M-x-fuzzy-match t)
+  :init (setq helm-M-x-fuzzy-match t)
   :config
   ;; Remapped bindings
   (global-set-key [remap execute-extended-command] 'helm-M-x)
@@ -167,42 +156,26 @@
   (global-set-key [remap list-buffers] 'helm-buffers-list)
   (global-set-key [remap yank-pop] 'helm-show-kill-ring)
 
-  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu)
-  )
+  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu))
 
 (use-package helm-lsp
-  :ensure t
   :after (helm lsp-mode))
 
-
 (use-package helm-ag
-  :ensure t
   :after (helm)
-  :init
-  (setq helm-ag-base-command "ag -f --nocolor --nogroup --hidden")
-  )
+  :init (setq helm-ag-base-command "ag -f --nocolor --nogroup --hidden"))
 
-(use-package helm-company
-  :ensure t
-  :after (helm company)
-  )
+(use-package helm-company :after (helm company))
 
 (use-package helm-descbinds
-  :ensure t
   :after (helm)
-  :config
-  (helm-descbinds-mode)
-  )
+  :config (helm-descbinds-mode))
 
 (use-package helm-describe-modes
-  :ensure t
   :after (helm)
-  :config
-  (global-set-key [remap describe-mode] 'helm-describe-modes)
-  )
+  :config (global-set-key [remap describe-mode] 'helm-describe-modes))
 
 (use-package helm-org-rifle
-  :ensure t
   :after (helm org)
   :bind
   ("C-c o r a" . 'helm-org-rifle-agenda-files)
@@ -212,7 +185,6 @@
   ("C-c o r r" . 'helm-org-rifle-org-directory))
 
 (use-package helm-swoop
-  :ensure t
   :after (helm)
   :init
   (setq helm-swoop-split-with-multiple-windows t)
@@ -227,7 +199,6 @@
          ("M-i" . helm-multi-swoop-all-from-helm-swoop)))
 
 (use-package company-lsp
-  :ensure t
   :after (company lsp-mode)
   :commands company-lsp
   :config
@@ -235,7 +206,6 @@
   )
 
 (use-package lsp-ui
-  :ensure t
   :after (lsp-mode)
   :hook ((lsp-mode . lsp-ui-mode)
          (lsp-mode . flycheck-mode))
@@ -245,26 +215,22 @@
   )
 
 (use-package flycheck-rust
-  :ensure t
   :after (rust-mode flycheck)
   :hook ((flycheck-mode . flycheck-rust-setup)
          (rust-mode . flycheck-mode))
   )
 
 (use-package yasnippet
-  :ensure t
   :config
   (yas-global-mode 1))
 
 (use-package yasnippet-snippets :ensure t :after yasnippet)
 
 (use-package treemacs
-  :ensure t
   :config
-  (global-set-key (kbd "C-c t") 'treemacs)
-  )
-(use-package treemacs-projectile :ensure t :after (treemacs))
-(use-package lsp-treemacs :ensure t :after (lsp-mode treemacs))
+  (global-set-key (kbd "C-c t") 'treemacs))
+(use-package treemacs-projectile :after (treemacs))
+(use-package lsp-treemacs :after (lsp-mode treemacs))
 
 (setq compilation-scroll-output t)
 
@@ -272,3 +238,7 @@
   :commands flymake-shellcheck-load
   :init
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+
+(use-package neotree :after all-the-icons)
+
+(use-package paradox)

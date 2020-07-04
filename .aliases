@@ -51,12 +51,11 @@ alias tml="tmux list-sessions"
 alias tmn="tmux new-session"
 
 # Wemux
-alias wemux="TERM=$term wemux"
 alias wma="wemux attach -t"
 alias wmk="wemux kill-session -t"
 alias wml="wemux list-sessions"
 alias wmn="wemux new-session"
-alias wmr="wemux r"
+alias wmr="sudo -u wmrogue wemux r"
 
 # Tmuxinator
 alias mux="tmuxinator"

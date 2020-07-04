@@ -46,7 +46,7 @@ Position the cursor at it's beginning, according to the current mode."
 ;; Global modes
 (delete-selection-mode 1)
 (semantic-mode 1)
-(global-eldoc-mode -1)
+(global-eldoc-mode nil)
 
 ;; easier movement
 (global-set-key (kbd "M-n") 'forward-paragraph)

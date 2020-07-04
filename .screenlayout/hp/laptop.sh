@@ -10,6 +10,7 @@ xrandr \
     --output DP-1 --off \
     --output DP-2 --off \
     --output HDMI-1 --off \
+    --output HDMI1 --off \
     --output HDMI-2 --off || \
     xrandr \
         --output eDP1 --off \
@@ -19,6 +20,7 @@ xrandr \
         --output DP-1 --off \
         --output DP-2 --off \
         --output HDMI-1 --off \
+        --output HDMI1 --off \
         --output HDMI-2 --off || \
     xrandr \
         --output eDP1 --off \
@@ -27,6 +29,7 @@ xrandr \
         --output DP1 --off \
         --output DP-1 --off \
         --output DP-2 --off \
+        --output HDMI1 --off \
         --output HDMI-1 --off \
         --output HDMI-2 --off
 
