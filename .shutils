@@ -1,6 +1,7 @@
+#! /usr/bin/bash
 #! -*- shell-script -*-
 
-split() {
+splitlines() {
     if [[ $1 == "" ]]; then
         1="()"
     else
@@ -8,4 +9,23 @@ split() {
     fi
 
     python -c "import sys; sys.stdout.write('\n'.join([x for line in sys.stdin.readlines() for x in line.split$1]))"
+}
+
+dedup() {
+    if [[ $1 == "" ]]; then
+        1=""
+    else
+        1="'$1'"
+    fi
+
+    python -c "import sys
+
+lines = []
+for x in sys.stdin.readlines():
+    for elem in x.strip().split($1):
+        if elem.strip() not in lines:
+            lines.append(elem.strip())
+
+sys.stdout.write($1.join(lines))
+"
 }

@@ -1,17 +1,16 @@
 #!/usr/bin/env zsh
 
-source $HOME/.aliases
-
-# Shortcuts
-export CODEBEN=/code/ben/
-# Paths
-export GMOCODE=/code
+# PATHS
+export CODEBEN=/code/ben
 export GOPATH=$GMOCODE/go
 export PATH=$HOME/.cargo/bin:$GOPATH/bin:$HOME/.cabal/bin:${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/bin:$HOME/.yarn/bin:$HOME/.local/bin:$PATH
 
+source $CODEBEN/dotfiles/.shutils
+source $HOME/.aliases
+
 # Virtualenv
+export VIRTUALENVWRAPPER_PYTHON=`which python3`
 export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$GMOCODE
 
 #bindkey '^[[1;5D' backward-word
 #bindkey '^[[1;5C' forward-word
@@ -73,3 +72,5 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv init -)"
 fi
+
+export PATH=`echo $PATH | dedup :`
