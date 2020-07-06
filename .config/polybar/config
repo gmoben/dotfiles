@@ -38,27 +38,29 @@ background-alt = ${self.color1}
 foreground = ${xrdb:foreground:#c0c0c0}
 foreground-alt = ${self.color14}
 primary = ${self.color1}
-secondary = ${self.color11}
-alert = ${self.color2}
+secondary = ${self.color2}
+alert = ${self.color3}
+transparent = #00000000
+black50 = #c0000000
+black90 = #e7000000
 
 [params]
 width = 100%
-height = 27
+height = 30
 ;offset-x = 1%
 ;offset-y = 1%
-radius = 6.0
+radius = 10.0
 fixed-center = false
 
 bottom = true
 
-background = ${colors.background}
+background = ${colors.black90}
 foreground = ${colors.foreground}
 
-line-size = 3
+line-size = 2
 line-color = ${colors.foreground}
 
 border-size = 0
-border-color = #00000000
 
 padding-left = 0
 padding-right = 2
@@ -66,18 +68,18 @@ padding-right = 2
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = NotoSans-Regular:size=9;0
-font-1 = xos4\ Terminus:size=14;0
-font-2 = Siji:pixelsize=11;1
-font-3 = FontAwesome:size=14;0
+font-0 = NotoSans-Regular:pixelsize=10;0
+font-1 = xos4\ Terminus:pixelsize=10;0
+font-2 = Siji:pixelsize=8;1
+font-3 = FontAwesome:pixelsize=12;0
 
 modules-left = i3
-; modules-center =
-modules-right = filesystem xbacklight pulseaudio xkeyboard memory cpu wlan eth battery temperature date powermenu
+modules-center = mpd
+modules-right = filesystem pulseaudio xbacklight xkeyboard memory cpu wlan eth battery temperature date powermenu
 
 tray-position = right
 tray-padding = 2
-;tray-background = #0063ff
+tray-background = ${colors.black90}
 
 wm-restack = i3
 override-redirect = false
@@ -130,8 +132,8 @@ label-unmounted-foreground = ${colors.foreground-alt}
 type = internal/bspwm
 
 label-focused = %index%
-label-focused-background = ${colors.background-alt}
-label-focused-underline= ${colors.primary}
+label-focused-background = ${colors.primary}
+label-focused-underline= ${colors.foreground}
 label-focused-padding = 2
 
 label-occupied = %index%
@@ -156,19 +158,21 @@ wrapping-scroll = false
 
 ; Only show workspaces on the same output as the bar
 pin-workspaces = true
+strip-wsnumbers = true
 
-label-mode-padding = 2
-label-mode-foreground = #000
+label-mode-padding = 0
+label-mode-foreground = ${colors.foreground}
 label-mode-background = ${colors.primary}
 
 ; focused = Active workspace on focused monitor
 label-focused = %name%
-label-focused-background = ${colors.background-alt}
-label-focused-underline= ${colors.primary}
+label-focused-background = ${colors.color1}
+label-focused-underline = ${colors.foreground}
 label-focused-padding = 2
 
 ; unfocused = Inactive workspace on any monitor
 label-unfocused = %name%
+label-unfocused-background = ${colors.color12}
 label-unfocused-padding = 2
 
 ; visible = Active workspace on unfocused monitor
@@ -178,12 +182,15 @@ label-visible-underline = ${self.label-focused-underline}
 label-visible-padding = ${self.label-focused-padding}
 
 ; urgent = Workspace with urgency hint set
-label-urgent = %index%
+label-urgent = %name%
 label-urgent-background = ${colors.alert}
 label-urgent-padding = 2
 
 ; Separator in between workspaces
-; label-separator = |
+label-separator =
+label-separator-padding = 0
+label-separator-foreground = ${colors.foreground}
+label-separator-background = ${self.label-unfocused-background}
 
 
 [module/mpd]

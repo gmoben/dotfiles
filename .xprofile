@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#!/usr/bin/env zsh
+
+source $HOME/.profile
 
 # Run global xprofile if it exists
 [[ -f /etc/xprofile ]] && . /etc/xprofile
@@ -6,7 +8,7 @@
 # Import xrdb entries and reload previous Pywal colors
 [[ -f $HOME/.Xresources ]] && xrdb -merge -I$HOME ~/.Xresources
 [[ -f $HOME/.Xdefaults ]] && xrdb -merge -I$HOME ~/.Xdefaults
-[[ -e `command -v wal-set` ]] && wal-set -R || true
+[[ `command -v wal-set` ]] && wal-set -R || true
 
 # Map CapsLock to Ctrl
 find $HOME -maxdepth 1 -name ".[Xx]modmap" | xargs -r xmodmap

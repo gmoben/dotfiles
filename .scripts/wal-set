@@ -1,6 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 emacs_theme=ewal-doom-one
+
+source $HOME/.profile
 
 reload_themes() {
 
@@ -17,11 +19,13 @@ reload_themes() {
     fi
 
     # If i3status template is installed
-    if [[ -n `which i3 2>/dev/null` && -f $HOME/.cache/wal/i3status.conf ]]; then
-        mkdir -p $HOME/.config/i3status
-        cp -r $HOME/.cache/wal/i3status.conf $HOME/.config/i3status/config
+    if [[ `command -v i3` ]]; then
         i3 reload &>/dev/null
-        echo "Reloaded i3status.conf"
+        echo "Reloaded i3"
+    fi
+
+    if [[ -e $HOME/.config/polybar/launch.sh ]]; then
+        $HOME/.config/polybar/launch.sh
     fi
 
     # If emacs daemon is running, reload theme
@@ -34,6 +38,8 @@ reload_themes() {
 args=$@
 [[ !($1 =~ $-) && -e $1 ]] && args="-i $@"
 
+echo "wal $args"
+
 (wal -n $args || wal $args) && reload_themes
 
 if [[ -f $HOME/.cache/wal/set_nitrogen.sh ]]; then
@@ -45,6 +51,6 @@ if [[ -f $HOME/.config/wal/wal-set-post ]]; then
     emacs_theme=$emacs_theme $HOME/.config/wal/wal-set-post || true
 fi
 
-if [[ `pywalfox --help 2>/dev/null` ]]; then
-    pywalfox update
+if [[ `command -v pywalfox` ]]; then
+    pywalfox update 2>/dev/null || true
 fi

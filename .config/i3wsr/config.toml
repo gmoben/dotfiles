@@ -3,14 +3,13 @@
 TelegramDesktop = ""
 firefox = ""
 Navigator = ""
+chromium-browser = ""
 Alacritty = ""
 Termite = ""
 kitty = ""
 Thunderbird = ""
 Gpick = ""
 spotify = ""
-# smile emoji
-MyNiceProgram = "😛"
 
 [aliases]
 TelegramDesktop = "Telegram"
@@ -18,7 +17,7 @@ TelegramDesktop = "Telegram"
 "Navigator" = "Firefox"
 
 [general]
-separator = "|"
+separator = "  "
 default_icon = ""
 
 [options]

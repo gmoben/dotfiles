@@ -264,7 +264,6 @@ bindsym $mod+9 exec --no-startup-id xscreensaver-command --lock
 bindsym $mod+i exec --no-startup-id firefox -P
 bindsym $mod+Shift+i exec --no-startup-id firefox
 
-
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
 mode "resize" {
@@ -417,7 +416,6 @@ client.background       $i3_background
 
 # Set_From_Resource inner/outer gaps
 gaps inner 10
-gaps outer -4
 
 # Additionally, you can issue commands with the following syntax. This is useful to bind keys to changing the gap size.
 # gaps inner|outer current|all set_from_resource|plus|minus <px>

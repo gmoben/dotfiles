@@ -1,13 +1,7 @@
-#!/usr/bin/env bash
+#!/bin/bash
 # -*- mode: shell-script -*-
 
 #alias npm='noglob npm'
-
-# Return if a file exists
-exists() {
-    env which $1 &>/dev/null 2>&1
-    return $?
-}
 
 # Vagrant
 vagrant() {
@@ -45,17 +39,18 @@ alias ecode="TERM=$term emacsclient -t /code"
 alias ehome="TERM=$term emacsclient -t $HOME"
 
 # Tmux
+alias tmux="TERM=$term /usr/bin/tmux"
 alias tma="tmux attach -t"
 alias tmk="tmux kill-session -t"
 alias tml="tmux list-sessions"
 alias tmn="tmux new-session"
 
 # Wemux
-alias wma="wemux attach -t"
-alias wmk="wemux kill-session -t"
-alias wml="wemux list-sessions"
-alias wmn="wemux new-session"
-alias wmr="sudo -u wmrogue wemux r"
+alias wma="TERM=$term wemux attach -t"
+alias wmk="TERM=$term wemux kill-session -t"
+alias wml="TERM=$term wemux list-sessions"
+alias wmn="TERM=$term wemux new-session"
+alias wmr="TERM=$term sudo -u wmrogue wemux r"
 
 # Tmuxinator
 alias mux="tmuxinator"
@@ -86,7 +81,7 @@ alias diff-files="git diff --no-index"
 alias sudo="sudo "
 
 # pywal
-if `exists wal-set` ; then
+if [ `command -v wal-set` ]; then
     alias wsp="wal-set ~/Pictures"
     alias wsw="wal-set ~/Pictures/wallpaper"
 fi
@@ -189,7 +184,7 @@ alias gcext="cd /code/ext && git clone"
 alias gcben="cd /code/ben && git clone"
 
 # CLI timers
-if `exists termdown && exists play`; then
+if [[ `command -v termdown` && `command -v play` ]]; then
 raidtimer() {
     if [[ -z "$1" ]]; then
         echo "Usage: raidtimer HH:MM|SECONDS [MSG]"
