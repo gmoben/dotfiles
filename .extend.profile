@@ -5,7 +5,7 @@
 #########
 export CODEBEN=/code/ben
 export CODEEXT=/code/ext
-export PATH=$HOME/.local/bin:$CODEBEN/dofiles/.scripts:$PATH
+export PATH=$HOME/.local/bin:$CODEBEN/dotfiles/.scripts:$PATH
 
 # ## Utilities + Aliases ##
 source $CODEBEN/dotfiles/.shutils
@@ -27,7 +27,7 @@ export PATH=${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/bin:$PATH
 
 ## Pyenv && Virtualenv ##
 export VIRTUALENVWRAPPER_PYTHON=`which python3`
-export WORKON_HOME=$HOME/.virtualenvs
+export WORKON_HOME=$HOME/.pyenv/versions
 
 if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
     source /usr/bin/virtualenvwrapper.sh

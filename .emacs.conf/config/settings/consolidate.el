@@ -5,22 +5,60 @@
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 
 (use-package python-mode
+  :after eldoc
   :hook (python-mode . lsp)
   :config
   (setq-local eldoc-documentation-function #'ignore)
   (setq eldoc-mode nil))
 
-(use-package rust-mode :hook (rust-mode . lsp)
+(use-package pyvenv
+  :after python-mode
+  :commands gmoben/py-auto-lsp
+  :bind (:map python-mode-map
+              ("C-c C-a" . gmoben/py-auto-lsp))
+  :hook (python-mode . gmoben/py-auto-lsp)
   :init
-  (defvar gmoben:cargo_bin (substitute-in-file-name "$HOME/.cargo/bin"))
-  (setenv "PATH" (concat (getenv "PATH") ":" gmoben:cargo_bin))
-  (setq exec-path (append exec-path (list gmoben:cargo_bin))))
+  (setenv "WORKON_HOME" (substitute-in-file-name "$HOME/.pyenv/versions"))
+  (defun gmoben/py-workon-project-venv ()
+    "Call pyenv-workon with the current projectile project name.
+This will return the full path of the associated virtual
+environment found in $WORKON_HOME, or nil if the environment does
+not exist."
+    (let ((pname (projectile-project-name)))
+      (pyvenv-workon pname)
+      (if (file-directory-p pyvenv-virtual-env)
+          pyvenv-virtual-env
+        (pyvenv-deactivate))))
+
+  (defun gmoben/py-auto-lsp ()
+    "Turn on lsp mode in a Python project with some automated logic.
+Try to automatically determine which pyenv virtual environment to
+activate based on the project name, using
+`dd/py-workon-project-venv'. If successful, call `lsp'. If we
+cannot determine the virtualenv automatically, first call the
+interactive `pyvenv-workon' function before `lsp'"
+    (interactive)
+    (let ((pvenv (gmoben/py-workon-project-venv)))
+      (if pvenv
+          (lsp)
+        (progn
+          (call-interactively #'pyvenv-workon)
+          (lsp)))))
+)
+
+(use-package rust-mode
+  :hook (rust-mode . lsp)
+  :init
+  (defvar gmoben/cargo_bin (substitute-in-file-name "$HOME/.cargo/bin"))
+  (setenv "PATH" (concat (getenv "PATH") ":" gmoben/cargo_bin))
+  (setq exec-path (append exec-path (list gmoben/cargo_bin))))
 
 (use-package cargo :hook (rust-mode . cargo-minor-mode))
 
 (use-package lsp-haskell)
 
 (use-package lsp-mode
+  :after projectile
   :commands lsp
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
