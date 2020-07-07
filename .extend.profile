@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
 #########
 # PATHS #
@@ -25,7 +25,7 @@ export PATH=$HOME/.cargo/bin:$PATH
 export PATH=$HOME/.cabal/bin:$PATH
 export PATH=${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/bin:$PATH
 
-## Virtualenv ##
+## Pyenv && Virtualenv ##
 export VIRTUALENVWRAPPER_PYTHON=`which python3`
 export WORKON_HOME=$HOME/.virtualenvs
 
@@ -36,10 +36,12 @@ elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
 fi
 
 ## Pyenv ##
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-if command -v pyenv 1>/dev/null 2>&1; then
-  eval "$(pyenv init -)"
+if [[ `command -v pyenv` ]]; then
+    export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+    export PYENV_ROOT=$HOME/.pyenv
+    export PATH=$PYENV_ROOT/bin:$PATH
+    eval "$(pyenv init -)"
+    eval "$(pyenv virtualenv-init -)"
 fi
 
 # ############
@@ -76,5 +78,5 @@ if [[ -e `command -v wal` ]]; then
     source ~/.cache/wal/colors-tty.sh
 fi
 
-# ## Dedup path entries ##
-# export PATH=$(echo $PATH | dedup ':')
+## Dedup path entries ##
+export PATH=$(echo $PATH | dedup ":")

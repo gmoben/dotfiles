@@ -1,30 +1,26 @@
 #!/bin/bash
 
 splitlines() {
-    if [[ $1 == "" ]]; then
-        1="()"
-    else
-        1="('$1')"
+    local delimiter=${1:-''}
+    if [[ -n $delimiter ]]; then
+        delimiter="'$delimiter'"
     fi
-
-    python -c "import sys; sys.stdout.write('\n'.join([x for line in sys.stdin.readlines() for x in line.split$1]))"
+    python -c "import sys; sys.stdout.write('\n'.join([x for line in sys.stdin.readlines() for x in line.split($delimiter)]))"
 }
 
 dedup() {
-    if [[ $1 == "" ]]; then
-        1=""
-    else
-        1="'$1'"
+    local delimiter=${1:-''}
+    if [[ -n $delimiter ]]; then
+        delimiter="'$delimiter'"
     fi
-
     python -c "import sys
 
 lines = []
 for x in sys.stdin.readlines():
-    for elem in x.strip().split($1):
+    for elem in x.strip().split($delimiter):
         if elem.strip() not in lines:
             lines.append(elem.strip())
 
-sys.stdout.write($1.join(lines))
+sys.stdout.write('$1'.join(lines))
 "
 }

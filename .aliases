@@ -1,30 +1,32 @@
 #!/bin/bash
 # -*- mode: shell-script -*-
 
-#alias npm='noglob npm'
+# alias npm='noglob npm'
 
-# Vagrant
-vagrant() {
-    if [[ $1 == "remake" ]]; then
-        shift $((2 > $# ? $# : 2))
-        command vagrant destroy -f "$@" && vagrant up "$@" && vagrant ssh "$@"
-    else
-        command vagrant "$@"
-    fi
-}
+# # Vagrant
+# function vagrant() {
+#     if [[ $1 == "remake" ]]; then
+#         shift $((2 > $# ? $# : 2))
+#         command vagrant destroy -f "$@" && vagrant up "$@" && vagrant ssh "$@"
+#     else
+#         command vagrant "$@"
+#     fi
+# }
 
-alias vsh='vagrant ssh'
-alias vup='vagrant up'
-alias vhalt='vagrant halt'
-alias vrl='vagrant reload'
-alias vrm='vagrant destroy'
-alias vrb='vagrant rebuild'
+# alias vsh='vagrant ssh'
+# alias vup='vagrant up'
+# alias vhalt='vagrant halt'
+# alias vrl='vagrant reload'
+# alias vrm='vagrant destroy'
+# alias vrb='vagrant rebuild'
 
 # Docker
 alias dlogs='docker logs'
 alias dps='docker ps'
 alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
+alias dclob="dclobber"
 
+# Pass correct $TERM to emacs and tmux
 term=xterm-24bit
 
 # Emacs
@@ -39,18 +41,39 @@ alias ecode="TERM=$term emacsclient -t /code"
 alias ehome="TERM=$term emacsclient -t $HOME"
 
 # Tmux
+export TMUX_DEFAULT_SESSION_GROUP=${TMUX_DEFAULT_SESSION_GROUP:-"main"}
 alias tmux="TERM=$term /usr/bin/tmux"
-alias tma="tmux attach -t"
+
+function tma() {
+    echo "Deprecated. Use `tmn [session_group]` instead. Default session_group: `$TMUX_DEFAULT_SESSION_GROUP`"
+    tmn $@
+}
+
+function tmn() {
+    local session_group=${1:-$TMUX_DEFAULT_SESSION_GROUP}
+    local root_session_name="$session_group (root)"
+
+    # Create a detached root session that will persist without any attached clients.
+    # This preserves the windows even if we detach from all child clients.
+    if [[ ! `tmux has-session -t $root_session_name` ]]; then
+        tmux new-session -d -s $root_session_name -t $session_group &>/dev/null
+    fi
+
+    # Count the existing sessions (i.e. currently attached terminals) and build new session name
+    local session_count=`tmux-session-count $session_group`
+    local new_session_name="$session_group-$((session_count - 1))"
+
+    # Start children sessions with destroy-unattached
+    tmux new-session -s "$new_session_name" -t $session_group \; set-option destroy-unattached
+}
+
+function tmux-session-count() {
+    local session_group=${1:-$TMUX_DEFAULT_SESSION_GROUP}
+    tmux list-sessions -F "#{session_group}" | grep "$session_group" | wc -l
+}
+
 alias tmk="tmux kill-session -t"
 alias tml="tmux list-sessions"
-alias tmn="tmux new-session"
-
-# Wemux
-alias wma="TERM=$term wemux attach -t"
-alias wmk="TERM=$term wemux kill-session -t"
-alias wml="TERM=$term wemux list-sessions"
-alias wmn="TERM=$term wemux new-session"
-alias wmr="TERM=$term sudo -u wmrogue wemux r"
 
 # Tmuxinator
 alias mux="tmuxinator"
@@ -127,7 +150,7 @@ alias kl="kubectl logs"
 alias klf="kubectl logs --follow"
 alias kxit="kubectl exec -it"
 
-kgpl() {
+function kgpl() {
     if [[ $# = 1 ]]; then
         index=*
         selector=$@
@@ -142,7 +165,7 @@ kgpl() {
     command kubectl get pods -o=jsonpath="{.items[${index}].metadata.name}" -l $selector
 }
 
-kllabel() {
+function kllabel() {
     if [[ $# = 1 ]]; then
         args=$@
         args+=(0)
@@ -152,7 +175,7 @@ kllabel() {
     command kubectl logs `kgpl ${args}`
 }
 
-klfl() {
+function klfl() {
     if [[ $# = 1 ]]; then
         args=$@
         args+=(0)
@@ -163,8 +186,6 @@ klfl() {
 }
 
 # Docker
-alias dclobber='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
-alias dclbr='docker stop `docker ps -qa` && docker rm `docker ps -qa`'
 
 # GPG
 alias gpgtty="echo UPDATESTARTUPTTY | gpg-connect-agent"
@@ -185,7 +206,7 @@ alias gcben="cd /code/ben && git clone"
 
 # CLI timers
 if [[ `command -v termdown` && `command -v play` ]]; then
-raidtimer() {
+function raidtimer() {
     if [[ -z "$1" ]]; then
         echo "Usage: raidtimer HH:MM|SECONDS [MSG]"
     fi

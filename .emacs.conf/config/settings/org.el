@@ -51,87 +51,87 @@
                (org-agenda-files :maxlevel . 9)))
 
 
-;; Capture
-;; TODO: Generate these
-(defvar ben/org/capture/ben
-  '(("b" "Ben (Personal)")
-    ("bw" "Story"
-     entry
-     (file ben/org/ben/stories)
-     (file "~/.emacs.conf/org-templates/story.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("bt" "Todo"
-     entry
-     (file+headline ben/org/ben/incoming "Todos")
-     (file "~/.emacs.conf/org-templates/todo.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("bh" "Habit"
-     entry
-     (file+headline ben/org/ben/incoming "Habits")
-     (file "~/.emacs.conf/org-templates/habit.orgtmpl")
-     :clock-in t :clock-resume t)
-    ))
+;; ;; Capture
+;; ;; TODO: Generate these
+;; (defvar ben/org/capture/ben
+;;   '(("b" "Ben (Personal)")
+;;     ("bw" "Story"
+;;      entry
+;;      (file ben/org/ben/stories)
+;;      (file "~/.emacs.conf/org-templates/story.orgtmpl")
+;;      :clock-in t :clock-resume t)
+;;     ("bt" "Todo"
+;;      entry
+;;      (file+headline ben/org/ben/incoming "Todos")
+;;      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
+;;      :clock-in t :clock-resume t)
+;;     ("bh" "Habit"
+;;      entry
+;;      (file+headline ben/org/ben/incoming "Habits")
+;;      (file "~/.emacs.conf/org-templates/habit.orgtmpl")
+;;      :clock-in t :clock-resume t)
+;;     ))
 
-(defvar ben/org/capture/work
-  '(("w" "Work")
-    ("ws" "Story"
-     entry
-     (file ben/org/work/stories)
-     (file "~/.emacs.conf/org-templates/story.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("wt" "Todo"
-     entry
-     (file+headline ben/org/ben/incoming "Todos")
-     (file "~/.emacs.conf/org-templates/todo.orgtmpl")
-     :clock-in t :clock-resume t)
-    ("wh" "Habit"
-     entry
-     (file+headline ben/org/ben/incoming "Habits")
-     (file "~/.emacs.conf/org-templates/habit.orgtmpl")
-     :clock-in t :clock-resume t)
-))
+;; (defvar ben/org/capture/work
+;;   '(("w" "Work")
+;;     ("ws" "Story"
+;;      entry
+;;      (file ben/org/work/stories)
+;;      (file "~/.emacs.conf/org-templates/story.orgtmpl")
+;;      :clock-in t :clock-resume t)
+;;     ("wt" "Todo"
+;;      entry
+;;      (file+headline ben/org/ben/incoming "Todos")
+;;      (file "~/.emacs.conf/org-templates/todo.orgtmpl")
+;;      :clock-in t :clock-resume t)
+;;     ("wh" "Habit"
+;;      entry
+;;      (file+headline ben/org/ben/incoming "Habits")
+;;      (file "~/.emacs.conf/org-templates/habit.orgtmpl")
+;;      :clock-in t :clock-resume t)
+;; ))
 
-;; Agenda
-(setq org-agenda-compact-blocks t)
-(setq org-agenda-files (list))
-(dolist (path '("/code/org/ben" "/code/org/work") nil)
-  (if (or (file-exists-p path) (file-symlink-p path))
-      (add-to-list 'org-agenda-files path)))
+;; ;; Agenda
+;; (setq org-agenda-compact-blocks t)
+;; (setq org-agenda-files (list))
+;; (dolist (path '("/code/org/ben" "/code/org/work") nil)
+;;   (if (or (file-exists-p path) (file-symlink-p path))
+;;       (add-to-list 'org-agenda-files path)))
 
-;; Conditionally set capture templates
-(setq org-capture-templates
-      (let (tmpl (list))
-    (if (member "/code/org/ben" org-agenda-files)
-        (dolist (elem ben/org/capture/ben)
-          (add-to-list 'tmpl elem 'append)))
+;; ;; Conditionally set capture templates
+;; (setq org-capture-templates
+;;       (let (tmpl (list))
+;;     (if (member "/code/org/ben" org-agenda-files)
+;;         (dolist (elem ben/org/capture/ben)
+;;           (add-to-list 'tmpl elem 'append)))
 
-    (if (member "/code/org/work" org-agenda-files)
-        (dolist (elem ben/org/capture/ben)
-          (add-to-list 'tmpl elem 'append)))
-    tmpl))
+;;     (if (member "/code/org/work" org-agenda-files)
+;;         (dolist (elem ben/org/capture/ben)
+;;           (add-to-list 'tmpl elem 'append)))
+;;     tmpl))
 
 
-(setq org-agenda-custom-commands
-      '(("h" "Habits" tags-todo "STYLE=\"habit\""
-     ((org-agenda-overriding-header "Habits")
-      (org-agenda-sorting-strategy
-       '(todo-state-down effort-up category-keep))
-      ))
-    (" " "Agenda"
-     ((agenda "" nil)
-      (tags "REFILE+CREATED={.+}"
-        ((org-agenda-overriding-header "Refile")
-         (org-tags-match-list-sublevels t)
-         ))
-      (todo "NEXT"
-             ((org-agenda-overriding-header "Next")
-              ))
+;; (setq org-agenda-custom-commands
+;;       '(("h" "Habits" tags-todo "STYLE=\"habit\""
+;;      ((org-agenda-overriding-header "Habits")
+;;       (org-agenda-sorting-strategy
+;;        '(todo-state-down effort-up category-keep))
+;;       ))
+;;     (" " "Agenda"
+;;      ((agenda "" nil)
+;;       (tags "REFILE+CREATED={.+}"
+;;         ((org-agenda-overriding-header "Refile")
+;;          (org-tags-match-list-sublevels t)
+;;          ))
+;;       (todo "NEXT"
+;;              ((org-agenda-overriding-header "Next")
+;;               ))
 
-      ))
+	      ;; ))
     ;; ("N" "Notes" tags "NOTE"
     ;;  ((org-agenda-overriding-header "Notes")
     ;;   (org-tags-match-list-sublevels t)))
-    ))
+    ;; ))
 
 
 ;; Global Key Bindings
@@ -141,11 +141,11 @@
 (global-set-key (kbd "C-c o b") 'org-iswitchb) ;; TODO Find/write a helm plugin
 (global-set-key (kbd "C-c o c") 'org-capture)
 
-(global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file org-directory)))
-(global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file ben/org/ben/stories)))
-(global-set-key (kbd "C-c o n") (lambda() (interactive) (find-file ben/org/ben/snippets)))
-(global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/stories)))
-(global-set-key (kbd "C-c o w n") (lambda() (interactive) (find-file ben/org/work/snippets)))
+;; (global-set-key (kbd "C-c o d") (lambda() (interactive) (find-file org-directory)))
+;; (global-set-key (kbd "C-c o s") (lambda() (interactive) (find-file ben/org/ben/stories)))
+;; (global-set-key (kbd "C-c o n") (lambda() (interactive) (find-file ben/org/ben/snippets)))
+;; (global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/stories)))
+;; (global-set-key (kbd "C-c o w n") (lambda() (interactive) (find-file ben/org/work/snippets)))
 
 ;; Org-mode bindings
 (define-key org-mode-map (kbd "C-c o h") 'org-insert-heading-after-current)
