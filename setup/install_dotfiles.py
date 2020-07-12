@@ -98,13 +98,13 @@ def main():
     skip_symlinks = any('-skip-symlinks' in x for x in sys.argv[1:])
     skip_copy = any('-skip-copy' in x for x in sys.argv[1:])
 
-    with open("to_symlink") as f:
+    with open(f"{src_dir}/setup/to_symlink") as f:
         to_symlink = f.readlines()
 
     if not skip_symlinks:
         create_symlinks(src_dir, dest_dir, to_symlink)
 
-    with open("to_copy") as f:
+    with open(f"{src_dir}/setup/to_copy") as f:
         to_copy = f.readlines()
 
     if not skip_copy:

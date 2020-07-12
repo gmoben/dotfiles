@@ -1,3 +1,4 @@
 ;; multi-term
-(require 'multi-term)
-(setq multi-term-program "/bin/zsh")
+(use-package multi-term
+	     :init
+	     (setq multi-term-program "/bin/zsh"))

@@ -1,30 +1,45 @@
-#! /usr/bin/env bash
+#!/usr/bin/bash
 
 set -o errexit
 set -o pipefail
+shopt -s extglob
 
-source ./utils
+ROOT=$(cd $(dirname $0)/../.. && pwd -P)
+SETUP=$ROOT/setup
 
-SETUPDIR="$(echo '`cd $(dirname $0); pwd -P`/../..')"
-PLATFORM=$(eval python -mplatform | grep -iE 'arch|Ubuntu|MANJARO')
-case $PLATFORM in
+source $ROOT/.shutils
+source $SETUP/bin/utils.sh
+
+set_distro() {
+    case "$1" in
+    *Microsoft*)
+        if [[ `command -v lsb_release` ]]; then
+            set_distro `lsb_release -a 2>/dev/null | grep 'Distributor ID' | awk '{ print $3 }'`
+        else
+        set_distro unsupported
+        fi;;
     *arch*|*MANJARO*)
-        DISTRO=arch
-        INSTALL_CMD='pacaur -S --noconfirm';;
+            DISTRO=arch
+            INSTALL_CMD='pacaur -S --noconfirm';;
     *Ubuntu*)
-        DISTRO=ubuntu
-        INSTALL_CMD='apt install -y';;
+            DISTRO=ubuntu
+            INSTALL_CMD='sudo apt install -y';;
     *Darwin*)
-        DISTRO=darwin
-        INSTALL_CMD='brew install';;
+            DISTRO=darwin
+            INSTALL_CMD='brew install';;
     *)
         DISTRO=unsupported
-        error "Unsupported platform $(bold $PLATFORM) detected";;
-esac
+        error "Unsupported platform $(bold $PLATFORM) detected"
+        exit 1;;
+    esac
+}
 
 
-warning "Platform Detected" $PLATFORM
-warning "Distribution Detected" $DISTRO
+PLATFORM=$(eval python3 -mplatform | grep -iE 'arch|Ubuntu|MANJARO|Microsoft')
+set_distro $PLATFORM
+success "Platform Detected" "$PLATFORM"
+success "Distribution Detected" "$DISTRO"
+
 
 yesno "Is this a Macbook (15,1)?" && IS_MBP=0 || IS_MBP=1
 
@@ -34,32 +49,29 @@ function install_pkg {
     $INSTALL_CMD $1
 }
 
+function install_antigen {
+    info "Downloading antigen.zsh"
+    sudo mkdir -p /usr/share/zsh-antigen
+    sudo curl -o /usr/share/zsh-antigen/antigen.zsh -sL git.io/antigen
+}
+
+
 function bootstrap {
     sudo mkdir -m777 -p /code
 
     mkdir -p /code/ben && \
-        mkdir -p /code/ext
+        mkdir -p /code/ext && \
+    mkdir -p $HOME/.local/bin
 
     case $DISTRO in
         arch)
             info "Installing pacaur..."
             sudo pacman -S --noconfirm pacaur
-
-            info "Downloading antigen.zsh"
-            sudo mkdir -p /usr/share/zsh-antigen
-            sudo curl -o /usr/share/zsh-antigen/antigen.zsh -sL git.io/antigen
             ;;
         ubuntu)
-            info "Installing pacapt + symlinking to /usr/local/bin/pacman..."
-            sudo wget -O /usr/local/bin/pacapt https://github.com/icy/pacapt/raw/ng/pacapt && \
-                sudo chmod 755 /usr/local/bin/pacapt
-            sudo ln -sv /usr/local/bin/pacapt /usr/local/bin/pacman || true
-            sudo echo "sudo /usr/local/bin/pacapt" > /usr/local/bin/pacaur && \
-                sudo chmod 755 /usr/local/bin/pacaur
-
             info "Adding PPAs"
-            for src in $(cat $SETUPDIR/ubuntu/apt.ppa); do
-                sudo add-apt-repository $src
+            for src in $(cat $SETUP/ubuntu/apt.ppa); do
+                sudo add-apt-repository -y ppa:$src
             done
 
             info "Updating package sources"
@@ -67,10 +79,14 @@ function bootstrap {
 
             info "Installing kitty from source"
             curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
+
+        [[ -e $HOME/.local/bin/kitty ]] && rm -f $HOME/.local/bin/kitty
             ln -s $HOME/.local/kitty.app/bin/kitty $HOME/.local/bin/
            ;;
-        *) ;;
+        *) warning "No bootstrap step for distro" "$DISTRO" ;;
     esac
+
+    install_antigen
 }
 
 function install_base {
@@ -78,11 +94,11 @@ function install_base {
 
     case $DISTRO in
         arch)
-            PKGLIST=`cat $SETUPDIR/arch/pacaur.pkglist | xargs`
+            PKGLIST=`cat $SETUP/arch/pacaur.pkglist | grep -vE "#.*" | xargs`
             ;;
         ubuntu)
-            PKGLIST=`cat $SETUPDIR/ubuntu/apt.pkglist | xargs`
-            warning "Warning: No MBP $DISTRO support yet."
+            PKGLIST=`cat $SETUP/ubuntu/apt.pkglist | grep -vE "#.*" | xargs`
+            [[ $IS_MBP -eq 1 ]] && warning "Warning: No MBP $DISTRO support yet."
             ;;
         *)
             error "Sorry, $DISTRO isn't supported."
@@ -91,14 +107,12 @@ function install_base {
     esac
 
     $INSTALL_CMD $PKGLIST
-
-    diff-so-fancy --set-defaults
 }
 
 function install_extras {
     info 'Installing extras'
 
-    sudo cp -f {$SETUPDIR/mbp,}/etc/pacman.conf && \
+    sudo cp -f {$SETUP/mbp,}/etc/pacman.conf && \
         chown root:root /etc/pacman.conf
 
     $INSTALL_CMD $PKGLIST_EXTRAS
@@ -109,14 +123,14 @@ function install_extras {
         sudo echo $mod >> /etc/modules-load.d/modules.conf
     done
 
-    # Setup pulseaudio
+    # Setup pulseaudizo
     # https://gist.github.com/MCMrARM/c357291e4e5c18894bea10665dcebffb
-    sudo cp ${$SETUPDIR/arch/mbp/root,}/usr/share/alsa/cards/AppleT2.conf
-    sudo cp ${$SETUPDIR/arch/mbp/root,}/usr/share/pulseaudio/alsa-mixer/profile-sets/apple-t2.conf
-    sudo cp ${$SETUPDIR/arch/mbp/root,}/usr/lib/udev/rules.d/91-pulseaudio-custom.rules
+    sudo cp ${$SETUP/arch/mbp/root,}/usr/share/alsa/cards/AppleT2.conf
+    sudo cp ${$SETUP/arch/mbp/root,}/usr/share/pulseaudio/alsa-mixer/profile-sets/apple-t2.conf
+    sudo cp ${$SETUP/arch/mbp/root,}/usr/lib/udev/rules.d/91-pulseaudio-custom.rules
 
     yesno "Do you have a Macbook15,1?" && (
-        sudo cp ${$SETUPDIR/arch/mbp/root,}/lib/firmware/bcrm/* /lib/firmware/bcrm
+        sudo cp ${$SETUP/arch/mbp/root,}/lib/firmware/bcrm/* /lib/firmware/bcrm
         sudo modprobe -r bcrmfmac; sudo modprobe bcrmfmac
         sudo echo bcrmfmac >> /etc/modules-load.d/apple.conf
         sudo cat << EOF >> /etc/NetworkManager/NetworkManager.conf
@@ -126,43 +140,70 @@ EOF
         sudo systemctl enable --now iwd && \
             systemctl restart NetworkManager && \
             systemctl enable --now NetworkManager
-    ) || warning "Skipping wifi driver installation" ;;
-    esac
+    ) || warning "Skipping wifi driver installation"
 }
 
 function pip_packages {
-    sudo pip install -r $SETUPDIR/requirements.txt
+    local _pip=`which pip3`
+    if [[ -n "$_pip" && ! -e "$(dirname $_pip)/pip" ]]; then
+    sudo ln -s $_pip $(dirname $_pip)/pip
+    elif [[ -z "$_pip" ]]; then
+    _pip=`which pip`
+    fi
+    if [[ `command -v $_pip` ]]; then
+    sudo $_pip install -r $SETUP/requirements.txt
+    else
+    error "Can't find pip!"
+    exit 1
+    fi
 }
 
 function install_dotfiles {
-    python $SETUPDIR/install_dotfiles.py
+    $SETUP/install_dotfiles.py
 }
 
 function activate_systemd {
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
-    services="$services pulseaudio keybase keybase-redirector keybase-gui kbfs"
-    info "Enabling and starting systemd user services: $services"
+    services="$services pulseaudio keybase keybase-redirector" # keybase-gui kbfs"
+    info "Enabling and starting systemd user services: $services" ""
     systemctl --user --now enable $services
 }
 
 function install_packages {
     install_base
 
-    [[ "$DISTRO" == 'arch' && "$IS_MBP" == "0" ]] && install_extras || warning "No extras to install for distribution $DISTRO";;
+    case $DISTRO in
+    arch)
+        install_extras;;
+    ubuntu)
+        sudo npm install --global diff-so-fancy
+        local deb="keybase_amd64.deb"
+        local url="https://prerelease.keybase.io/$deb"
+        $(cd /tmp && curl -O $url)
+        $INSTALL_CMD /tmp/$deb
+        rm -f /tmp/$deb
+        run_keybase
+        ;;
 
+    *)
+        warning "No extras to install for distribution $DISTRO" " ";;
+    esac
+
+    diff-so-fancy --set-defaults || true
     pip_packages
-    install_dotfiles
-    compile_terminfo
 }
 
 function compile_terminfo {
     # Compiles xterm-24bit terminfo for emacs -nw
-    sudo tic -x -o /usr/share/terminfo $SETUPDIR/terminfo/xterm-24bit.terminfo
+    sudo tic -x -o /usr/share/terminfo $SETUP/terminfo/xterm-24bit
 }
 
 function main {
     bootstrap
     install_packages
+    install_antigen
+    install_dotfiles
+    compile_terminfo
     activate_systemd
     xdg-settings set default-web-browser firefox.app
 }
