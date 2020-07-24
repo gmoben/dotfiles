@@ -44,7 +44,11 @@ interactive `pyvenv-workon' function before `lsp'"
         (progn
           (call-interactively #'pyvenv-workon)
           (lsp)))))
-)
+  )
+
+(use-package python-docstring
+  :after python-mode
+  :hook (python-mode . python-docstring-mode))
 
 (use-package rust-mode
   :hook (rust-mode . lsp)
@@ -65,6 +69,7 @@ interactive `pyvenv-workon' function before `lsp'"
               ("C-c l r" . lsp-rename))
   :config
   (require 'lsp-clients)
+  (setq lsp-completion-enable-additional-text-edit nil)
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
   (setq lsp-clients-python-settings
@@ -107,22 +112,19 @@ interactive `pyvenv-workon' function before `lsp'"
           :rope\.ropeFolder nil)))
 
 (use-package lsp-java
-  :after lsp
-  :hook (java-mode . lsp)
   :config
-  (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
-  (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" bewarre/lsp-java-lombok-jar-location))
-  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" bewarre/lsp-java-lombok-jar-location))
+  (add-hook 'java-mode-hook 'lsp)
+  ;; (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
+  ;; (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" gmoben/lsp-java-lombok-jar-location))
+  ;; (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" gmoben/lsp-java-lombok-jar-location))
 )
 
 (use-package dap-mode
-  :after lsp
   :config (dap-auto-configure-mode))
 
-(use-package dap-java :ensure f :after (lsp-java))
+(use-package dap-java :ensure nil)
 
 (use-package go-mode
-  :after lsp
   :init
   (setenv "GOPATH" "/code/go" t)
   (setenv "PATH" (concat (getenv "PATH") ":" "$GOPATH/bin") t)
@@ -136,7 +138,7 @@ interactive `pyvenv-workon' function before `lsp'"
   )
 
 (use-package company
-  :after (company-jedi company-go)
+  :after (company-go)
   :hook ((after-init . global-company-mode))
   :config
   (add-to-list 'company-backends 'company-jedi)
