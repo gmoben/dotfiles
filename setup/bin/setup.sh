@@ -20,7 +20,7 @@ set_distro() {
         fi;;
     *arch*|*MANJARO*)
             DISTRO=arch
-            INSTALL_CMD='pacaur -S --noconfirm';;
+            INSTALL_CMD='pacaur -S --noconfirm --needed';;
     *Ubuntu*)
             DISTRO=ubuntu
             INSTALL_CMD='sudo apt install -y';;
@@ -66,7 +66,7 @@ function bootstrap {
     case $DISTRO in
         arch)
             info "Installing pacaur..."
-            sudo pacman -S --noconfirm pacaur
+            sudo pacman -S --noconfirm --needed pacaur
             ;;
         ubuntu)
             info "Adding PPAs"
@@ -109,18 +109,14 @@ function install_base {
     $INSTALL_CMD $PKGLIST
 }
 
-function install_extras {
-    info 'Installing extras'
+function install_mbp_extras {
+    info 'Installing MBP extras'
 
-    sudo cp -f {$SETUP/mbp,}/etc/pacman.conf && \
-        chown root:root /etc/pacman.conf
-
-    $INSTALL_CMD $PKGLIST_EXTRAS
-
+    if [[ $IS_MBP -eq 0 ]]; then
     mods=("apple-bce" "apple-ib-tb" "apple-ib-als" "applesmc")
     for mod in "${mods[@]}"; do
-        sudo modprobe $mod
-        sudo echo $mod >> /etc/modules-load.d/modules.conf
+            sudo modprobe $mod
+            sudo echo $mod >> /etc/modules-load.d/modules.conf
     done
 
     # Setup pulseaudizo
@@ -130,17 +126,19 @@ function install_extras {
     sudo cp ${$SETUP/arch/mbp/root,}/usr/lib/udev/rules.d/91-pulseaudio-custom.rules
 
     yesno "Do you have a Macbook15,1?" && (
-        sudo cp ${$SETUP/arch/mbp/root,}/lib/firmware/bcrm/* /lib/firmware/bcrm
-        sudo modprobe -r bcrmfmac; sudo modprobe bcrmfmac
-        sudo echo bcrmfmac >> /etc/modules-load.d/apple.conf
-        sudo cat << EOF >> /etc/NetworkManager/NetworkManager.conf
+            sudo cp ${$SETUP/arch/mbp/root,}/lib/firmware/bcrm/* /lib/firmware/bcrm
+            sudo modprobe -r bcrmfmac; sudo modprobe bcrmfmac
+            sudo echo bcrmfmac >> /etc/modules-load.d/apple.conf
+            sudo cat << EOF >> /etc/NetworkManager/NetworkManager.conf
 [device]
 wifi.backend=iwd
 EOF
-        sudo systemctl enable --now iwd && \
-            systemctl restart NetworkManager && \
-            systemctl enable --now NetworkManager
+            sudo systemctl enable --now iwd && \
+        systemctl restart NetworkManager && \
+        systemctl enable --now NetworkManager
     ) || warning "Skipping wifi driver installation"
+    fi
+
 }
 
 function pip_packages {
@@ -151,7 +149,7 @@ function pip_packages {
     _pip=`which pip`
     fi
     if [[ `command -v $_pip` ]]; then
-    sudo $_pip install -r $SETUP/requirements.txt
+    sudo $_pip install --ignore-installed -r $SETUP/requirements.txt
     else
     error "Can't find pip!"
     exit 1
@@ -163,6 +161,7 @@ function install_dotfiles {
 }
 
 function activate_systemd {
+    sudo systemctl --now enable sshd NetworkManager
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
     services="$services pulseaudio keybase keybase-redirector" # keybase-gui kbfs"
     info "Enabling and starting systemd user services: $services" ""
@@ -174,7 +173,7 @@ function install_packages {
 
     case $DISTRO in
     arch)
-        install_extras;;
+        [[ $IS_MBP -eq 0 ]] && install_mbp_extras;;
     ubuntu)
         sudo npm install --global diff-so-fancy
         local deb="keybase_amd64.deb"
@@ -198,14 +197,30 @@ function compile_terminfo {
     sudo tic -x -o /usr/share/terminfo $SETUP/terminfo/xterm-24bit
 }
 
+function setup_git {
+    LIBSECRET=/usr/share/git/credential/libsecret
+    sudo make --directory=$LIBSECRET
+
+    declare -A gitconfig
+    gitconfig[user.name]="gmoben"
+    gitconfig[user.email]="ben@warr.io"
+    gitconfig[credential.helper]="$LIBSECRET/git-credential-libsecret"
+    for key in "${!sounds[@]}"; do
+    git config --global $key "${gitconfig[$key]}"
+    done
+
+}
+
+
 function main {
     bootstrap
+    setup_git
     install_packages
     install_antigen
     install_dotfiles
     compile_terminfo
     activate_systemd
-    xdg-settings set default-web-browser firefox.app
+    xdg-settings set default-web-browser "firefox.destkop"
 }
 
 main

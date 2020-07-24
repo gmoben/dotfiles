@@ -8,9 +8,7 @@ dnsutils
 emacs-nox
 firefox
 google-chrome
-keybase-bash-completion-git
 keybase-bin
-keybase-zsh-completion-git
 kitty
 kitty-terminfo
 libu2f-host
@@ -32,9 +30,7 @@ spotify-tui
 steam
 the_silver_searcher
 tmux
-ttf-unifont
 vlc
-wemux
 xclip
 xorg-fonts-misc
 xorg-xev
