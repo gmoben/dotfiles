@@ -45,7 +45,7 @@ export TMUX_DEFAULT_SESSION_GROUP=${TMUX_DEFAULT_SESSION_GROUP:-"main"}
 alias tmux="TERM=$term /usr/bin/tmux"
 
 function tma() {
-    echo "Deprecated. Use `tmn [session_group]` instead. Default session_group: `$TMUX_DEFAULT_SESSION_GROUP`"
+    echo "Deprecated. Use 'tmn [session_group]' instead. Default session_group: $TMUX_DEFAULT_SESSION_GROUP"
     tmn $@
 }
 
