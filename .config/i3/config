@@ -393,7 +393,7 @@ bar {
     }
 }
 
-#exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+# exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # exec_always "killall powerline-lemonbar; powerline-lemonbar -H 28 -- -t -f 'DejaVu Sans Mono-11' -f 'PowerlineSymbols-12' -f 'FontAwesome-11'"
 

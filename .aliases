@@ -60,14 +60,14 @@ function tmn() {
     fi
 
     # Count the existing sessions (i.e. currently attached terminals) and build new session name
-    local session_count=`tmux-session-count $session_group`
+    local session_count=`tmux_session_count $session_group`
     local new_session_name="$session_group-$((session_count - 1))"
 
     # Start children sessions with destroy-unattached
     tmux new-session -s "$new_session_name" -t $session_group \; set-option destroy-unattached
 }
 
-function tmux-session-count() {
+function tmux_session_count() {
     local session_group=${1:-$TMUX_DEFAULT_SESSION_GROUP}
     tmux list-sessions -F "#{session_group}" | grep "$session_group" | wc -l
 }
