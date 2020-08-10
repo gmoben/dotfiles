@@ -36,10 +36,11 @@ elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
 fi
 
 ## Pyenv ##
+export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
+export PYENV_ROOT=$HOME/.pyenv
+export PATH=$PYENV_ROOT/bin:$PATH
+
 if [[ `command -v pyenv` ]]; then
-    export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
-    export PYENV_ROOT=$HOME/.pyenv
-    export PATH=$PYENV_ROOT/bin:$PATH
     eval "$(pyenv init -)"
     eval "$(pyenv virtualenv-init -)"
 fi

@@ -42,7 +42,8 @@ alias ehome="TERM=$term emacsclient -t $HOME"
 
 # Tmux
 export TMUX_DEFAULT_SESSION_GROUP=${TMUX_DEFAULT_SESSION_GROUP:-"main"}
-alias tmux="TERM=$term /usr/bin/tmux"
+TMUX_PATH=`which -a tmux | grep -v alias | grep bin/tmux | head -1`
+alias tmux="TERM=$term $TMUX_PATH"
 
 function tma() {
     echo "Deprecated. Use 'tmn [session_group]' instead. Default session_group: $TMUX_DEFAULT_SESSION_GROUP"
