@@ -63,9 +63,9 @@ alias gitu='git add . && git commit && git push'
 fpath+=~/.zfunc
 
 # Theming section
-autoload -U compinit colors zcalc
-compinit -d
-colors
+autoload -Uz compinit colors zcalc &>/dev/null
+compinit -d &>/dev/null
+colors &>/dev/null
 
 # enable substitution for prompt
 setopt prompt_subst
@@ -155,14 +155,14 @@ export LESS=-r
 
 
 ## Plugins section: Enable fish style features
-source /usr/share/zsh-antigen/antigen.zsh
+source /usr/share/zsh-antigen/antigen.zsh &>/dev/null
 
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-history-substring-search
-antigen apply
+antigen bundle zsh-users/zsh-syntax-highlighting &>/dev/null
+antigen bundle zsh-users/zsh-history-substring-search &>/dev/null
+antigen apply &>/dev/null
 
 # bind UP and DOWN arrow keys to history substring search
-zmodload zsh/terminfo
+zmodload zsh/terminfo &>/dev/null
 if [[ "${terminfo[kcuu1]}" != "" ]]; then
     bindkey "${terminfo[kcuu1]}" history-substring-search-up
 fi

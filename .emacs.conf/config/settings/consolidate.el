@@ -4,13 +4,6 @@
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 
-(use-package python-mode
-  :after eldoc
-  :hook (python-mode . lsp)
-  :config
-  (setq-local eldoc-documentation-function #'ignore)
-  (setq eldoc-mode nil))
-
 (use-package pyvenv
   :after python-mode
   :commands gmoben/py-auto-lsp
@@ -67,49 +60,19 @@ interactive `pyvenv-workon' function before `lsp'"
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
-  :config
+  :init
   (require 'lsp-clients)
   (setq lsp-completion-enable-additional-text-edit nil)
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
-  (setq lsp-clients-python-settings
-        '(
-          :configurationSources ("flake8")
-          :plugins\.jedi_completion\.enabled t
-          :plugins\.jedi_definition\.enabled t
-          :plugins\.jedi_definition\.follow_builtin_imports nil
-          :plugins\.jedi_definition\.follow_imports nil
-          :plugins\.jedi_definition\.follow_imports t
-          :plugins\.jedi_hover\.enabled t
-          :plugins\.jedi_references\.enabled t
-          :plugins\.jedi_signature_help\.enabled nil
-          :plugins\.jedi_symbols\.all_scopes t
-          :plugins\.jedi_symbols\.enabled nil
-          :plugins\.mccabe\.enabled nil
-          :plugins\.mccabe\.threshold 15
-          :plugins\.preload\.enabled true
-          :plugins\.preload\.modules nil
-          :plugins\.pycodestyle\.enabled nil
-          :plugins\.pycodestyle\.exclude nil
-          :plugins\.pycodestyle\.filename nil
-          :plugins\.pycodestyle\.hangClosing nil
-          :plugins\.pycodestyle\.ignore nil
-          :plugins\.pycodestyle\.maxLineLength nil
-          :plugins\.pycodestyle\.select nil
-          :plugins\.pydocstyle\.addIgnore nil
-          :plugins\.pydocstyle\.addSelect nil
-          :plugins\.pydocstyle\.convention nil
-          :plugins\.pydocstyle\.enabled t
-          :plugins\.pydocstyle\.ignore nil
-          :plugins\.pydocstyle\.match "(?!test_).*\\.py"
-          :plugins\.pydocstyle\.matchDir nil
-          :plugins\.pydocstyle\.select nil
-          :plugins\.pyflakes\.enabled t
-          :plugins\.pyls_mypy\.enabled nil
-          :plugins\.rope_completion\.enabled t
-          :plugins\.yapf\.enabled t
-          :rope\.extensionModules nil
-          :rope\.ropeFolder nil)))
+  (setq lsp-pyls-configuration-sources ["flake8"])
+  (setq lsp-pyls-plugins-pycodestyle t)
+  (setq lsp-pyls-plugins-pycodestyle-hang-closing t)
+  (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
+  (setq lsp-pyls-plugins-pydocstyle-enabled nil)
+  (setq lsp-pyls-plugins-flake8-hang-closing t)
+  (setq lsp-pyls-plugins-flake8-max-line-lenth 120)
+  (setq lsp-pyls-plugins-jedit-use-pyenv-environment t))
 
 (use-package lsp-java
   :config
@@ -208,6 +171,8 @@ interactive `pyvenv-workon' function before `lsp'"
          ("M-i" . helm-swoop-from-isearch)
          :map helm-swoop-map
          ("M-i" . helm-multi-swoop-all-from-helm-swoop)))
+
+(use-package helm-tramp)
 
 (use-package company-lsp
   :after (company lsp-mode)
