@@ -189,6 +189,8 @@ function klfl() {
 
 # GPG
 alias gpgtty="echo UPDATESTARTUPTTY | gpg-connect-agent"
+alias gpgesa="gpg --encrypt --sign --armor"
+alias gpgtome="gpgesa -r ben@warr.io"
 
 # Bookmarks
 alias org="cd /code/org && emacsc ."

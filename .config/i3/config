@@ -364,36 +364,36 @@ set_from_resource $i3_color15         color15
 set $i3_color16         #ffffff
 set $i3_color17         #0c0c0c
 
-# # Start i3bar to display a workspace bar (plus the system information i3status if available)
-# bar {
-# 	status_command i3status
-# 	position bottom
+# Start i3bar to display a workspace bar (plus the system information i3status if available)
+bar {
+	status_command i3status
+	position bottom
 
-# ## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
-# 	tray_output DP1
-#     tray_output primary
-#     tray_output eDP1
+## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
+	tray_output DP1
+    tray_output primary
+    tray_output eDP1
 
-# 	bindsym button4 nop
-# 	bindsym button5 nop
-# 	font pango:DejaVu Sans Mono, FontAwesome 12
-# 	strip_workspace_numbers yes
+	bindsym button4 nop
+	bindsym button5 nop
+	font pango:DejaVu Sans Mono, FontAwesome 12
+	strip_workspace_numbers yes
 
-# 	colors {
-#     	# background $transparent
-#         background $i3_background
-#         statusline $i3_text
-#         separator  $i3_separator
+	colors {
+    	# background $transparent
+        background $i3_background
+        statusline $i3_text
+        separator  $i3_separator
 
-# #                                  border  backgr. text
-#         focused_workspace   $i3_separator		$i3_background		$i3_text
-#         active_workspace    $i3_separator		$i3_background		$i3_separator
-#         inactive_workspace  $i3_background		$i3_background		$i3_color1
-#         urgent_workspace    $i3_text			$i3_color6			$i3_background
-#     }
-# }
+#                                  border  backgr. text
+        focused_workspace   $i3_separator		$i3_background		$i3_text
+        active_workspace    $i3_separator		$i3_background		$i3_separator
+        inactive_workspace  $i3_background		$i3_background		$i3_color1
+        urgent_workspace    $i3_text			$i3_color6			$i3_background
+    }
+}
 
-exec_always --no-startup-id $HOME/.config/polybar/launch.sh
+#exec_always --no-startup-id $HOME/.config/polybar/launch.sh
 
 # exec_always "killall powerline-lemonbar; powerline-lemonbar -H 28 -- -t -f 'DejaVu Sans Mono-11' -f 'PowerlineSymbols-12' -f 'FontAwesome-11'"
 

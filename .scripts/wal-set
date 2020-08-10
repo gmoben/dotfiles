@@ -24,9 +24,9 @@ reload_themes() {
         echo "Reloaded i3"
     fi
 
-    if [[ -e $HOME/.config/polybar/launch.sh ]]; then
-        $HOME/.config/polybar/launch.sh
-    fi
+    # if [[ -e $HOME/.config/polybar/launch.sh ]]; then
+    #     $HOME/.config/polybar/launch.sh
+    # fi
 
     # If emacs daemon is running, reload theme
     if (ps -ef | grep emacs | grep daemon &>/dev/null); then
