@@ -1,0 +1,20 @@
+#!/bin/bash
+
+function run_spleeter() {
+    local audio_file=$1; shift
+    local model=$1; shift
+
+    if [[ -n $model ]]; then
+        model="-p spleeter:$model-16kHz"
+    fi
+
+    docker run \
+           -v "$(pwd)/output:/output" \
+           -v "$(pwd):/audio" \
+           researchdeezer/spleeter \
+           separate \
+           -i "/audio/$audio_file" \
+           -o /output $(echo $model) $@
+}
+
+run_spleeter $@

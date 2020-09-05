@@ -5,7 +5,7 @@
 #########
 export CODEBEN=/code/ben
 export CODEEXT=/code/ext
-export PATH=$HOME/.local/bin:$CODEBEN/dotfiles/.scripts:$PATH
+export PATH=$HOME/.local/bin:$CODEBEN/dotfiles/.local/bin:$PATH
 
 # ## Utilities + Aliases ##
 source $CODEBEN/dotfiles/.shutils
