@@ -159,6 +159,7 @@ source /usr/share/zsh-antigen/antigen.zsh &>/dev/null
 
 antigen bundle zsh-users/zsh-syntax-highlighting &>/dev/null
 antigen bundle zsh-users/zsh-history-substring-search &>/dev/null
+antigen bundle "MichaelAquilina/zsh-autoswitch-virtualenv"
 antigen apply &>/dev/null
 
 # bind UP and DOWN arrow keys to history substring search

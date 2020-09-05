@@ -40,10 +40,8 @@ export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 export PYENV_ROOT=$HOME/.pyenv
 export PATH=$PYENV_ROOT/bin:$PATH
 
-if [[ `command -v pyenv` ]]; then
-    eval "$(pyenv init -)"
-    eval "$(pyenv virtualenv-init -)"
-fi
+eval "$(pyenv init -)" || true
+eval "$(pyenv virtualenv-init -)" || true
 
 # ############
 # # SETTINGS #
