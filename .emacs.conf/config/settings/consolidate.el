@@ -57,6 +57,8 @@ interactive `pyvenv-workon' function before `lsp'"
 (use-package lsp-mode
   :after projectile
   :commands lsp
+  :hook
+  (sh-mode . lsp)
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
@@ -183,8 +185,8 @@ interactive `pyvenv-workon' function before `lsp'"
 
 (use-package lsp-ui
   :after (lsp-mode)
-  :hook ((lsp-mode . lsp-ui-mode)
-         (lsp-mode . flycheck-mode))
+  :hook ((lsp-ui-mode . lsp)
+         (flycheck-mode . lsp))
   :commands lsp-ui-mode
   :config
   (setq lsp-prefer-flymake nil)

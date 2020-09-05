@@ -127,7 +127,7 @@
 ;;              ((org-agenda-overriding-header "Next")
 ;;               ))
 
-	      ;; ))
+          ;; ))
     ;; ("N" "Notes" tags "NOTE"
     ;;  ((org-agenda-overriding-header "Notes")
     ;;   (org-tags-match-list-sublevels t)))
@@ -154,6 +154,12 @@
                        (end-of-line)
                        (org-insert-subheading nil))) ;; Insert after current line
 (define-key org-mode-map (kbd "C-c o t") 'org-insert-todo-heading)
+(define-key org-mode-map (kbd "C-c o s") (lambda ()
+                       (interactive)
+                       (end-of-line)
+                       (org-insert-subheading nil))) ;; Insert after current line
+
+;; Properties
 (define-key org-mode-map (kbd "C-c o p s") 'org-set-property)
 (define-key org-mode-map (kbd "C-c o p d") 'org-delete-property)
 
