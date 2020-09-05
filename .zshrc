@@ -221,6 +221,6 @@ case $(basename "$(cat "/proc/$PPID/comm")") in
         ;;
 esac
 
-source /code/ben/dotfiles/.scripts/persist-ssh-agent
+source /code/ben/dotfiles/.local/bin/persist-ssh-agent
 
 source $HOME/.profile
