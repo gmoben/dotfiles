@@ -1,8 +1,16 @@
 #!/bin/bash
 
 function run_spleeter() {
-    local audio_file=$1; shift
-    local model=$1; shift
+    local model=2stems
+    case "$1" in
+        *stems) model=$1; shift;;
+        *) ;;
+    esac
+
+    local audio_file="$@"
+
+    echo "Audio file: $audio_file"
+    echo "Model: $model"
 
     if [[ -n $model ]]; then
         model="-p spleeter:$model-16kHz"
@@ -14,7 +22,7 @@ function run_spleeter() {
            researchdeezer/spleeter \
            separate \
            -i "/audio/$audio_file" \
-           -o /output $(echo $model) $@
+           -o /output $(echo $model)
 }
 
 run_spleeter $@

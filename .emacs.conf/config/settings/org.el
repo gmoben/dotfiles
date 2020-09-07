@@ -187,3 +187,5 @@
 ;;     (org-remove-empty-drawer-at (point))))
 
 ;; (add-hook 'org-clock-out-hook 'bmw/remove-empty-drawer-on-clock-out 'append)
+
+(add-hook 'org-mode-hook 'visual-line-mode)

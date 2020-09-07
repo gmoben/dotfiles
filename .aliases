@@ -20,6 +20,9 @@
 # alias vrm='vagrant destroy'
 # alias vrb='vagrant rebuild'
 
+# Confirm before overwriting something
+alias cp="cp -i"
+
 # Docker
 alias dlogs='docker logs'
 alias dps='docker ps'

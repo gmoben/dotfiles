@@ -11,6 +11,9 @@ export PATH=$HOME/.local/bin:$CODEBEN/dotfiles/.local/bin:$PATH
 source $CODEBEN/dotfiles/.shutils
 source $HOME/.aliases
 
+## Always ensure there is an active ssh-agent
+persist-ssh-agent
+
 ## NodeJS ##
 export PATH=$HOME/.yarn/bin:$PATH
 
@@ -28,20 +31,13 @@ export PATH=${GHCUP_INSTALL_BASE_PREFIX:=$HOME}/.ghcup/bin:$PATH
 ## Pyenv && Virtualenv ##
 export VIRTUALENVWRAPPER_PYTHON=`which python3`
 export WORKON_HOME=$HOME/.pyenv/versions
-
-if [[ -f /usr/bin/virtualenvwrapper.sh ]]; then
-    source /usr/bin/virtualenvwrapper.sh
-elif [[ -f /usr/local/bin/virtualenvwrapper.sh ]]; then
-    source /usr/local/bin/virtualenvwrapper.sh
-fi
-
-## Pyenv ##
 export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 export PYENV_ROOT=$HOME/.pyenv
-export PATH=$PYENV_ROOT/bin:$PATH
+export AUTOSWITCH_VIRTUAL_ENV_DIR=$WORKON_HOME
 
 eval "$(pyenv init -)" || true
 eval "$(pyenv virtualenv-init -)" || true
+pyenv virtualenvwrapper || true
 
 # ############
 # # SETTINGS #
