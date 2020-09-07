@@ -1,7 +1,5 @@
 #!/usr/bin/env zsh
 
-source $HOME/.profile
-
 fpath+=~/.zfunc
 autoload -Uz compinit colors zcalc
 compinit -d
@@ -9,6 +7,8 @@ colors
 
 source <(antibody init)
 antibody bundle < ~/.zplugins
+
+source $HOME/.profile
 
 ## Options section
 
