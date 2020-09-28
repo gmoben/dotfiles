@@ -42,7 +42,7 @@ export VAGRANT_LOG=warn
 export GPG_TTY=$(tty)
 
 ## Editors ##
-export EDITOR=$(command -v emacsclient | xargs -IXXX echo XXX -t || command -v emacs || command -v vim || command -v nano)
+export EDITOR=$(command -v emacsclient | xargs -IXXX echo XXX -t || command -v emacs && echo emacs || command -v vim && echo vim || command -v nano && echo nano)
 export SYSTEMD_EDITOR=$EDITOR
 
 # ## Fix M-left && M-right ##
@@ -65,8 +65,8 @@ fi
 [[ -e `command -v thefuck` ]] && eval $(thefuck --alias)
 
 if [[ -e `command -v wal` ]]; then
-    (cat ~/.cache/wal/sequences &)
-    source ~/.cache/wal/colors-tty.sh
+    [[ -f ~/.cache/wal/sequences ]] && (cat ~/.cache/wal/sequences &)
+    [[ -f ~/.cache/wal/colors-tty.sh ]] && source ~/.cache/wal/colors-tty.sh
 fi
 
 ## Dedup path entries ##

@@ -11,9 +11,11 @@ from os.path import (
     join, isdir, isfile, islink
 )
 
+import structlog
 
-LOG = logging.getLogger()
-LOG.setLevel(logging.DEBUG)
+
+LOG = structlog.getLogger()
+#LOG.setLevel(logging.INFO)
 
 always_delete = False
 
@@ -67,7 +69,7 @@ def _operate(func, src, dest):
             LOG.info(f"Skipping {fname} operation from {src} to {dest}")
         return
     else:
-        LOG.info(f"{fname.upper()}ing {src} to {dest}")
+        LOG.info(f"{fname.capitalize()}ing {src} to {dest}")
         func(src, dest)
         return True
 

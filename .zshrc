@@ -106,4 +106,4 @@ source $HOME/.profile
 
 eval "$(pyenv init -)" || true
 eval "$(pyenv virtualenv-init -)" || true
-pyenv virtualenvwrapper || true
+pyenv virtualenvwrapper &>/dev/null || true

@@ -49,15 +49,18 @@ function install_pkg {
     $INSTALL_CMD $1
 }
 
-function install_antigen {
-    info "Downloading antigen.zsh"
-    sudo mkdir -p /usr/share/zsh-antigen
-    sudo curl -o /usr/share/zsh-antigen/antigen.zsh -sL git.io/antigen
+function install_antibody {
+    info "Downloading antibody..."
+    if [[ -d /usr/share/zsh-antigen ]]; then
+    sudo rm -rf /usr/share/zsh-antigen
+    fi
+
+    curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
 }
 
 
 function bootstrap {
-    sudo mkdir -m777 -p /code
+    sudo mkdir -m755 -p /code
 
     mkdir -p /code/ben && \
         mkdir -p /code/ext && \
@@ -80,33 +83,11 @@ function bootstrap {
             info "Installing kitty from source"
             curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin
 
-        [[ -e $HOME/.local/bin/kitty ]] && rm -f $HOME/.local/bin/kitty
+            [[ -e $HOME/.local/bin/kitty ]] && rm -f $HOME/.local/bin/kitty
             ln -s $HOME/.local/kitty.app/bin/kitty $HOME/.local/bin/
            ;;
         *) warning "No bootstrap step for distro" "$DISTRO" ;;
     esac
-
-    install_antigen
-}
-
-function install_base {
-    info "Installing base packages"
-
-    case $DISTRO in
-        arch)
-            PKGLIST=`cat $SETUP/arch/pacaur.pkglist | grep -vE "#.*" | xargs`
-            ;;
-        ubuntu)
-            PKGLIST=`cat $SETUP/ubuntu/apt.pkglist | grep -vE "#.*" | xargs`
-            [[ $IS_MBP -eq 1 ]] && warning "Warning: No MBP $DISTRO support yet."
-            ;;
-        *)
-            error "Sorry, $DISTRO isn't supported."
-            exit 1
-            ;;
-    esac
-
-    $INSTALL_CMD $PKGLIST
 }
 
 function install_mbp_extras {
@@ -161,21 +142,46 @@ function install_dotfiles {
 }
 
 function activate_systemd {
-    sudo systemctl --now enable sshd NetworkManager
+    #sudo systemctl --now enable sshd || true
+    #sudo systemctl --now enable NetworkManager || true
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
     services="$services pulseaudio keybase keybase-redirector" # keybase-gui kbfs"
     info "Enabling and starting systemd user services: $services" ""
-    systemctl --user --now enable $services
+    systemctl --user --now enable $services || true
+}
+
+function install_base {
+    info "Installing base packages"
+
+    case $DISTRO in
+        arch)
+            PKGLIST=`cat $SETUP/arch/pacaur.pkglist | grep -vE "#.*" | xargs`
+            ;;
+        ubuntu)
+            PKGLIST=`cat $SETUP/ubuntu/apt.pkglist | grep -vE "#.*" | xargs`
+            [[ $IS_MBP -eq 1 ]] && warning "Warning: No MBP $DISTRO support yet."
+            ;;
+        *)
+            error "Sorry, $DISTRO isn't supported."
+            exit 1
+            ;;
+    esac
+
+    $INSTALL_CMD $PKGLIST
 }
 
 function install_packages {
+
     install_base
 
     case $DISTRO in
     arch)
         [[ $IS_MBP -eq 0 ]] && install_mbp_extras;;
     ubuntu)
+        echo "Installing diff-so-fancy..."
         sudo npm install --global diff-so-fancy
+
+        echo "Installing Keybase..."
         local deb="keybase_amd64.deb"
         local url="https://prerelease.keybase.io/$deb"
         $(cd /tmp && curl -O $url)
@@ -183,7 +189,6 @@ function install_packages {
         rm -f /tmp/$deb
         run_keybase
         ;;
-
     *)
         warning "No extras to install for distribution $DISTRO" " ";;
     esac
@@ -198,7 +203,8 @@ function compile_terminfo {
 }
 
 function setup_git {
-    LIBSECRET=/usr/share/git/credential/libsecret
+    echo "Setting up libsecret..."
+    LIBSECRET=/usr/share/doc/git/contrib/credential/libsecret
     sudo make --directory=$LIBSECRET
 
     declare -A gitconfig
@@ -208,19 +214,17 @@ function setup_git {
     for key in "${!sounds[@]}"; do
     git config --global $key "${gitconfig[$key]}"
     done
-
 }
-
 
 function main {
     bootstrap
-    setup_git
     install_packages
-    install_antigen
+    setup_git
+    install_antibody
     install_dotfiles
     compile_terminfo
     activate_systemd
-    xdg-settings set default-web-browser "firefox.destkop"
+    xdg-settings set default-web-browser "firefox.desktop"
 }
 
 main
