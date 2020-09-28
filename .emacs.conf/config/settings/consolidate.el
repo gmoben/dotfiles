@@ -63,7 +63,6 @@ interactive `pyvenv-workon' function before `lsp'"
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
   :init
-  (require 'lsp-clients)
   (setq lsp-completion-enable-additional-text-edit nil)
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
@@ -138,13 +137,13 @@ interactive `pyvenv-workon' function before `lsp'"
   :after (helm lsp-mode))
 
 (use-package helm-ag
-  :after (helm)
+  :after helm
   :init (setq helm-ag-base-command "ag -f --nocolor --nogroup --hidden"))
 
 (use-package helm-company :after (helm company))
 
 (use-package helm-descbinds
-  :after (helm)
+  :after helm
   :config (helm-descbinds-mode))
 
 (use-package helm-describe-modes
@@ -177,26 +176,17 @@ interactive `pyvenv-workon' function before `lsp'"
 (use-package helm-tramp)
 
 (use-package company-lsp
-  :after (company lsp-mode)
   :commands company-lsp
   :config
   (add-to-list 'company-backends 'company-lsp)
   )
 
-(use-package lsp-ui
-  :after (lsp-mode)
-  :hook ((lsp-ui-mode . lsp)
-         (flycheck-mode . lsp))
-  :commands lsp-ui-mode
-  :config
-  (setq lsp-prefer-flymake nil)
-  )
+(use-package lsp-ui :commands lsp-ui-mode)
 
 (use-package flycheck-rust
-  :after (rust-mode flycheck)
-  :hook ((flycheck-mode . flycheck-rust-setup)
-         (rust-mode . flycheck-mode))
-  )
+  :config
+  (with-eval-after-load 'rust-mode
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 
 (use-package yasnippet
   :config
