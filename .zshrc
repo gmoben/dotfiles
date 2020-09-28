@@ -8,14 +8,11 @@ colors
 source <(antibody init)
 antibody bundle < ~/.zplugins
 
-source $HOME/.profile
-
 ## Options section
 
 HISTFILE=~/.zhistory
 HISTSIZE=100000
 SAVEHIST=50000
-
 
 setopt correct           # Auto correct mistakes
 setopt extendedglob      # Extended globbing. Allows using regular expressions with *
@@ -104,3 +101,9 @@ export LESS=-r
 # Use autosuggestion
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
+
+source $HOME/.profile
+
+eval "$(pyenv init -)" || true
+eval "$(pyenv virtualenv-init -)" || true
+pyenv virtualenvwrapper || true

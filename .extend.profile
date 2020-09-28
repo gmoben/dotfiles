@@ -35,10 +35,6 @@ export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 export PYENV_ROOT=$HOME/.pyenv
 export AUTOSWITCH_VIRTUAL_ENV_DIR=$WORKON_HOME
 
-eval "$(pyenv init -)" || true
-eval "$(pyenv virtualenv-init -)" || true
-pyenv virtualenvwrapper || true
-
 # ############
 # # SETTINGS #
 # ############
