@@ -252,10 +252,10 @@ mode "$mode_system" {
 bindsym $mod+p mode "$display_layout"
 set $display_layout (h)ome, (l)aptop, (m)eeting, (w)ork, (q)uit
 mode "$display_layout" {
-	bindsym h exec --no-startup-id ~/.screenlayout/home.sh, mode "default"
-	bindsym l exec --no-startup-id ~/.screenlayout/laptop.sh, mode "default"
-	bindsym m exec --no-startup-id ~/.screenlayout/meeting.sh, mode "default"
-	bindsym w exec --no-startup-id ~/.screenlayout/workstation.sh, mode "default"
+	bindsym h exec --no-startup-id xrandr-apply home, mode "default"
+	bindsym l exec --no-startup-id xrandr-apply laptop, mode "default"
+	bindsym m exec --no-startup-id xrandr-apply meeting, mode "default"
+	bindsym w exec --no-startup-id xrandr-apply workstation, mode "default"
     bindsym q mode "default"
     bindsym Return mode "default"
     bindsym Escape mode "default"
@@ -483,4 +483,4 @@ bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down
 bindsym XF86KbdBrightnessUp exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -inc 10 -steps 100; notify-send 'Keyboard Brightness Up'"
 bindsym XF86KbdBrightnessDown exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -dec 10 -steps 100; notify-send 'Keyboard Brightness Down'"
 
-bindsym $mod+Shift+w exec "wal-set ~/Pictures/wallpaper"
+bindsym $mod+Shift+w exec --no-startup-id "wal-set ~/Pictures/wallpaper"

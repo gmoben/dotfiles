@@ -1,26 +1,11 @@
-#!/usr/bin/env bash
+#!/bin/bash
+declare -A params
+params[eDP-1]="--mode 1920x1080 --pos 0x1080 --rotate normal"
+params[DP-1-1]="--primary --mode 3440x1440 --pos 1920x0 --rotate normal"
 
-eDP="--mode 1920x1080 --pos 0x1080 --rotate normal"
-DP="--primary --mode 3440x1440 --pos 1920x0 --rotate normal"
-xrandr \
-    --output eDP-1 $eDP \
-    --output DP-1 --off \
-    --output DP-1-1 $DP \
-    --output DP-1-2 --off \
-    --output DP-1-3 --off \
-    --output DP-2 --off \
-    --output HDMI-1 --off \
-    --output HDMI-2 --off ||
-    xrandr \
-        --output eDP-1 $eDP \
-        --output DP-1 --off \
-        --output DP-1-1 --off \
-        --output DP-1-2 $DP \
-        --output DP-1-3 --off \
-        --output DP-2 --off \
-        --output HDMI-1 --off \
-        --output HDMI-2 --off
+args=""
+for key in "${!params[@]}"; do
+    args="$args --output $key ${params[$key]}"
+done
 
-sleep 1
-
-[[ -f $HOME/.cache/wal/set_nitrogen.sh ]] && $HOME/.cache/wal/set_nitrogen.sh
+echo $args

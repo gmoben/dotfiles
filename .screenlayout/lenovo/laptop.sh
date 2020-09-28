@@ -1,6 +1,7 @@
 #!/bin/bash
 declare -A params
-params[eDP]="--primary --mode 2880x1800 --pos 0x0 --rotate normal"
+params[HDMI-0]="--off"
+params[eDP-1-1]="--auto"
 
 args=""
 for key in "${!params[@]}"; do
