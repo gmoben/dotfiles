@@ -222,6 +222,17 @@ function raidtimer() {
 }
 fi
 
+function woman() {
+    if [[ -z "$1" ]]; then
+        echo "Usage: woman MANPAGE"
+    fi
+    if ! man -f $1 2>/dev/null; then
+        echo "No manpage for $1"
+    else
+        emacsclient -c -e '(woman "'"$1"'")'
+    fi
+}
+
 # Work/Local aliases
 [[ -f $HOME/.work.aliases ]] && source $HOME/.work.aliases
 [[ -f $HOME/.extend.aliases ]] && source $HOME/.extend.aliases
