@@ -57,8 +57,8 @@ interactive `pyvenv-workon' function before `lsp'"
 (use-package lsp-mode
   :after projectile
   :commands lsp
-  :hook
-  (sh-mode . lsp)
+  :hook ((sh-mode . lsp)
+         (ruby-mode . lsp))
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
@@ -115,7 +115,6 @@ interactive `pyvenv-workon' function before `lsp'"
          ("C-p" . company-select-previous-or-abort)))
 
 (use-package flycheck
-  :after (helm lsp-ui)
   :hook ((after-init . global-flycheck-mode))
   :bind (:map flycheck-mode-map
               ("C-c ! h" . helm-flycheck))
@@ -133,8 +132,7 @@ interactive `pyvenv-workon' function before `lsp'"
 
   (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu))
 
-(use-package helm-lsp
-  :after (helm lsp-mode))
+(use-package helm-lsp :commands helm-lsp-workspace-symbol)
 
 (use-package helm-ag
   :after helm
@@ -210,3 +208,7 @@ interactive `pyvenv-workon' function before `lsp'"
 (use-package neotree :after all-the-icons)
 
 (use-package paradox)
+
+(use-package rvm :commands rvm-activate-ruby-for
+  :init
+  (rvm-activate-ruby-for "/code/work"))

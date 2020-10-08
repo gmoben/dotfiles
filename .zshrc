@@ -107,3 +107,5 @@ source $HOME/.profile
 eval "$(pyenv init -)" || true
 eval "$(pyenv virtualenv-init -)" || true
 pyenv virtualenvwrapper &>/dev/null || true
+
+[[ -f $HOME/.ssh-agent ]] && source ~/.ssh-agent &>/dev/null
