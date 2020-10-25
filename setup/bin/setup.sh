@@ -18,7 +18,7 @@ set_distro() {
         else
         set_distro unsupported
         fi;;
-    *arch*|*MANJARO*)
+    *arch*|*MANJARO*|*microsoft*)
             DISTRO=arch
             INSTALL_CMD='pacaur -S --noconfirm --needed';;
     *Ubuntu*)
@@ -68,8 +68,8 @@ function bootstrap {
 
     case $DISTRO in
         arch)
-            info "Installing pacaur..."
-            sudo pacman -S --noconfirm --needed pacaur
+            info "Installing pacaur and yay..."
+            sudo pacman -S --noconfirm --needed pacaur yay
             ;;
         ubuntu)
             info "Adding PPAs"
@@ -203,28 +203,34 @@ function compile_terminfo {
 }
 
 function setup_git {
-    echo "Setting up libsecret..."
-    LIBSECRET=/usr/share/doc/git/contrib/credential/libsecret
-    sudo make --directory=$LIBSECRET
-
     declare -A gitconfig
     gitconfig[user.name]="gmoben"
     gitconfig[user.email]="ben@warr.io"
-    gitconfig[credential.helper]="$LIBSECRET/git-credential-libsecret"
-    for key in "${!sounds[@]}"; do
-    git config --global $key "${gitconfig[$key]}"
+
+    LIBSECRET=/usr/share/git/credential/libsecret
+    if [[ -d $LIBSECRET ]]; then
+        echo "Setting up libsecret..."
+        sudo make --directory=$LIBSECRET
+        gitconfig[credential.helper]="$LIBSECRET/git-credential-libsecret"
+    else
+        warning "Missing git-credential-libsecret source at $LIBSECRET. Not adding to git config."
+    fi
+
+    for key in "${!gitconfig[@]}"; do
+        git config --global $key "${gitconfig[$key]}" || echo "Setting git config option $key failed!"
     done
+
 }
 
 function main {
     bootstrap
     install_packages
     setup_git
-    install_antibody
-    install_dotfiles
-    compile_terminfo
-    activate_systemd
-    xdg-settings set default-web-browser "firefox.desktop"
+    install_antibody || error "Failed antibody installation"
+    install_dotfiles || error "Failed dotfile installation"
+    compile_terminfo || error "Failed compiling xterm-24bit terminfo"
+    systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
+    xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
 }
 
 main

@@ -7,19 +7,19 @@ source $HOME/.profile
 reload_themes() {
 
     # If active tmux session, reload
-    if (tmux list-sessions &>/dev/null); then
+    if (command -v tmux &>/dev/null && tmux list-sessions &>/dev/null); then
         tmux source-file $HOME/.tmux.conf
         echo "Reloaded tmux"
     fi
 
     # If active tmux session, reload
-    if (wemux list-sessions &>/dev/null); then
+    if (command -v wemux &>/dev/null && wemux list-sessions &>/dev/null); then
         wemux source-file $HOME/.tmux.conf
         echo "Reloaded wemux"
     fi
 
     # If i3status template is installed
-    if [[ `command -v i3` ]]; then
+    if (command -v i3 &>/dev/null); then
         i3 reload &>/dev/null
         echo "Reloaded i3"
     fi
@@ -45,6 +45,7 @@ echo "wal $args"
 if [[ -f $HOME/.cache/wal/set_nitrogen.sh ]]; then
     chmod a+x $HOME/.cache/wal/set_nitrogen.sh
     ($HOME/.cache/wal/set_nitrogen.sh &)
+    echo "Reset nitrogen"
 fi
 
 if [[ -f $HOME/.config/wal/wal-set-post ]]; then
@@ -53,4 +54,5 @@ fi
 
 if [[ `command -v pywalfox` ]]; then
     pywalfox update 2>/dev/null || true
+    echo "Reloaded pywalfox"
 fi

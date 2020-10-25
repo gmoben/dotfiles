@@ -109,3 +109,15 @@ eval "$(pyenv virtualenv-init -)" || true
 pyenv virtualenvwrapper &>/dev/null || true
 
 [[ -f $HOME/.ssh-agent ]] && source ~/.ssh-agent &>/dev/null
+
+# WSL2 X11 Forwarding
+if [[ `uname -r` =~ microsoft-standard ]]; then
+    export WINIP=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)
+    export DISPLAY=$WINIP:0
+    export LIBGL_ALWAYS_INDIRECT=1
+
+    if [[ ! `ps -ef | grep emacs | grep daemon` ]]; then
+        echo "Launching emacsd in the background..."
+        emacsd &>/dev/null &
+    fi
+fi
