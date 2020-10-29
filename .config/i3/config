@@ -250,9 +250,9 @@ mode "$mode_system" {
 }
 
 bindsym $mod+p mode "$display_layout"
-set $display_layout (h)ome, (l)aptop, (m)eeting, (w)ork, (q)uit
+set $display_layout (d)ocked, (l)aptop, (m)eeting, (w)ork, (q)uit
 mode "$display_layout" {
-	bindsym h exec --no-startup-id xrandr-apply home, mode "default"
+	bindsym d exec --no-startup-id xrandr-apply docked, mode "default"
 	bindsym l exec --no-startup-id xrandr-apply laptop, mode "default"
 	bindsym m exec --no-startup-id xrandr-apply meeting, mode "default"
 	bindsym w exec --no-startup-id xrandr-apply workstation, mode "default"
@@ -295,20 +295,8 @@ mode "resize" {
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore; sleep 1; picom -b
-#exec --no-startup-id manjaro-hello
-#exec --no-startup-id nm-applet
-#exec --no-startup-id xfce4-power-manager
-#exec --no-startup-id pamac-tray
-#exec --no-startup-id clipit
-# exec --no-startup-id blueman
-# exec_always --no-startup-id sbxkb
-# exec --no-startup-id start_conky_maia
-# exec --no-startup-id start_conky_green
 exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
-exec --no-startup-id dex -ae i3
-exec_always --no-startup-id ff-theme-util
-exec_always --no-startup-id fix_xcursor
-exec_always --no-startup-id $HOME/.cargo/bin/i3wsr --config $HOME/.config/i3wsr/config.toml
+exec_always --no-startup-id dex -ae i3
 
 # Color palette used for the terminal ( ~/.extend.Xresources file )
 # Colors are gathered based on the documentation:

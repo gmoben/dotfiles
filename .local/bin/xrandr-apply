@@ -6,16 +6,8 @@ if [[ ! -f $layout ]]; then
     return 1
 fi
 
-CONNECTED=$(xrandr | grep -E " connected " | awk '{print $1}')
-DISCONNECTED=$(xrandr | grep -E " disconnected " | awk '{print $1}')
-
-args="$(exec $layout)"
-for key in "$DISCONNECTED"; do
-    args="$args --output $key ${params[$key]}"
-done
-
 echo "Executing: xrandr $args"
-xrandr $args
+exec $layout
 
 echo "Resetting nitrogen"
 $(sleep 1 && [[ -f $HOME/.cache/wal/set_nitrogen.sh ]] && $HOME/.cache/wal/set_nitrogen.sh) &

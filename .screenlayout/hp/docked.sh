@@ -1,7 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 declare -A params
-params[eDP1]="--primary --mode 1920x1080 --pos 0x0 --rotate normal"
-params[eDP-1]=${params[eDP1]}
+params[eDP-1]="--mode 1920x1080 --pos 3840x1376 --rotate normal"
+params[DP-2-1]="--primary --mode 3840x1600 --rate 30 --pos 0x0 --rotate normal"
+params[DP-2-2]=${params[DP-2-1]}
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')
 disconnected=$(xrandr -q | grep " disconnected " | awk '{print $1}')

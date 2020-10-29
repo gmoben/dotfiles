@@ -20,8 +20,8 @@ reload_themes() {
 
     # If i3status template is installed
     if (command -v i3 &>/dev/null); then
-        i3 reload &>/dev/null
-        echo "Reloaded i3"
+        i3 restart &>/dev/null
+        echo "Restarted i3"
     fi
 
     # if [[ -e $HOME/.config/polybar/launch.sh ]]; then
