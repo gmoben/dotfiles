@@ -297,6 +297,7 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
 exec_always --no-startup-id dex -ae i3
+exec_always --no-startup-id volumeicon
 
 # Color palette used for the terminal ( ~/.extend.Xresources file )
 # Colors are gathered based on the documentation:
@@ -458,10 +459,11 @@ mode "$mode_gaps_outer" {
         bindsym Escape mode "default"
 }
 
-# Pulse Audio Controls
-# bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set_from_resource-sink-volume 0 +5% # Increase
-# bindsym XF86AudioLowerVolume exec --no-startup-id pactl set_from_resource-sink-volume 0 -5% # Decrease
-# bindsym XF86AudioMute exec --no-startup-id pactl set_from_resource-sink-mute 0 toggle # Mute
+### These should be mapped using volumeicon preference instead ###
+#Pulse Audio Controls
+#bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set_from_resource-sink-volume 0 +5% # Increase
+#bindsym XF86AudioLowerVolume exec --no-startup-id pactl set_from_resource-sink-volume 0 -5% # Decrease
+#bindsym XF86AudioMute exec --no-startup-id pactl set_from_resource-sink-mute 0 toggle # Mute
 
 # Screen brightness controls
 bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; xbacklight -inc 10"
