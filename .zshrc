@@ -5,6 +5,8 @@ autoload -Uz compinit colors zcalc
 compinit -d
 colors
 
+source $HOME/.profile
+
 source <(antibody init)
 antibody bundle < ~/.zplugins
 
@@ -25,7 +27,12 @@ setopt appendhistory     # Immediately append history instead of overwriting
 setopt histignorealldups # If a new command is a duplicate, remove the older one
 setopt autocd            # if only directory path is entered, cd there.
 
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'       # Case insensitive tab completion
+# Fuzzy-match completions >> https://superuser.com/a/815317
+zstyle ':completion:*' matcher-list '' \
+  'm:{a-z\-}={A-Z\_}' \
+  'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
+  'r:|?=** m:{a-z\-}={A-Z\_}'
+
 zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"         # Colored completion (different colors for dirs/files/etc)
 zstyle ':completion:*' rehash true                              # automatically find new executables in path
 # Speed up completions
@@ -102,8 +109,6 @@ export LESS=-r
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
 
-source $HOME/.profile
-
 eval "$(pyenv init -)" || true
 eval "$(pyenv virtualenv-init -)" || true
 pyenv virtualenvwrapper &>/dev/null || true
@@ -121,3 +126,5 @@ if [[ `uname -r` =~ microsoft-standard ]]; then
         emacsd &>/dev/null &
     fi
 fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
