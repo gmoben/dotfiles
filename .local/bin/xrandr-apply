@@ -7,7 +7,10 @@ if [[ ! -f $layout ]]; then
 fi
 
 echo "Executing: xrandr $args"
-exec $layout
+eval $layout
+
+echo "Restarting i3"
+i3 restart || true
 
 echo "Resetting nitrogen"
 $(sleep 1 && [[ -f $HOME/.cache/wal/set_nitrogen.sh ]] && $HOME/.cache/wal/set_nitrogen.sh) &
