@@ -98,3 +98,9 @@ See `sort-regexp-fields'."
 
 ;; visual-line-mode for line wrapping
 (setq global-visual-line-mode 1)
+
+(global-set-key (kbd "C-c TAB") 'indent-region)
+(global-set-key (kbd "C-x TAB") 'indent-rigidly)
+
+(global-set-key (kbd "C-c e b") 'eval-buffer)
+(global-set-key (kbd "C-c e r") 'eval-region)

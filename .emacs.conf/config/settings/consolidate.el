@@ -58,7 +58,8 @@ interactive `pyvenv-workon' function before `lsp'"
   :after projectile
   :commands lsp
   :hook ((sh-mode . lsp)
-         (ruby-mode . lsp))
+         (ruby-mode . lsp)
+         (python-mode . lsp))
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
@@ -212,3 +213,18 @@ interactive `pyvenv-workon' function before `lsp'"
 (use-package rvm :commands rvm-activate-ruby-for
   :init
   (rvm-activate-ruby-for "/code/work"))
+
+(use-package jedi
+  :commands (jedi:install-server jedi:setup)
+  :init
+  (jedi:install-server)
+  (add-hook 'python-mode-hook 'jedi:setup)
+  (setq jedi:setup-keys t)                      ; optional
+  (setq jedi:complete-on-dot t)                 ; optional
+  )
+
+(use-package helm-org
+  :after helm
+  :config
+  (add-to-list 'helm-completing-read-handlers-alist '(org-capture . helm-org-completing-read-tags))
+  (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags . helm-org-completing-read-tags)))

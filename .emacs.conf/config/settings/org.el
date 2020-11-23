@@ -189,3 +189,18 @@
 ;; (add-hook 'org-clock-out-hook 'bmw/remove-empty-drawer-on-clock-out 'append)
 
 (add-hook 'org-mode-hook 'visual-line-mode)
+
+(defun org-insert-heading-with-timestamp ()
+  (interactive)
+  (org-insert-heading-after-current)
+  (let ((current-prefix-arg '(16))) (call-interactively #'org-time-stamp))
+  (insert " "))
+
+(defun org-insert-heading-with-timestamp-inactive ()
+  (interactive)
+  (org-insert-heading-after-current)
+  (let ((current-prefix-arg '(16))) (call-interactively #'org-time-stamp-inactive)))
+
+(define-key org-mode-map (kbd "C-c h .") 'org-insert-heading-with-timestamp)
+
+(define-key org-mode-map (kbd "C-c h !") 'org-insert-heading-with-timestamp-inactive)
