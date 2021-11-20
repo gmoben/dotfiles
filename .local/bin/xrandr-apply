@@ -7,7 +7,7 @@ if [[ ! -f $layout ]]; then
 fi
 
 echo "Executing: xrandr $args"
-eval $layout
+xrandr `eval $layout`
 
 echo "Restarting i3"
 i3 restart || true

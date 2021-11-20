@@ -1,6 +1,10 @@
 #!/bin/bash
 declare -A params
-params[eDP-1-1]="--auto"
+
+# params[HDMI-0]="--off"
+# params[DP-1.1]="--off"
+# params[DP-1.2]="--off"
+params[eDP-1-1]="--primary --auto"
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')
 disconnected=$(xrandr -q | grep " disconnected " | awk '{print $1}')
@@ -15,4 +19,4 @@ for output in $disconnected; do
     args="$args --output $output --off"
 done
 
-xrandr $args
+echo $args
