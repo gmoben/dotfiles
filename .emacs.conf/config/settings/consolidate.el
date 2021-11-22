@@ -212,7 +212,7 @@ interactive `pyvenv-workon' function before `lsp'"
 
 (use-package rvm :commands rvm-activate-ruby-for
   :init
-  (rvm-activate-ruby-for "/code/work"))
+  (rvm-activate-ruby-for "/code"))
 
 (use-package jedi
   :commands (jedi:install-server jedi:setup)
@@ -224,7 +224,7 @@ interactive `pyvenv-workon' function before `lsp'"
   )
 
 (use-package helm-org
-  :after helm
+  :after (helm helm-mode)
   :config
   (add-to-list 'helm-completing-read-handlers-alist '(org-capture . helm-org-completing-read-tags))
   (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags . helm-org-completing-read-tags)))
