@@ -67,6 +67,7 @@ interactive `pyvenv-workon' function before `lsp'"
   (setq lsp-completion-enable-additional-text-edit nil)
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
+  (setq lsp-headerline-breadcrumb-enable nil)
   (setq lsp-pyls-configuration-sources ["flake8"])
   (setq lsp-pyls-plugins-pycodestyle t)
   (setq lsp-pyls-plugins-pycodestyle-hang-closing t)
