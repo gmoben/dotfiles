@@ -44,7 +44,7 @@ bindsym $mod+z exec --no-startup-id morc_menu
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
 ################################################################################################
 
-exec --no-startup-id sleep 3; volumeicon
+exec_always --no-startup-id "sleep 3; pgrep volumeicon || volumeicon"
 bindsym $mod+Ctrl+m exec --no-startup-id pavucontrol
 
 ################################################################################################
@@ -265,8 +265,8 @@ mode "$display_layout" {
 bindsym $mod+9 exec --no-startup-id xscreensaver-command --lock
 
 # Application shortcuts
-bindsym $mod+i exec --no-startup-id firefox -P
-bindsym $mod+Shift+i exec --no-startup-id firefox
+bindsym $mod+i exec --no-startup-id firefox
+bindsym $mod+Shift+i exec --no-startup-id firefox -P
 
 # Resize window (you can also use the mouse for that)
 bindsym $mod+r mode "resize"
@@ -297,7 +297,6 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
 exec_always --no-startup-id dex -ae i3
-exec_always --no-startup-id volumeicon
 
 # Color palette used for the terminal ( ~/.extend.Xresources file )
 # Colors are gathered based on the documentation:
