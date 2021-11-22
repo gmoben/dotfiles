@@ -69,5 +69,11 @@ if [[ -e `command -v wal` ]]; then
     [[ -f ~/.cache/wal/colors-tty.sh ]] && source ~/.cache/wal/colors-tty.sh
 fi
 
+if [[ ! `ps -ef | grep emacs | grep daemon` ]]; then
+    echo "Launching emacsd in the background..."
+    emacsd &>/dev/null &
+fi
+
+
 ## Dedup path entries ##
 export PATH=$(echo $PATH | dedup ":")
