@@ -39,9 +39,15 @@ alias emacsd="TERM=$term emacs --daemon"
 alias emacsc="TERM=$term emacsclient -t"
 alias tmuxconf="TERM=$term emacsclient -t $HOME/.tmux.conf"
 alias emacsconf="TERM=$term emacsclient -t $HOME/.emacs.conf"
-alias e="TERM=$term emacsclient -t ."
 alias ecode="TERM=$term emacsclient -t /code"
 alias ehome="TERM=$term emacsclient -t $HOME"
+
+function e() {
+    emacsc ${1:-.}
+}
+
+# Reload shell
+alias exsh='exec $SHELL'
 
 # Tmux
 export TMUX_DEFAULT_SESSION_GROUP=${TMUX_DEFAULT_SESSION_GROUP:-"main"}
@@ -232,6 +238,10 @@ function woman() {
         emacsclient -c -e '(woman "'"$1"'")'
     fi
 }
+
+alias pyserve='python -m http.server'
+
+alias decolorize='sed -r "s/\\x1B\\[([0-9]{1,3}(;[0-9]{1,2})?)?[mGK]//g"'
 
 # Work/Local aliases
 [[ -f $HOME/.work.aliases ]] && source $HOME/.work.aliases

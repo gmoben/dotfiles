@@ -104,3 +104,6 @@ See `sort-regexp-fields'."
 
 (global-set-key (kbd "C-c e b") 'eval-buffer)
 (global-set-key (kbd "C-c e r") 'eval-region)
+
+;; Use shift-arrows instead of 'C-x o' to switch windows
+(windmove-default-keybindings)

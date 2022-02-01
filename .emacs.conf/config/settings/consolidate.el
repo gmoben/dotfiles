@@ -1,3 +1,5 @@
+(use-package auto-minor-mode)
+
 (use-package any-ini-mode
   :load-path "../.emacs.conf/lisp"
   :config
@@ -59,7 +61,8 @@ interactive `pyvenv-workon' function before `lsp'"
   :commands lsp
   :hook ((sh-mode . lsp)
          (ruby-mode . lsp)
-         (python-mode . lsp))
+         (python-mode . lsp)
+         (java-mode . lsp))
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
               ("C-c l r" . lsp-rename))
@@ -75,18 +78,24 @@ interactive `pyvenv-workon' function before `lsp'"
   (setq lsp-pyls-plugins-pydocstyle-enabled nil)
   (setq lsp-pyls-plugins-flake8-hang-closing t)
   (setq lsp-pyls-plugins-flake8-max-line-lenth 120)
-  (setq lsp-pyls-plugins-jedit-use-pyenv-environment t))
+  (setq lsp-pyls-plugins-jedit-use-pyenv-environment t)
+  :config
+  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
 (use-package lsp-java
   :config
-  (add-hook 'java-mode-hook 'lsp)
-  ;; (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
-  ;; (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" gmoben/lsp-java-lombok-jar-location))
-  ;; (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" gmoben/lsp-java-lombok-jar-location))
+  (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
+  (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" gmoben/lsp-java-lombok-jar-location))
+  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" gmoben/lsp-java-lombok-jar-location))
 )
 
 (use-package dap-mode
-  :config (dap-auto-configure-mode))
+  :commands dap-mode
+  :config
+  (dap-mode 1)
+  (require 'dap-ui)
+  (dap-ui-mode 1)
+  (require 'dap-lldb))
 
 (use-package dap-java :ensure nil)
 
@@ -125,6 +134,8 @@ interactive `pyvenv-workon' function before `lsp'"
 
 (use-package helm
   :init (setq helm-M-x-fuzzy-match t)
+  :custom
+  (helm-completion-style 'emacs)
   :config
   ;; Remapped bindings
   (global-set-key [remap execute-extended-command] 'helm-M-x)
@@ -132,9 +143,15 @@ interactive `pyvenv-workon' function before `lsp'"
   (global-set-key [remap list-buffers] 'helm-buffers-list)
   (global-set-key [remap yank-pop] 'helm-show-kill-ring)
 
-  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu))
+  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu)
+  (setq completion-styles `(basic partial-completion emacs22 initials
+                                  ,(if (version<= emacs-version "27.0") 'helm-flex 'flex)))
+  )
 
-(use-package helm-lsp :commands helm-lsp-workspace-symbol)
+(use-package helm-lsp
+  :config
+  (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+  (define-key lsp-mode-map [remap lsp-execute-code-action] #'helm-lsp-code-actions))
 
 (use-package helm-ag
   :after helm
@@ -196,9 +213,14 @@ interactive `pyvenv-workon' function before `lsp'"
 
 (use-package treemacs
   :config
-  (global-set-key (kbd "C-c t") 'treemacs))
+  (global-set-key (kbd "C-c t") 'treemacs)
+  (treemacs-git-mode 'extended)
+  (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
+
 (use-package treemacs-projectile :after (treemacs))
-(use-package lsp-treemacs :after (lsp-mode treemacs))
+(use-package lsp-treemacs :after (lsp-mode treemacs)
+  :config
+  (lsp-treemacs-sync-mode 1))
 
 (setq compilation-scroll-output t)
 
@@ -213,7 +235,7 @@ interactive `pyvenv-workon' function before `lsp'"
 
 (use-package rvm :commands rvm-activate-ruby-for
   :init
-  (rvm-activate-ruby-for "/code"))
+  (rvm-use-default))
 
 (use-package jedi
   :commands (jedi:install-server jedi:setup)
@@ -229,3 +251,13 @@ interactive `pyvenv-workon' function before `lsp'"
   :config
   (add-to-list 'helm-completing-read-handlers-alist '(org-capture . helm-org-completing-read-tags))
   (add-to-list 'helm-completing-read-handlers-alist '(org-set-tags . helm-org-completing-read-tags)))
+
+(use-package helm-xref)
+
+;; Move buffers between windows
+(use-package buffer-move
+  :config
+  (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+  (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+  (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+  (global-set-key (kbd "<C-S-right>")  'buf-move-right))

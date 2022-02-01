@@ -28,6 +28,7 @@ setopt histignorealldups # If a new command is a duplicate, remove the older one
 setopt autocd            # if only directory path is entered, cd there.
 
 # Fuzzy-match completions >> https://superuser.com/a/815317
+
 zstyle ':completion:*' matcher-list '' \
   'm:{a-z\-}={A-Z\_}' \
   'r:[^[:alpha:]]||[[:alpha:]]=** r:|=* m:{a-z\-}={A-Z\_}' \
