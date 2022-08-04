@@ -2,6 +2,8 @@
 
 fpath+=~/.zfunc
 autoload -Uz compinit colors zcalc
+autoload bashcompinit
+bashcompinit
 compinit -d
 colors
 

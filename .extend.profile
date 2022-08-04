@@ -74,6 +74,7 @@ if [[ ! `ps -ef | grep emacs | grep daemon` ]]; then
     emacsd &>/dev/null &
 fi
 
+[[ -e `command -v aws_completer` ]] && complete -C '$(command -v aws_completer)' aws
 
 ## Dedup path entries ##
 export PATH=$(echo $PATH | dedup ":")

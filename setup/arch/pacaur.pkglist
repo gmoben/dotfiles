@@ -1,5 +1,6 @@
 acpica
 arandr
+aws-cli-v2-bin
 cool-retro-term
 cpio
 dex
@@ -24,9 +25,12 @@ pulseaudio-alsa
 python-pip
 read-edid
 rofi
+ruby
+ruby2.7
 scrot
 selenium-server-standalone
 spotify-tui
+sshfs
 steam
 the_silver_searcher
 tmux

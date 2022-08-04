@@ -31,6 +31,7 @@
 (setq org-clock-persist 'history)
 
 ;; Todo
+(setq org-log-into-drawer t)
 (setq org-log-reschedule 'time) ;; Add annotations when a task is rescheduled
 (setq org-enforce-todo-dependencies t)
 (setq org-enforce-todo-checkbox-dependencies t)
@@ -147,17 +148,31 @@
 ;; (global-set-key (kbd "C-c o w s") (lambda() (interactive) (find-file ben/org/work/stories)))
 ;; (global-set-key (kbd "C-c o w n") (lambda() (interactive) (find-file ben/org/work/snippets)))
 
-;; Org-mode bindings
+;; Org-specific bindings
+
+;; Headings
+(define-key org-mode-map (kbd "C-c o t") 'org-insert-todo-heading)
 (define-key org-mode-map (kbd "C-c o h") 'org-insert-heading-after-current)
 (define-key org-mode-map (kbd "C-c o s") (lambda ()
                        (interactive)
                        (end-of-line)
                        (org-insert-subheading nil))) ;; Insert after current line
-(define-key org-mode-map (kbd "C-c o t") 'org-insert-todo-heading)
-(define-key org-mode-map (kbd "C-c o s") (lambda ()
-                       (interactive)
-                       (end-of-line)
-                       (org-insert-subheading nil))) ;; Insert after current line
+
+;; Headers with timestamps (useful for meeting minutes)
+(defun org-insert-heading-with-timestamp ()
+  (interactive)
+  (org-insert-heading-after-current)
+  (let ((current-prefix-arg '(16))) (call-interactively #'org-time-stamp))
+  (insert " "))
+
+(defun org-insert-heading-with-timestamp-inactive ()
+  (interactive)
+  (org-insert-heading-after-current)
+  (let ((current-prefix-arg '(16))) (call-interactively #'org-time-stamp-inactive)))
+
+(define-key org-mode-map (kbd "C-c h .") 'org-insert-heading-with-timestamp)
+(define-key org-mode-map (kbd "C-c h !") 'org-insert-heading-with-timestamp-inactive)
+
 
 ;; Properties
 (define-key org-mode-map (kbd "C-c o p s") 'org-set-property)
@@ -189,18 +204,3 @@
 ;; (add-hook 'org-clock-out-hook 'bmw/remove-empty-drawer-on-clock-out 'append)
 
 (add-hook 'org-mode-hook 'visual-line-mode)
-
-(defun org-insert-heading-with-timestamp ()
-  (interactive)
-  (org-insert-heading-after-current)
-  (let ((current-prefix-arg '(16))) (call-interactively #'org-time-stamp))
-  (insert " "))
-
-(defun org-insert-heading-with-timestamp-inactive ()
-  (interactive)
-  (org-insert-heading-after-current)
-  (let ((current-prefix-arg '(16))) (call-interactively #'org-time-stamp-inactive)))
-
-(define-key org-mode-map (kbd "C-c h .") 'org-insert-heading-with-timestamp)
-
-(define-key org-mode-map (kbd "C-c h !") 'org-insert-heading-with-timestamp-inactive)

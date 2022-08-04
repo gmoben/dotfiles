@@ -1,0 +1,9 @@
+samba
+samba-common-bin
+smbclient
+cifs-utils
+emacs-nox
+nfs-kernel-server
+sshfs
+python3-pip
+git

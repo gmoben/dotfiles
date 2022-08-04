@@ -10,7 +10,7 @@ SETUP=$ROOT/setup
 source $ROOT/.shutils
 source $SETUP/bin/utils.sh
 
-set_distro() {
+function set_distro {
     case "$1" in
     *Microsoft*)
         if [[ `command -v lsb_release` ]]; then
@@ -19,14 +19,17 @@ set_distro() {
         set_distro unsupported
         fi;;
     *arch*|*MANJARO*|*microsoft*)
-            DISTRO=arch
-            INSTALL_CMD='pacaur -S --noconfirm --needed';;
+        DISTRO=arch
+        INSTALL_CMD='pacaur -S --noconfirm --needed';;
     *Ubuntu*)
-            DISTRO=ubuntu
-            INSTALL_CMD='sudo apt install -y';;
+        DISTRO=ubuntu
+        INSTALL_CMD='sudo apt install -y';;
     *Darwin*)
-            DISTRO=darwin
-            INSTALL_CMD='brew install';;
+        DISTRO=darwin
+        INSTALL_CMD='brew install';;
+    *armv7l*)
+        DISTRO=rpi
+        INSTALL_CMD='sudo apt install -y';;
     *)
         DISTRO=unsupported
         error "Unsupported platform $(bold $PLATFORM) detected"
@@ -35,7 +38,7 @@ set_distro() {
 }
 
 
-PLATFORM=$(eval python3 -mplatform | grep -iE 'arch|Ubuntu|MANJARO|Microsoft')
+PLATFORM=$(eval python3 -mplatform | grep -iE 'arch|Ubuntu|MANJARO|Microsoft|armv7l')
 set_distro $PLATFORM
 success "Platform Detected" "$PLATFORM"
 success "Distribution Detected" "$DISTRO"
@@ -64,7 +67,9 @@ function bootstrap {
 
     mkdir -p /code/ben && \
         mkdir -p /code/ext && \
-    mkdir -p $HOME/.local/bin
+        mkdir -p $HOME/.local/bin
+
+    touch /code/.ruby-version
 
     case $DISTRO in
         arch)
@@ -85,7 +90,10 @@ function bootstrap {
 
             [[ -e $HOME/.local/bin/kitty ]] && rm -f $HOME/.local/bin/kitty
             ln -s $HOME/.local/kitty.app/bin/kitty $HOME/.local/bin/
-           ;;
+            ;;
+        rpi)
+            sudo apt-get update
+            ;;
         *) warning "No bootstrap step for distro" "$DISTRO" ;;
     esac
 }
@@ -161,6 +169,9 @@ function install_base {
             PKGLIST=`cat $SETUP/ubuntu/apt.pkglist | grep -vE "#.*" | xargs`
             [[ $IS_MBP -eq 1 ]] && warning "Warning: No MBP $DISTRO support yet."
             ;;
+        rpi)
+            PKGLIST=`cat $SETUP/rpi/apt.pkglist | grep -vE "#.*" | xargs`
+            ;;
         *)
             error "Sorry, $DISTRO isn't supported."
             exit 1
@@ -176,7 +187,8 @@ function install_packages {
 
     case $DISTRO in
     arch)
-        [[ $IS_MBP -eq 0 ]] && install_mbp_extras;;
+        [[ $IS_MBP -eq 0 ]] && install_mbp_extras
+        ;;
     ubuntu)
         echo "Installing diff-so-fancy..."
         sudo npm install --global diff-so-fancy
@@ -188,6 +200,15 @@ function install_packages {
         $INSTALL_CMD /tmp/$deb
         rm -f /tmp/$deb
         run_keybase
+        ;;
+    rpi)
+        echo "Installing AWSCLI v2 from Github..."
+
+        $(cd /tmp && git clone https://github.com/aws/aws-cli.git \
+              && cd aws-cli && git checkout v2 \
+              && pip3 install -r requirements.txt \
+              && pip3 install .)
+        rm -rf /tmp/aws-cli
         ;;
     *)
         warning "No extras to install for distribution $DISTRO" " ";;
@@ -233,4 +254,13 @@ function main {
     xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
 }
 
-main
+function setup_rpi {
+    compile_terminfo || error "Failed compiling xterm-24bit terminfo"
+    $INSTALL_CMD
+}
+
+if [[ $1 == 'rpi' ]]; then
+    setup_rpi
+else
+    main
+fi
