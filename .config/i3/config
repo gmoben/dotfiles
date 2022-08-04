@@ -472,4 +472,4 @@ bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down
 bindsym XF86KbdBrightnessUp exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -inc 10 -steps 100; notify-send 'Keyboard Brightness Up'"
 bindsym XF86KbdBrightnessDown exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -dec 10 -steps 100; notify-send 'Keyboard Brightness Down'"
 
-bindsym $mod+Shift+w exec --no-startup-id "wal-set ~/Pictures/wallpaper"
+bindsym $mod+Shift+w exec --no-startup-id "rofi -modi 'wal-pick:wal-pick' -show wal-pick"
