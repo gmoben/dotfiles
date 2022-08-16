@@ -6,40 +6,40 @@
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 
-(use-package pyvenv
-  :after python-mode
-  :commands gmoben/py-auto-lsp
-  :bind (:map python-mode-map
-              ("C-c C-a" . gmoben/py-auto-lsp))
-  :hook (python-mode . gmoben/py-auto-lsp)
-  :init
-  (setenv "WORKON_HOME" (substitute-in-file-name "$HOME/.pyenv/versions"))
-  (defun gmoben/py-workon-project-venv ()
-    "Call pyenv-workon with the current projectile project name.
-This will return the full path of the associated virtual
-environment found in $WORKON_HOME, or nil if the environment does
-not exist."
-    (let ((pname (projectile-project-name)))
-      (pyvenv-workon pname)
-      (if (file-directory-p pyvenv-virtual-env)
-          pyvenv-virtual-env
-        (pyvenv-deactivate))))
+;; (use-package pyvenv
+;;   :after python-mode
+;;   :commands gmoben/py-auto-lsp
+;;   :bind (:map python-mode-map
+;;               ("C-c C-a" . gmoben/py-auto-lsp))
+;;   :hook (python-mode . gmoben/py-auto-lsp)
+;;   :init
+;;   (setenv "WORKON_HOME" (substitute-in-file-name "$HOME/.pyenv/versions"))
+;;   (defun gmoben/py-workon-project-venv ()
+;;     "Call pyenv-workon with the current projectile project name.
+;; This will return the full path of the associated virtual
+;; environment found in $WORKON_HOME, or nil if the environment does
+;; not exist."
+;;     (let ((pname (projectile-project-name)))
+;;       (pyvenv-workon pname)
+;;       (if (file-directory-p pyvenv-virtual-env)
+;;           pyvenv-virtual-env
+;;         (pyvenv-deactivate))))
 
-  (defun gmoben/py-auto-lsp ()
-    "Turn on lsp mode in a Python project with some automated logic.
-Try to automatically determine which pyenv virtual environment to
-activate based on the project name, using
-`dd/py-workon-project-venv'. If successful, call `lsp'. If we
-cannot determine the virtualenv automatically, first call the
-interactive `pyvenv-workon' function before `lsp'"
-    (interactive)
-    (let ((pvenv (gmoben/py-workon-project-venv)))
-      (if pvenv
-          (lsp)
-        (progn
-          (call-interactively #'pyvenv-workon)
-          (lsp)))))
-  )
+;;   (defun gmoben/py-auto-lsp ()
+;;     "Turn on lsp mode in a Python project with some automated logic.
+;; Try to automatically determine which pyenv virtual environment to
+;; activate based on the project name, using
+;; `dd/py-workon-project-venv'. If successful, call `lsp'. If we
+;; cannot determine the virtualenv automatically, first call the
+;; interactive `pyvenv-workon' function before `lsp'"
+;;     (interactive)
+;;     (let ((pvenv (gmoben/py-workon-project-venv)))
+;;       (if pvenv
+;;           (lsp)
+;;         (progn
+;;           (call-interactively #'pyvenv-workon)
+;;           (lsp)))))
+;;   )
 
 (use-package python-docstring
   :after python-mode
@@ -71,14 +71,14 @@ interactive `pyvenv-workon' function before `lsp'"
   (setq lsp-clients-go-imports-local-prefix "ben")
   (setq lsp-auto-guess-root t)
   (setq lsp-headerline-breadcrumb-enable nil)
-  (setq lsp-pyls-configuration-sources ["flake8"])
-  (setq lsp-pyls-plugins-pycodestyle t)
-  (setq lsp-pyls-plugins-pycodestyle-hang-closing t)
-  (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
-  (setq lsp-pyls-plugins-pydocstyle-enabled nil)
-  (setq lsp-pyls-plugins-flake8-hang-closing t)
-  (setq lsp-pyls-plugins-flake8-max-line-lenth 120)
-  (setq lsp-pyls-plugins-jedit-use-pyenv-environment t)
+  ;; (setq lsp-pyls-configuration-sources ["flake8"])
+  ;; (setq lsp-pyls-plugins-pycodestyle t)
+  ;; (setq lsp-pyls-plugins-pycodestyle-hang-closing t)
+  ;; (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
+  ;; (setq lsp-pyls-plugins-pydocstyle-enabled nil)
+  ;; (setq lsp-pyls-plugins-flake8-hang-closing t)
+  ;; (setq lsp-pyls-plugins-flake8-max-line-lenth 120)
+  ;; (setq lsp-pyls-plugins-jedit-use-pyenv-environment t)
   :config
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
@@ -86,8 +86,32 @@ interactive `pyvenv-workon' function before `lsp'"
   :config
   (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
   (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" gmoben/lsp-java-lombok-jar-location))
-  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" gmoben/lsp-java-lombok-jar-location))
-)
+  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" gmoben/lsp-java-lombok-jar-location)))
+
+(use-package lsp-pyright
+  :hook (python-mode . (lambda ()
+                         (require 'lsp-pyright)
+                         (lsp))))
+
+;; Mode-specific flycheck chaining for mutli-mode lsp checker
+;; https://github.com/flycheck/flycheck/issues/1762
+(use-package flycheck
+  :hook ((after-init . global-flycheck-mode))
+  :preface
+  (defvar-local flycheck-local-checkers nil)
+  (defun +flycheck-checker-get(fn checker property)
+    (or (alist-get property (alist-get checker flycheck-local-checkers))
+        (funcall fn checker property)))
+  (advice-add 'flycheck-checker-get :around '+flycheck-checker-get)
+  :bind (:map flycheck-mode-map
+              ("C-c ! h" . helm-flycheck))
+  :config
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+(use-package python-mode
+  :hook
+  (python-mode . lsp)
+  (python-mode . (lambda () (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8)))))))))
 
 (use-package dap-mode
   :commands dap-mode
@@ -124,13 +148,6 @@ interactive `pyvenv-workon' function before `lsp'"
          ("C-:" . helm-company)
          ("C-n" . company-select-next-or-abort)
          ("C-p" . company-select-previous-or-abort)))
-
-(use-package flycheck
-  :hook ((after-init . global-flycheck-mode))
-  :bind (:map flycheck-mode-map
-              ("C-c ! h" . helm-flycheck))
-  :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (use-package helm
   :init (setq helm-M-x-fuzzy-match t)
@@ -236,15 +253,6 @@ interactive `pyvenv-workon' function before `lsp'"
 (use-package rvm :commands rvm-activate-ruby-for
   :init
   (rvm-use-default))
-
-(use-package jedi
-  :commands (jedi:install-server jedi:setup)
-  :init
-  (jedi:install-server)
-  (add-hook 'python-mode-hook 'jedi:setup)
-  (setq jedi:setup-keys t)                      ; optional
-  (setq jedi:complete-on-dot t)                 ; optional
-  )
 
 (use-package helm-org
   :after (helm helm-mode)
