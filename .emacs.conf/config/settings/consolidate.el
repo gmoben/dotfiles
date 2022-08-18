@@ -61,7 +61,6 @@
   :commands lsp
   :hook ((sh-mode . lsp)
          (ruby-mode . lsp)
-         (python-mode . lsp)
          (java-mode . lsp))
   :bind (:map lsp-mode-map
               ("C-c l a" . lsp-execute-code-action)
@@ -110,8 +109,7 @@
 
 (use-package python-mode
   :hook
-  (python-mode . lsp)
-  (python-mode . (lambda () (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8)))))))))
+  (python-mode . (lambda () (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8 python-pylint)))))))))
 
 (use-package dap-mode
   :commands dap-mode
@@ -181,6 +179,7 @@
   :config (helm-descbinds-mode))
 
 (use-package helm-describe-modes
+
   :after (helm)
   :config (global-set-key [remap describe-mode] 'helm-describe-modes))
 
