@@ -2,7 +2,7 @@
 declare -A params
 params[HDMI1]="--primary --mode 3840x1600 --pos 1920x0 --rotate normal"
 params[HDMI-1]=${params[HDMI-1]}
-params[eDP1]="--mode 1920x1080 --pos 0x1088 --rotate normal"
+params[eDP1]="--mode 1920x1080 --pos 0x520 --rotate normal"
 params[eDP-1]=${params[eDP1]}
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')
