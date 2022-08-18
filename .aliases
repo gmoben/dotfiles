@@ -65,22 +65,23 @@ function tmn() {
 
     # Create a detached root session that will persist without any attached clients.
     # This preserves the windows even if we detach from all child clients.
-    if [[ ! `tmux has-session -t $root_session_name` ]]; then
-        tmux new-session -d -s $root_session_name -t $session_group &>/dev/null
+    if ! tmux has-session -t "$root_session_name" &>/dev/null; then
+        tmux new-session -d -s "$root_session_name" -t "$session_group" &>/dev/null
     fi
 
-    # Count the existing sessions (i.e. currently attached terminals) and build new session name
-    local session_count=`tmux_session_count $session_group`
-    local new_session_name="$session_group-$((session_count - 1))"
+    # Look for first available session suffix
+    # For example, if the user creates 4 sessions, then kills sessions 1 and 2,
+    # (e.g. main-0 and main-3 still exist), new calls to tmn will create (in order):
+    # main-1, main-2, main-4, main-5, etc.
+    local suffix=0
+    while tmux has-session -t "$session_group-$suffix" &>/dev/null; do
+        suffix=$((suffix + 1))
+    done
 
     # Start children sessions with destroy-unattached
-    tmux new-session -s "$new_session_name" -t $session_group \; set-option destroy-unattached
+    tmux new-session -s "$session_group-$suffix" -t $session_group \; set-option destroy-unattached
 }
 
-function tmux_session_count() {
-    local session_group=${1:-$TMUX_DEFAULT_SESSION_GROUP}
-    tmux list-sessions -F "#{session_group}" | grep "$session_group" | wc -l
-}
 
 alias tmk="tmux kill-session -t"
 alias tml="tmux list-sessions"
