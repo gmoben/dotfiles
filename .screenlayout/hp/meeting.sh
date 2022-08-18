@@ -16,4 +16,4 @@ for output in $disconnected; do
     args="$args --output $output --off"
 done
 
-xrandr $args
+echo $args

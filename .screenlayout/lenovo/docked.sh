@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 declare -A params
 
 params[eDP-1-1]="--mode 1920x1080 --pos 0x520 --rotate normal"

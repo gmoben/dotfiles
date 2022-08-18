@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 declare -A params
 
 # params[HDMI-0]="--off"

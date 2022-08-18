@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 declare -A params
 params[eDP1]="--primary --mode 1920x1080 --pos 0x0 --rotate normal"
 params[eDP-1]=${params[eDP1]}
@@ -16,4 +16,4 @@ for output in $disconnected; do
     args="$args --output $output --off"
 done
 
-xrandr $args
+echo $args
