@@ -132,17 +132,27 @@ EOF
 
 function pip_packages {
     local _pip=`which pip3`
+
     if [[ -n "$_pip" && ! -e "$(dirname $_pip)/pip" ]]; then
-    sudo ln -s $_pip $(dirname $_pip)/pip
+        sudo ln -s $_pip $(dirname $_pip)/pip
     elif [[ -z "$_pip" ]]; then
-    _pip=`which pip`
+        _pip=`which pip`
     fi
+
     if [[ `command -v $_pip` ]]; then
-    sudo $_pip install --ignore-installed -r $SETUP/requirements.txt
+        sudo $_pip install --ignore-installed -r $SETUP/python/requirements.txt
+        $_pip install --user pipx
+        pipx ensurepath
     else
-    error "Can't find pip!"
-    exit 1
+        error "Can't find pip!"
+        exit 1
     fi
+
+    cat $SETUP/python/pipx.txt | while read line || [[ -n $line ]]; do
+        pipx install $line
+    done
+
+
 }
 
 function install_dotfiles {

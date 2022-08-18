@@ -6,7 +6,8 @@ new_agent() {
     echo "Started new ssh-agent (SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID)"
 }
 
-if [[ -e $HOME/.ssh-agent ]]; then
+# If file exists and isn't empty
+if [[ -s $HOME/.ssh-agent ]]; then
     source $HOME/.ssh-agent &>/dev/null
     if [[ -n "$SSH_AUTH_SOCK" && ! -e $SSH_AUTH_SOCK ]]; then
         echo "ssh-agent $SSH_AUTH_SOCK is dead"

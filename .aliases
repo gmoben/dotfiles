@@ -253,7 +253,7 @@ function nc200() {
         echo "Usage: nc200 LISTEN_PORT"
     else
         while true; do
-            nc -l -p $1 -c 'echo -e "HTTP/1.1 200 OK\n\n"'
+            nc -v -l -p $1 -c 'echo -e "HTTP/1.1 200 OK\n\n"'
         done
     fi
 }

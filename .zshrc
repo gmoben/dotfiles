@@ -25,9 +25,10 @@ setopt rcexpandparam     # Array expension with parameters
 setopt nocheckjobs       # Don't warn about running processes when exiting
 setopt numericglobsort   # Sort filenames numerically when it makes sense
 setopt nobeep            # No beep
-setopt appendhistory     # Immediately append history instead of overwriting
-setopt histignorealldups # If a new command is a duplicate, remove the older one
 setopt autocd            # if only directory path is entered, cd there.
+setopt sharehistory      # Shares history file between sessions before exit
+setopt histignorealldups # If a new command is a duplicate, remove the older one
+setopt histreduceblanks  # Strip commands before saving them to history
 
 # Fuzzy-match completions >> https://superuser.com/a/815317
 
@@ -116,6 +117,11 @@ eval "$(pyenv init -)" || true
 eval "$(pyenv virtualenv-init -)" || true
 pyenv virtualenvwrapper &>/dev/null || true
 
+# https://github.com/pypa/pipx
+if [[ `command -v pipx` ]]; then
+    eval "$(register-python-argcomplete pipx)"
+fi
+
 [[ -f $HOME/.ssh-agent ]] && source ~/.ssh-agent &>/dev/null
 
 # WSL2 X11 Forwarding
@@ -131,3 +137,7 @@ if [[ `uname -r` =~ microsoft-standard ]]; then
 fi
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+if [[ ! `command -v diff-so-fancy` && -d /code/ext/diff-so-fancy ]]; then
+    export PATH=/code/ext/diff-so-fancy:$PATH
+fi
