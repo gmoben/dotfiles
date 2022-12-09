@@ -1,6 +1,15 @@
 #!/usr/bin/env zsh
 
+# Hack around oh-my-zsh since we're not using it directly,
+# but we're using some plugins in antibody
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
+if [[ ! -d $ZSH_CACHE_DIR ]]; then
+    mkdir -p $ZSH_CACHE_DIR/completions
+fi
+
 fpath+=~/.zfunc
+ZSH_PYENV_LAZY_VIRTUALENV=true
+
 autoload -Uz compinit colors zcalc
 autoload bashcompinit
 bashcompinit
@@ -9,8 +18,12 @@ colors
 
 source $HOME/.profile
 
-source <(antibody init)
-antibody bundle < ~/.zplugins
+if [[ ! -f $HOME/.zplugins.sh ]]; then
+    source <(antibody init)
+    antibody bundle < ~/.zplugins > ~/.zplugins.sh
+else
+    source ~/.zplugins.sh
+fi
 
 ## Options section
 
@@ -112,10 +125,6 @@ export LESS=-r
 # Use autosuggestion
 ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE=20
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=8'
-
-eval "$(pyenv init -)" || true
-eval "$(pyenv virtualenv-init -)" || true
-pyenv virtualenvwrapper &>/dev/null || true
 
 # https://github.com/pypa/pipx
 if [[ `command -v pipx` ]]; then

@@ -20,7 +20,7 @@ function set_distro {
         fi;;
     *arch*|*MANJARO*|*microsoft*)
         DISTRO=arch
-        INSTALL_CMD='pacaur -S --noconfirm --needed';;
+        INSTALL_CMD='pacaur -S --noconfirm --noedit --needed';;
     *Ubuntu*)
         DISTRO=ubuntu
         INSTALL_CMD='sudo apt install -y';;
@@ -63,7 +63,9 @@ function install_antibody {
 
 
 function bootstrap {
-    sudo mkdir -m755 -p /code
+    mkdir -m755 -p $HOME/code
+
+    sudo ln -s $HOME/code /code
 
     mkdir -p /code/ben && \
         mkdir -p /code/ext && \
@@ -73,8 +75,10 @@ function bootstrap {
 
     case $DISTRO in
         arch)
-            info "Installing pacaur and yay..."
-            sudo pacman -S --noconfirm --needed pacaur yay
+            info "Installing yay..."
+            sudo pacman -S --noconfirm --needed yay
+            info "Installing pacaur..."
+            pacaur -S --noconfirm --needed pacaur
             ;;
         ubuntu)
             info "Adding PPAs"
@@ -174,6 +178,10 @@ function install_base {
     case $DISTRO in
         arch)
             PKGLIST=`cat $SETUP/arch/pacaur.pkglist | grep -vE "#.*" | xargs`
+            $INSTALL_CMD rustup
+            rustup default stable
+            rustup update
+            mkdir -p $HOME/.zfunc
             ;;
         ubuntu)
             PKGLIST=`cat $SETUP/ubuntu/apt.pkglist | grep -vE "#.*" | xargs`

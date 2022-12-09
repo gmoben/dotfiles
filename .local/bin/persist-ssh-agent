@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [[ $(uname -a) =~ microsoft ]]; then
+    exit
+fi
+
 new_agent() {
     ssh-agent -s > $HOME/.ssh-agent
     source $HOME/.ssh-agent &>/dev/null
@@ -20,4 +24,4 @@ fi
 
 source $HOME/.ssh-agent &>/dev/null
 eval
-find ~/.ssh -name "id_rsa*" | grep -Ev "pub|cert" | xargs ssh-add &>/dev/null
+find ~/.ssh -name "id_*" | grep -Ev "pub|cert" | xargs ssh-add &>/dev/null

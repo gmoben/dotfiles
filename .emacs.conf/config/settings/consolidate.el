@@ -208,12 +208,6 @@
 
 (use-package helm-tramp)
 
-(use-package company-lsp
-  :commands company-lsp
-  :config
-  (add-to-list 'company-backends 'company-lsp)
-  )
-
 (use-package lsp-ui :commands lsp-ui-mode)
 
 (use-package flycheck-rust

@@ -1,6 +1,6 @@
 acpica
 arandr
-aws-cli-v2-bin
+aws-cli-v2
 cool-retro-term
 cpio
 dex
@@ -12,7 +12,7 @@ google-chrome
 keybase-bin
 kitty
 kitty-terminfo
-libu2f-host
+libfido2
 lutris
 mosh
 neofetch
@@ -22,6 +22,7 @@ pavucontrol
 pkgconf
 pulseaudio
 pulseaudio-alsa
+pyenv
 python-pip
 read-edid
 rofi
