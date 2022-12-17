@@ -108,7 +108,7 @@ function install_mbp_extras {
             sudo echo $mod >> /etc/modules-load.d/modules.conf
     done
 
-    # Setup pulseaudizo
+    # Setup pulseaudio
     # https://gist.github.com/MCMrARM/c357291e4e5c18894bea10665dcebffb
     sudo cp ${$SETUP/arch/mbp/root,}/usr/share/alsa/cards/AppleT2.conf
     sudo cp ${$SETUP/arch/mbp/root,}/usr/share/pulseaudio/alsa-mixer/profile-sets/apple-t2.conf

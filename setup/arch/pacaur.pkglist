@@ -21,8 +21,13 @@ nerd-fonts-complete
 nitrogen
 pavucontrol
 pkgconf
-pulseaudio
-pulseaudio-alsa
+pipewire
+pipewire-docs
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+pipewire-zeroconf
+wireplumber
 pyenv
 python-pip
 read-edid
