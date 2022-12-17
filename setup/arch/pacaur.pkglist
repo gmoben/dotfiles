@@ -1,11 +1,13 @@
 acpica
 arandr
 aws-cli-v2
+bash-language-server
 cool-retro-term
 cpio
 dex
 diff-so-fancy
 dnsutils
+edid-decode-git
 emacs-nox
 etcher-bin
 firefox
@@ -20,14 +22,13 @@ neofetch
 nerd-fonts-complete
 nitrogen
 pavucontrol
-pkgconf
 pipewire
-pipewire-docs
 pipewire-alsa
-pipewire-pulse
+pipewire-docs
 pipewire-jack
+pipewire-pulse
 pipewire-zeroconf
-wireplumber
+pkgconf
 pyenv
 python-pip
 read-edid
@@ -36,6 +37,7 @@ ruby
 ruby2.7
 scrot
 selenium-server-standalone
+shellcheck
 spotify-tui
 sshfs
 steam
@@ -43,6 +45,7 @@ the_silver_searcher
 tmux
 ttf-meslo-nerd-font-powerlevel10k
 vlc
+wireplumber
 xclip
 xorg-fonts-misc
 xorg-xev
