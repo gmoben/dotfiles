@@ -69,7 +69,13 @@ if [[ -e `command -v wal` ]]; then
     [[ -f ~/.cache/wal/colors-tty.sh ]] && source ~/.cache/wal/colors-tty.sh
 fi
 
-if [[ ! `ps -ef | grep emacs | grep daemon` ]]; then
+has_systemd_unit() {
+    if [[ -e `command -v systemctl` ]]; then
+        echo `systemctl --user list-unit-files --all | grep $@`
+    fi
+}
+
+if [[ ! `has_systemd_unit emacs` && ! `ps -ef | grep emacs | grep daemon` ]]; then
     echo "Launching emacsd in the background..."
     emacsd &>/dev/null &
 fi
