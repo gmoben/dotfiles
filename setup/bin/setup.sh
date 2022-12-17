@@ -52,13 +52,9 @@ function install_pkg {
     $INSTALL_CMD $1
 }
 
-function install_antibody {
-    info "Downloading antibody..."
-    if [[ -d /usr/share/zsh-antigen ]]; then
-    sudo rm -rf /usr/share/zsh-antigen
-    fi
-
-    curl -sfL git.io/antibody | sudo sh -s - -b /usr/local/bin
+function install_antidote {
+    info "Downloading antidote..."
+    git clone --depth=1 https://github.com/mattmc3/antidote.git ${ZDOTDIR:-$HOME}/.antidote
 }
 
 
@@ -265,7 +261,7 @@ function main {
     bootstrap
     install_packages
     setup_git
-    install_antibody || error "Failed antibody installation"
+    install_antidote || error "Failed antidote installation"
     install_dotfiles || error "Failed dotfile installation"
     compile_terminfo || error "Failed compiling xterm-24bit terminfo"
     systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."

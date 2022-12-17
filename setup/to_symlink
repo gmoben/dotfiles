@@ -12,6 +12,7 @@
 .emacs.conf
 .extend.Xresources
 .extend.profile
+.p10k.zsh
 .pam_environment
 .profile
 .pylintrc
@@ -25,4 +26,4 @@
 .xprofile
 .xsession
 .zshrc
-.zplugins
+.zsh_plugins.txt

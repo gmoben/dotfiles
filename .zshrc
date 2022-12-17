@@ -1,4 +1,9 @@
-#!/usr/bin/env zsh
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
 
 # Hack around oh-my-zsh since we're not using it directly,
 # but we're using some plugins in antibody
@@ -18,12 +23,8 @@ colors
 
 source $HOME/.profile
 
-if [[ ! -f $HOME/.zplugins.sh ]]; then
-    source <(antibody init)
-    antibody bundle < ~/.zplugins > ~/.zplugins.sh
-else
-    source ~/.zplugins.sh
-fi
+source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
+antidote load
 
 ## Options section
 
@@ -150,3 +151,6 @@ fi
 if [[ ! `command -v diff-so-fancy` && -d /code/ext/diff-so-fancy ]]; then
     export PATH=/code/ext/diff-so-fancy:$PATH
 fi
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
