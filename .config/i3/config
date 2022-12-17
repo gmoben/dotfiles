@@ -250,13 +250,14 @@ mode "$mode_system" {
 }
 
 bindsym $mod+p mode "$display_layout"
-set $display_layout (d)ocked, (h)dmi, (l)aptop, (m)eeting, (w)ork, (q)uit
+set $display_layout (d)ocked, (h)dmi, (l)aptop, (m)eeting, (w)ork, (t)v, (q)uit
 mode "$display_layout" {
 	bindsym d exec --no-startup-id xrandr-apply docked, mode "default"
 	bindsym h exec --no-startup-id xrandr-apply hdmi, mode "default"
 	bindsym l exec --no-startup-id xrandr-apply laptop, mode "default"
 	bindsym m exec --no-startup-id xrandr-apply meeting, mode "default"
 	bindsym w exec --no-startup-id xrandr-apply workstation, mode "default"
+    bindsym t exec --no-startup-id xrandr-apply tv, mode "default"
     bindsym q mode "default"
     bindsym Return mode "default"
     bindsym Escape mode "default"
