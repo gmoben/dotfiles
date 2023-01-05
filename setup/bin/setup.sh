@@ -163,7 +163,7 @@ function activate_systemd {
     #sudo systemctl --now enable sshd || true
     #sudo systemctl --now enable NetworkManager || true
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
-    services="$services keybase keybase-redirector" # keybase-gui kbfs"
+    services="$services node-hp-scan-to keybase keybase-redirector" # keybase-gui kbfs"
     info "Enabling and starting systemd user services: $services" ""
     systemctl --user --now enable $services || true
 }
