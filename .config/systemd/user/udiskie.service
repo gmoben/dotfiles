@@ -1,0 +1,11 @@
+[Unit]
+Description=Handle automounting of usb devices
+
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/udiskie --smart-tray
+
+
+[Install]
+WantedBy=multi-user.target

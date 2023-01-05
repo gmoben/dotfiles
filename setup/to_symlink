@@ -4,6 +4,7 @@
 .config/pipewire
 .config/systemd/user/emacs.service
 .config/systemd/user/ssh-agent.service
+.config/systemd/user/udiskie.service
 .config/systemd/user/xscreensaver.service
 .config/wal
 .config/kitty
