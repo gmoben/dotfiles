@@ -2,46 +2,58 @@
 # Modified from https://github.com/arjvik/dots/blob/master/i3/bin/i3-battery-monitor
 
 BATTERY="BAT0"
-FULL=${3:-100}
-LOW=${2:-85}
-CRITICAL=${1:-5}
-
-log() {
-    echo "[pid=$$]" "$(date +"%D %I:%M:%S %p")" "$@" >> /tmp/.i3-battery-monitor-log
-}
+FULL=${4:-100}
+LOW=${3:-15}
+CRITICAL=${2:-5}
+SUSPEND=${1:-3}
 
 # Kill other instances of i3-battery-monitor
 if pids=$(pidof -x $0 -o $$); then
-    log "Killing PIDs: $pids"
     kill $pids 2>/dev/null
 fi
 
-log "Parameters: FULL=$FULL LOW=$LOW CRITICAL=$CRITICAL"
+# log "Parameters: FULL=$FULL LOW=$LOW CRITICAL=$CRITICAL"
 
-SHOULD_NOTIFY_FULL=false
+NOTIFY_ON_FULL=false
+NOTIFY_ON_POWER=false
+NOTIFY_ON_BATTERY=false
 # Loop indefinitely until killed
 while true; do
     CHARGE=$(cat "/sys/class/power_supply/$BATTERY/capacity")
     STATUS=$(cat "/sys/class/power_supply/$BATTERY/status")
-    log "$STATUS $CHARGE%"
-    if [[ $STATUS == "Discharging" ]]; then
 
-        SHOULD_NOTIFY_FULL=true
-        if [[ $CHARGE -le $CRITICAL ]]; then
-            log "Critical warning"
-            notify-send -u critical "Battery Critical ($CHARGE%)!" "Suspending in 5 seconds..."
-            log "Attempting to suspend"
+    if [[ $STATUS != "Full" ]]; then
+        NOTIFY_ON_FULL=true
+    fi
+
+    if [[ $STATUS =~ (Charging|Unknown|Not charging)$ ]]; then
+        if [[ $NOTIFY_ON_POWER == true ]]; then
+            notify-send -u normal "Power Connected" "Battery: $CHARGE%"
+            NOTIFY_ON_POWER=false
+        fi
+        NOTIFY_ON_BATTERY=true
+    elif [[ $STATUS == "Discharging" ]]; then
+        NOTIFY_ON_POWER=true
+
+        if [[ $NOTIFY_ON_BATTERY == true ]]; then
+            notify-send -u normal "Power Disconnected" "Battery: $CHARGE%"
+            NOTIFY_ON_BATTERY=false
+        fi
+
+        if [[ $CHARGE -le $SUSPEND ]]; then
+            notify-send -u critical "Battery Ultra-critical ($CHARGE%)!" "Suspending..."
             systemctl suspend-then-hibernate
+        elif [[ $CHARGE -le $CRITICAL ]]; then
+            notify-send -u critical "Battery Critical ($CHARGE%)!" "Will suspend at $SUSPEND%"
         elif [[ $CHARGE -le $LOW ]]; then
-            log "Low warning"
             notify-send -u normal "Battery Low ($CHARGE%)" "Plug in soon!"
         fi
     else
-        if [[ $SHOULD_NOTIFY_FULL == true && $CHARGE -ge $FULL ]]; then
-            log "Full warning"
+        if [[ $NOTIFY_ON_FULL == true && $CHARGE -ge $FULL ]]; then
             notify-send -u low "Battery Full ($CHARGE%)"
-            SHOULD_NOTIFY_FULL=false
+            NOTIFY_ON_FULL=false
         fi
     fi
-    sleep 30s
+    # echo $CHARGE $STATUS $NOTIFY_ON_FULL $NOTIFY_ON_POWER $NOTIFY_ON_BATTERY
+    sleep 1s
 done
