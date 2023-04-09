@@ -173,10 +173,37 @@
 (define-key org-mode-map (kbd "C-c h .") 'org-insert-heading-with-timestamp)
 (define-key org-mode-map (kbd "C-c h !") 'org-insert-heading-with-timestamp-inactive)
 
-
 ;; Properties
 (define-key org-mode-map (kbd "C-c o p s") 'org-set-property)
 (define-key org-mode-map (kbd "C-c o p d") 'org-delete-property)
+
+;; Set any property with a timestamps
+(defun org-set-property-with-timestamp (property)
+  (interactive (list nil))
+  (let ((property (or property (org-read-property-name))))
+    (unless (org--valid-property-p property)
+      (user-error "Invalid property name: \"%s\"" property))
+    (let (timestamp)
+      (with-temp-buffer
+        (org-mode) ; Enable org-mode to use org-time-stamp
+        (call-interactively 'org-time-stamp)
+        (setq timestamp (buffer-string)))
+      (org-set-property property timestamp))))
+
+(defun org-set-property-with-timestamp-inactive (property)
+  (interactive (list nil))
+  (let ((property (or property (org-read-property-name))))
+    (unless (org--valid-property-p property)
+      (user-error "Invalid property name: \"%s\"" property))
+    (let (timestamp)
+      (with-temp-buffer
+        (org-mode) ; Enable org-mode to use org-time-stamp
+        (call-interactively 'org-time-stamp-inactive)
+        (setq timestamp (buffer-string)))
+      (org-set-property property timestamp))))
+
+(define-key org-mode-map (kbd "C-c o p .") 'org-set-property-with-timestamp)
+(define-key org-mode-map (kbd "C-c o p !") 'org-set-property-with-timestamp-inactive)
 
 ;; Unmap add/remove files from org-agenda-files
 (define-key org-mode-map (kbd "C-c [") nil)
