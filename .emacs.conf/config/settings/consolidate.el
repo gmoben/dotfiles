@@ -380,3 +380,17 @@
   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
   (global-set-key (kbd "<C-S-right>")  'buf-move-right))
+
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :hook (prog-mode . copilot-mode)
+  :bind
+  (:map copilot-mode-map
+        ("C-c SPC" . copilot-complete)
+        :map copilot-completion-map
+        ("C-n" . copilot-next-completion)
+        ("C-p" . copilot-previous-completion)
+        ("<tab>" . copilot-accept-completion)
+        ("TAB" . copilot-accept-completion))
+  :config
+  (setq copilot-disable-predicates '(copilot--buffer-changed)))
