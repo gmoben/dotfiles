@@ -114,7 +114,7 @@
   ;; what to use when checking on-save. "check" is default, I prefer clippy
   (lsp-rust-analyzer-cargo-watch-command "clippy")
   ;; enable / disable the hints as you prefer:
-  (lsp-rust-analyzer-server-display-inlay-hints t)
+  (lsp-rust-analyzer-server-display-inlay-hints nil)
   (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
   (lsp-rust-analyzer-display-chaining-hints t)
   (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
@@ -220,7 +220,7 @@
   (dap-ui-mode 1)
   (require 'dap-lldb))
 
-(use-package dap-java :ensure nil)
+(use-package dap-java :straight nil)
 
 (use-package go-mode
   :init
@@ -339,8 +339,6 @@
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 (use-package neotree :after all-the-icons)
-
-(use-package paradox)
 
 (use-package rvm :commands rvm-activate-ruby-for
   :init
