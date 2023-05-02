@@ -50,7 +50,34 @@
               ("M-j" . lsp-ui-imenu)
               ("M-?" . lsp-find-references)
               ("C-c l l" . flycheck-list-errors)
-              ("C-c l s" . lsp-rust-analyzer-status))
+              ("C-c l s" . lsp-rust-analyzer-status)
+              ("C-c C-c C-a" . rustic-cargo-add)
+              ("C-c C-c b" . rustic-cargo-build)
+              ("C-c C-c C-c" . rustic-cargo)
+              ("C-c C-c C-c" . rustic-cargo-check)
+              ("C-c C-c C-d" . rustic-cargo-doc)
+              ("C-c C-c C-d" . rustic-docstring-dwim)
+              ("C-c C-c C-e" . rustic-cargo-rm)
+              ("C-c C-c C-f" . rustic-format-buffer)
+              ("C-c C-c C-i" . rustic-cargo-init)
+              ("C-c C-c C-j" . rustic-cargo-run)
+              ("C-c C-c C-k" . rustic-cargo-check-all)
+              ("C-c C-c C-l" . rustic-cargo-clippy)
+              ("C-c C-c C-m" . rustic-cargo-make)
+              ("C-c C-c C-n" . rustic-cargo-new)
+              ("C-c C-c C-o" . rustic-cargo-outdated)
+              ("C-c C-c C-p" . rustic-cargo-publish)
+              ("C-c C-c C-q" . rustic-cargo-check)
+              ("C-c C-c C-r" . rustic-cargo-rm)
+              ("C-c C-c C-r" . rustic-cargo-run)
+              ("C-c C-c C-s" . rustic-cargo-search)
+              ("C-c C-c C-t" . rustic-cargo-test)
+              ("C-c C-c C-u" . rustic-cargo-upgrade)
+              ("C-c C-c C-v" . rustic-cargo-bench)
+              ("C-c C-c C-w" . rustic-cargo-watch)
+              ("C-c C-c C-x" . rustic-cargo-run-example)
+              ("C-c C-c C-y" . rustic-cargo-hack)
+              ("C-c C-c C-z" . rustic-cargo-fmt))
   :init
   (defvar gmoben/cargo_bin (substitute-in-file-name "$HOME/.cargo/bin"))
   (setenv "PATH" (concat (getenv "PATH") ":" gmoben/cargo_bin))
@@ -61,6 +88,8 @@
   ;; (setq lsp-enable-symbol-highlighting nil)
   ;; (setq lsp-signature-auto-activate nil)
 
+  (setq auto-mode-alist (delete (rassoc 'rust-mode auto-mode-alist) auto-mode-alist))
+  (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
@@ -73,9 +102,6 @@
   (when buffer-file-name
     (setq-local buffer-save-without-query t))
   (add-hook 'before-save-hook 'lsp-format-buffer nil t))
-
-
-(use-package cargo :hook (rustic-mode . cargo-minor-mode))
 
 (use-package lsp-haskell)
 
@@ -308,11 +334,6 @@
          ("M-i" . helm-multi-swoop-all-from-helm-swoop)))
 
 (use-package helm-tramp)
-
-;; (use-package flycheck-rust
-;;   :config
-;;   (with-eval-after-load 'rust-mode
-;;     (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 
 ;; (use-package yasnippet
 ;;   :config
