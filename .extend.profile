@@ -82,5 +82,9 @@ fi
 
 [[ -e `command -v aws_completer` ]] && complete -C '$(command -v aws_completer)' aws
 
+if [[ `uname --nodename` == thinkpad-arch ]]; then
+    export LIBVA_DRIVER_NAME=i965
+fi
+
 ## Dedup path entries ##
 export PATH=$(echo $PATH | dedup ":")
