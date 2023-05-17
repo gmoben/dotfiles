@@ -139,7 +139,7 @@ bindsym $mod+Shift+minus move scratchpad
 bindsym $mod+minus scratchpad show
 
 # Notes
-bindsym $mod+n [title="zsh"] scratchpad show
+bindsym $mod+n [title="tmn notes"] scratchpad show
 
 #navigate workspaces next / previous
 bindsym $mod+Ctrl+Right workspace next
