@@ -10,7 +10,6 @@
 .config/kitty
 .config/compton.conf
 .emacs.conf
-.extend.Xresources
 .extend.profile
 .p10k.zsh
 .pam_environment

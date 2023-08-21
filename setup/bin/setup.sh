@@ -38,7 +38,15 @@ function set_distro {
 }
 
 
-PLATFORM=$(eval python3 -mplatform | grep -iE 'arch|Ubuntu|MANJARO|Microsoft|armv7l')
+PLATFORM=$(eval python3 -mplatform | grep -iE 'arch|Ubuntu|MANJARO|Microsoft|armv7l|Linux')
+
+# `python3 -mplatform` doesn't spit out Ubuntu on 22.04
+if [[ $PLATFORM =~ ^Linux ]]; then
+    if [[ $(uname -a) =~ .*Ubuntu.* ]]; then
+    PLATFORM=Ubuntu
+    fi
+fi
+
 set_distro $PLATFORM
 success "Platform Detected" "$PLATFORM"
 success "Distribution Detected" "$DISTRO"
@@ -77,11 +85,6 @@ function bootstrap {
             pacaur -S --noconfirm --needed pacaur
             ;;
         ubuntu)
-            info "Adding PPAs"
-            for src in $(cat $SETUP/ubuntu/apt.ppa); do
-                sudo add-apt-repository -y ppa:$src
-            done
-
             info "Updating package sources"
             sudo apt-get update
 
@@ -142,6 +145,7 @@ function pip_packages {
     if [[ `command -v $_pip` ]]; then
         sudo $_pip install --ignore-installed -r $SETUP/python/requirements.txt
         $_pip install --user pipx
+        export PATH=$HOME/.local/bin:$PATH
         pipx ensurepath
     else
         error "Can't find pip!"
@@ -163,7 +167,7 @@ function activate_systemd {
     #sudo systemctl --now enable sshd || true
     #sudo systemctl --now enable NetworkManager || true
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
-    services="$services node-hp-scan-to keybase keybase-redirector" # keybase-gui kbfs"
+    # services="$services node-hp-scan-to"
     info "Enabling and starting systemd user services: $services" ""
     systemctl --user --now enable $services || true
 }
@@ -206,14 +210,6 @@ function install_packages {
     ubuntu)
         echo "Installing diff-so-fancy..."
         sudo npm install --global diff-so-fancy
-
-        echo "Installing Keybase..."
-        local deb="keybase_amd64.deb"
-        local url="https://prerelease.keybase.io/$deb"
-        $(cd /tmp && curl -O $url)
-        $INSTALL_CMD /tmp/$deb
-        rm -f /tmp/$deb
-        run_keybase
         ;;
     rpi)
         echo "Installing AWSCLI v2 from Github..."
