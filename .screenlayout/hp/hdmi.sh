@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 declare -A params
 params[HDMI1]="--primary --mode 3840x1600 --pos 1920x0 --rotate normal"
-params[HDMI-1]=${params[HDMI-1]}
+params[HDMI-1]=${params[HDMI1]}
 params[eDP1]="--mode 1920x1080 --pos 0x520 --rotate normal"
 params[eDP-1]=${params[eDP1]}
 
