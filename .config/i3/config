@@ -253,10 +253,10 @@ mode "$mode_system" {
 }
 
 bindsym $mod+p mode "$display_layout"
-set $display_layout (d)ocked, (h)dmi, (l)aptop, (m)eeting, (w)ork, (t)v, (q)uit
+set $display_layout (d)ocked, (h)ome, (l)aptop, (m)eeting, (w)ork, (t)v, (q)uit
 mode "$display_layout" {
 	bindsym d exec --no-startup-id xrandr-apply docked, mode "default"
-	bindsym h exec --no-startup-id xrandr-apply hdmi, mode "default"
+	bindsym h exec --no-startup-id xrandr-apply home, mode "default"
 	bindsym l exec --no-startup-id xrandr-apply laptop, mode "default"
 	bindsym m exec --no-startup-id xrandr-apply meeting, mode "default"
 	bindsym w exec --no-startup-id xrandr-apply workstation, mode "default"
@@ -368,8 +368,8 @@ bar {
 
 ## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
 	tray_output primary
-	tray_output DP-1.2
-    tray_output eDP1-1-1
+    tray_output eDP-1
+	tray_output DP-1-2
 
 	bindsym button4 nop
 	bindsym button5 nop

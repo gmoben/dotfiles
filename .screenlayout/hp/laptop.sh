@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 declare -A params
-params[eDP1]="--primary --mode 1920x1080 --pos 0x0 --rotate normal"
+params[eDP1]="--primary --mode 1920x1200 --pos 0x0 --rotate normal"
 params[eDP-1]=${params[eDP1]}
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')

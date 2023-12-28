@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 declare -A params
-params[DP2-2]="--primary --mode 3440x1440 --pos 1920x0 --rotate normal"
-params[DP-2-2]=${params[DP2-2]}
-params[eDP1]="--mode 1920x1080 --pos 0x1063 --rotate normal"
+params[DP-3]="--primary --mode 3440x1440 --pos 1920x0 --rotate normal"
+params[DP3]=${params[DP-3]}
+params[eDP1]="--mode 1920x1200 --pos 0x1063 --rotate normal"
 params[eDP-1]=${params[eDP1]}
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')
