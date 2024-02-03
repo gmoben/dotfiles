@@ -259,6 +259,8 @@ function nc200() {
 }
 fi
 
+alias b64encode='python -c "import base64, sys; print(base64.b64encode(sys.stdin.read().encode()).decode(), end=\"\");"'
+alias b64decode='python -c "import base64, sys; print(base64.b64decode(sys.stdin.read().strip()).decode(), end=\"\");"'
 
 # Work/Local aliases
 [[ -f $HOME/.work.aliases ]] && source $HOME/.work.aliases
