@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 declare -A params
-params[DP-3]="--primary --mode 3440x1440 --pos 1920x0 --rotate normal"
-params[DP3]=${params[DP-3]}
-params[DP-1]=${params[DP-3]}
-params[DP1]=${params[DP-3]}
-params[eDP1]="--mode 1920x1200 --pos 0x1063 --rotate normal"
+params[eDP1]="--primary --mode 1920x1200 --pos 0x1826 --rotate normal"
 params[eDP-1]=${params[eDP1]}
+params[DP1]="--mode 3840x2160 --pos 1920x0 --rotate normal --scale 0.7x0.7"
+params[DP-3]=${params[DP1]}
+params[DP-1-1]=${params[DP1]}
+params[DP-1-2]=${params[DP1]}
+params[DP-3-3]=${params[DP1]}
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')
 disconnected=$(xrandr -q | grep " disconnected " | awk '{print $1}')

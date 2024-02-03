@@ -210,6 +210,9 @@ function install_packages {
     ubuntu)
         echo "Installing diff-so-fancy..."
         sudo npm install --global diff-so-fancy
+        echo "Setting permissions to run `light` without sudo"
+        sudo usermod -a -G video $USER
+        sudo chmod +s /usr/bin/light
         ;;
     rpi)
         echo "Installing AWSCLI v2 from Github..."

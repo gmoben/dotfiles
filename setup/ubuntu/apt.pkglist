@@ -17,6 +17,7 @@ i2c-tools
 i3
 jq
 lastpass-cli
+light
 libbz2-dev
 libffi-dev
 libreadline-dev

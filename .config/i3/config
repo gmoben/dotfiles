@@ -470,8 +470,8 @@ mode "$mode_gaps_outer" {
 #bindsym XF86AudioMute exec --no-startup-id pactl set_from_resource-sink-mute 0 toggle # Mute
 
 # Screen brightness controls
-bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; xbacklight -inc 10"
-bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down'; xbacklight -dec 10"
+bindsym XF86MonBrightnessUp exec --no-startup-id "notify-send 'Brightness Up'; light -A 10"
+bindsym XF86MonBrightnessDown exec --no-startup-id "notify-send 'Brightness Down'; light -U 10"
 
 # Keyboard brightness controls
 bindsym XF86KbdBrightnessUp exec --no-startup-id "xbacklight -ctrl apple::kbd_backlight -inc 10 -steps 100; notify-send 'Keyboard Brightness Up'"
