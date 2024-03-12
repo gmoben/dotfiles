@@ -392,3 +392,28 @@
         ("TAB" . copilot-accept-completion))
   :config
   (setq copilot-disable-predicates '(copilot--buffer-changed)))
+(defun kill-to-clipboard ()
+  "Use ANSI OSC 52 escape sequence to attempt clipboard copy"
+  ;; Modified from https://sunaku.github.io/tmux-yank-osc52.html
+  (interactive)
+  (let ((tmx_tty (shell-command-to-string "tmux list-panes -F '#{pane_active} #{pane_tty}' | awk '$1==\"1\" { print $2 }'"))
+        (base64_text (base64-encode-string (encode-coding-string (substring-no-properties (nth 0 kill-ring)) 'utf-8) t)))
+    ;; Check if inside TMUX
+    (if (getenv "TMUX")
+        (shell-command
+         (format "printf \"\033]52;c;%s\a\" > %s" base64_text tmx_tty))
+      ;; Check if inside SSH
+      (if (getenv "SSH_TTY")
+          (shell-command (format "printf \"\033]52;c;%s\a\" > %s" base64_text (getenv "SSH_TTY")))
+        ;; Send to current TTY
+        (send-string-to-terminal (format "\033]52;c;%s\a" base64_text))))))
+
+(defun after-kill-region-advice (beg end &rest args)
+  (kill-to-clipboard))
+
+(defun after-kill-line-advice (&rest args)
+  (kill-to-clipboard))
+
+(advice-add 'kill-ring-save :after #'after-kill-region-advice)
+(advice-add 'kill-region :after #'after-kill-region-advice)
+(advice-add 'kill-line :after #'after-kill-line-advice)
