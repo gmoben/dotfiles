@@ -1,3 +1,5 @@
+#!/bin/zsh
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -15,6 +17,9 @@ fi
 fpath+=~/.zfunc
 ZSH_PYENV_LAZY_VIRTUALENV=true
 
+source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
+antidote load
+
 autoload -Uz compinit colors zcalc
 autoload bashcompinit
 bashcompinit
@@ -22,9 +27,6 @@ compinit -d
 colors
 
 source $HOME/.profile
-
-source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
-antidote load
 
 ## Options section
 
@@ -101,6 +103,12 @@ bindkey '^[[1;5C' forward-word                                  #
 bindkey '^H' backward-kill-word                                 # delete previous word with ctrl+backspace
 bindkey '^[[Z' undo                                             # Shift+tab undo last action
 bindkey '^[/' undo
+
+bindkey "^[[3~" delete-char                     # Key Del
+bindkey "^[[H" beginning-of-line                # Key Home
+bindkey "^[[F" end-of-line                      # Key End
+bindkey "^[[1;3C" forward-word                  # Key Alt + Right
+bindkey "^[[1;3D" backward-word                 # Key Alt + Left
 
 # Theming section
 
