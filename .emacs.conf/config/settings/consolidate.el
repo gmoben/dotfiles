@@ -6,49 +6,14 @@
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
 
-;; (use-package pyvenv
-;;   :after python-mode
-;;   :commands gmoben/py-auto-lsp
-;;   :bind (:map python-mode-map
-;;               ("C-c C-a" . gmoben/py-auto-lsp))
-;;   :hook (python-mode . gmoben/py-auto-lsp)
-;;   :init
-;;   (setenv "WORKON_HOME" (substitute-in-file-name "$HOME/.pyenv/versions"))
-;;   (defun gmoben/py-workon-project-venv ()
-;;     "Call pyenv-workon with the current projectile project name.
-;; This will return the full path of the associated virtual
-;; environment found in $WORKON_HOME, or nil if the environment does
-;; not exist."
-;;     (let ((pname (projectile-project-name)))
-;;       (pyvenv-workon pname)
-;;       (if (file-directory-p pyvenv-virtual-env)
-;;           pyvenv-virtual-env
-;;         (pyvenv-deactivate))))
-
-;;   (defun gmoben/py-auto-lsp ()
-;;     "Turn on lsp mode in a Python project with some automated logic.
-;; Try to automatically determine which pyenv virtual environment to
-;; activate based on the project name, using
-;; `dd/py-workon-project-venv'. If successful, call `lsp'. If we
-;; cannot determine the virtualenv automatically, first call the
-;; interactive `pyvenv-workon' function before `lsp'"
-;;     (interactive)
-;;     (let ((pvenv (gmoben/py-workon-project-venv)))
-;;       (if pvenv
-;;           (lsp)
-;;         (progn
-;;           (call-interactively #'pyvenv-workon)
-;;           (lsp)))))
-;;   )
-
 (use-package python-docstring
   :after python-mode
   :hook (python-mode . python-docstring-mode))
 
 (use-package rustic
   :bind (:map rustic-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("M-?" . lsp-find-references)
+              ;; ("M-j" . lsp-ui-imenu)
+              ;; ("M-?" . lsp-find-references)
               ("C-c l l" . flycheck-list-errors)
               ("C-c l s" . lsp-rust-analyzer-status)
               ("C-c C-c C-a" . rustic-cargo-add)
@@ -90,85 +55,205 @@
   (add-to-list 'auto-mode-alist '("\\.rs\\'" . rustic-mode))
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
-  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+  ;; (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook)
+  )
 
-(defun rk/rustic-mode-hook ()
+;; (defun rk/rustic-mode-hook ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
   ;; save rust buffers that are not file visiting. Once
   ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
   ;; no longer be necessary.
-  (when buffer-file-name
-    (setq-local buffer-save-without-query t))
-  (add-hook 'before-save-hook 'lsp-format-buffer nil t))
+  ;; (when buffer-file-name
+  ;;   (setq-local buffer-save-without-query t))
+  ;; (add-hook 'before-save-hook 'lsp-format-buffer nil t))
 
-(use-package lsp-haskell)
+;; (use-package lsp-haskell)
 
-(use-package lsp-mode
-  :after projectile
-  :commands lsp
-  :hook ((sh-mode . lsp)
-         (ruby-mode . lsp)
-         (java-mode . lsp)
-         (rustic-mode . lsp))
-  :bind (:map lsp-mode-map
-              ("C-c l a" . lsp-execute-code-action)
-              ("C-c l r" . lsp-rename)
-              ("C-c l q" . lsp-workspace-restart)
-              ("C-c l Q" . lsp-workspace-shutdown))
+;; (use-package lsp-mode
+;;   :after projectile
+;;   :commands lsp
+;;   :hook ((sh-mode . lsp)
+;;          (ruby-mode . lsp)
+;;          (java-mode . lsp)
+;;          (rustic-mode . lsp))
+;;   :bind (:map lsp-mode-map
+;;               ("C-c l a" . lsp-execute-code-action)
+;;               ("C-c l r" . lsp-rename)
+;;               ("C-c l q" . lsp-workspace-restart)
+;;               ("C-c l Q" . lsp-workspace-shutdown))
+;;   :init
+;;   ;; (setq lsp-pyls-configuration-sources ["flake8"])
+;;   ;; (setq lsp-pyls-plugins-pycodestyle t)
+;;   ;; (setq lsp-pyls-plugins-pycodestyle-hang-closing t)
+;;   ;; (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
+;;   ;; (setq lsp-pyls-plugins-pydocstyle-enabled nil)
+;;   ;; (setq lsp-pyls-plugins-flake8-hang-closing t)
+;;   ;; (setq lsp-pyls-plugins-flake8-max-line-lenth 120)
+;;   ;; (setq lsp-pyls-plugins-jedit-use-pyenv-environment t)
+;;   :custom
+;;   (lsp-completion-enable-additional-text-edit nil)
+;;   (lsp-eldoc-render-all t)
+;;   (lsp-idle-delay 0.6)
+;;   (lsp-auto-guess-root t)
+;;   (lsp-headerline-breadcrumb-enable nil)
+
+;;   ;; Go
+;;   (lsp-clients-go-imports-local-prefix "ben")
+
+;;   ;; Rust
+;;   ;; what to use when checking on-save. "check" is default, I prefer clippy
+;;   (lsp-rust-analyzer-cargo-watch-command "clippy")
+;;   ;; enable / disable the hints as you prefer:
+;;   (lsp-rust-analyzer-server-display-inlay-hints nil)
+;;   (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+;;   (lsp-rust-analyzer-display-chaining-hints t)
+;;   (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
+;;   (lsp-rust-analyzer-display-closure-return-type-hints t)
+;;   (lsp-rust-analyzer-display-parameter-hints t)
+;;   (lsp-rust-analyzer-display-reborrow-hints t)
+;;   :config
+;;   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
+;;   (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+;; (use-package lsp-ui
+;;   :commands lsp-ui-mode
+;;   :custom
+;;   (lsp-ui-peek-always-show t)
+;;   (lsp-ui-sideline-show-hover t)
+;;   (lsp-ui-sideline-show-code-actions t)
+;;   (lsp-ui-doc-enable t))
+
+(use-package typescript-mode)
+
+(use-package eglot
+  :straight nil
   :init
-  ;; (setq lsp-pyls-configuration-sources ["flake8"])
-  ;; (setq lsp-pyls-plugins-pycodestyle t)
-  ;; (setq lsp-pyls-plugins-pycodestyle-hang-closing t)
-  ;; (setq lsp-pyls-plugins-pycodestyle-max-line-length 120)
-  ;; (setq lsp-pyls-plugins-pydocstyle-enabled nil)
-  ;; (setq lsp-pyls-plugins-flake8-hang-closing t)
-  ;; (setq lsp-pyls-plugins-flake8-max-line-lenth 120)
-  ;; (setq lsp-pyls-plugins-jedit-use-pyenv-environment t)
-  :custom
-  (lsp-completion-enable-additional-text-edit nil)
-  (lsp-eldoc-render-all t)
-  (lsp-idle-delay 0.6)
-  (lsp-auto-guess-root t)
-  (lsp-headerline-breadcrumb-enable nil)
-
-  ;; Go
-  (lsp-clients-go-imports-local-prefix "ben")
-
-  ;; Rust
-  ;; what to use when checking on-save. "check" is default, I prefer clippy
-  (lsp-rust-analyzer-cargo-watch-command "clippy")
-  ;; enable / disable the hints as you prefer:
-  (lsp-rust-analyzer-server-display-inlay-hints nil)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
-  (lsp-rust-analyzer-display-chaining-hints t)
-  (lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names nil)
-  (lsp-rust-analyzer-display-closure-return-type-hints t)
-  (lsp-rust-analyzer-display-parameter-hints t)
-  (lsp-rust-analyzer-display-reborrow-hints t)
+  :defer
+  :hook ((sh-mode . eglot-ensure)
+         (ruby-mode . eglot-ensure)
+         (rustic-mode . eglot-ensure)
+         (java-mode . eglot-ensure)
+         (java-ts-mode . eglot-ensure)
+         (javascript-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure))
+  :bind (:map eglot-mode-map
+              ("C-c l a" . eglot-code-actions)
+              ("C-c l r" . eglot-rename))
   :config
-  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map)
-  (add-hook 'lsp-mode-hook 'lsp-ui-mode))
 
-(use-package lsp-ui
-  :commands lsp-ui-mode
-  :custom
-  (lsp-ui-peek-always-show t)
-  (lsp-ui-sideline-show-hover t)
-  (lsp-ui-sideline-show-code-actions t)
-  (lsp-ui-doc-enable t))
+  (add-to-list 'eglot-server-programs
+               '((java-mode java-ts-mode) . ("jdtls" "--jvm-arg=-javaagent:/code/ext/lombok.jar" ;; This should be the script to run jdtls. You can create it yourself, or use the script provided by jdt (requires python 3.9.)
+                                             ;; Alternatively, you can paste the command here (e.g. "java" "-Declipse.application=org.eclipse.jdt.ls.core.id1" ...)
+                                             ;; See https://github.com/eclipse/eclipse.jdt.ls for more info.
+                                             :initializationOptions (:extendedClientCapabilities (:classFileContentsSupport t )))))
+
+  ;; The jdt server sometimes returns jdt:// scheme for jumping to definition
+  ;; instead of returning a file. This is not part of LSP and eglot does not
+  ;; handle it. The following code enables eglot to handle jdt files.
+  ;; See https://github.com/yveszoundi/eglot-java/issues/6 for more info.
+  (defun jdt-file-name-handler (operation &rest args)
+    "Support Eclipse jdtls `jdt://' uri scheme."
+    (let* ((uri (car args))
+           (cache-dir "/tmp/.eglot")
+           (source-file
+            (directory-abbrev-apply
+             (expand-file-name
+              (file-name-concat
+               cache-dir
+               (save-match-data
+                 (when (string-match "jdt://contents/\\(.*?\\)/\\(.*\\)\.class\\?" uri))
+                 (message "URI:%s" uri)
+                 (format "%s.java" (replace-regexp-in-string "/" "." (match-string 2 uri) t t))))))))
+      (unless (file-readable-p source-file)
+        (let ((content (jsonrpc-request (eglot-current-server) :java/classFileContents (list :uri uri)))
+              (metadata-file (format "%s.%s.metadata"
+                                     (file-name-directory source-file)
+                                     (file-name-base source-file))))
+          (message "content:%s" content)
+          (unless (file-directory-p cache-dir) (make-directory cache-dir t))
+          (with-temp-file source-file (insert content))
+          (with-temp-file metadata-file (insert uri))))
+      source-file))
+
+  (add-to-list 'file-name-handler-alist '("\\`jdt://" . jdt-file-name-handler))
+
+  (defun jdthandler--wrap-legacy-eglot--path-to-uri (original-fn &rest args)
+    "Hack until eglot is updated.
+ARGS is a list with one element, a file path or potentially a URI.
+If path is a jar URI, don't parse. If it is not a jar call ORIGINAL-FN."
+    (let ((path (file-truename (car args))))
+      (if (equal "jdt" (url-type (url-generic-parse-url path)))
+          path
+        (apply original-fn args))))
+
+  (defun jdthandler--wrap-legacy-eglot--uri-to-path (original-fn &rest args)
+    "Hack until eglot is updated.
+ARGS is a list with one element, a URI.
+If URI is a jar URI, don't parse and let the `jdthandler--file-name-handler'
+handle it. If it is not a jar call ORIGINAL-FN."
+    (let ((uri (car args)))
+      (if (and (stringp uri)
+               (string= "jdt" (url-type (url-generic-parse-url uri))))
+          uri
+        (apply original-fn args))))
+
+  (defun jdthandler-patch-eglot ()
+    "Patch old versions of Eglot to work with Jdthandler."
+    (interactive) ;; TODO, remove when eglot is updated in melpa
+    (unless (and (advice-member-p #'jdthandler--wrap-legacy-eglot--path-to-uri 'eglot--path-to-uri)
+                 (advice-member-p #'jdthandler--wrap-legacy-eglot--uri-to-path 'eglot--uri-to-path))
+      (advice-add 'eglot--path-to-uri :around #'jdthandler--wrap-legacy-eglot--path-to-uri)
+      (advice-add 'eglot--uri-to-path :around #'jdthandler--wrap-legacy-eglot--uri-to-path)
+      (message "[jdthandler] Eglot successfully patched.")))
+
+  ;; invoke
+  (jdthandler-patch-eglot)
+
+  ;; (add-to-list 'eglot-server-programs '((java-mode java-ts-mode) . ("jdtls" "--jvm-arg=-javaagent:/code/ext/lombok.jar")))
+
+  ;; (defun jdtls-command-contact (&optional interactive)
+  ;;   (let* ((jdtls-cache-dir (file-name-concat user-emacs-directory "cache" "lsp-cache"))
+  ;;          (project-dir (file-name-nondirectory (directory-file-name (project-root (project-current)))))
+  ;;          (data-dir (expand-file-name (file-name-concat jdtls-cache-dir (md5 project-dir))))
+  ;;          (jvm-args `(,(concat "-javaagent:" (expand-file-name "/code/ext/lombok.jar"))
+  ;;                      ;; "-Xmx8G"
+  ;;                      ;; "-XX:+UseG1GC"
+  ;;                      ;; "-XX:+UseZGC"
+  ;;                      ;; "-XX:+UseStringDeduplication"
+  ;;                      ;; "-XX:FreqInlineSize=325"
+  ;;                      ;; "-XX:MaxInlineLevel=9"
+  ;;                      ;; "-XX:+UseCompressedOops"
+  ;;                      ))
+  ;;          (jvm-args (mapcar (lambda (arg) (concat "--jvm-arg=" arg)) jvm-args))
+  ;;          ;; tell jdtls the data directory and jvm args
+  ;;          (contact (append '("jdtls") jvm-args `("-data" ,data-dir))))
+  ;;     contact))
+
+  ;; (defun jdtls-initialization-options ()
+  ;;   (let ((setting-json-file (file-name-concat user-emacs-directory ".." ".emacs.conf" "lsp-config" "jdtls.json")))
+  ;;     (with-temp-buffer
+  ;;       (insert-file-contents setting-json-file)
+  ;;       (json-parse-buffer :object-type 'plist :false-object :json-false))))
+
+  ;; (cl-defmethod eglot-initialization-options (server &context (major-mode java-mode))
+  ;;   (jdtls-initialization-options))
+
+  ;; (cl-defmethod eglot-initialization-options (server &context (major-mode java-ts-mode))
+  ;;   (jdtls-initialization-options))
+
+  ;; (add-to-list 'eglot-server-programs '((java-mode java-ts-mode) . jdtls-command-contact))
+  )
 
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; auto-completion and code snippets
 
 (use-package yasnippet
-  :ensure
   :config
   (yas-reload-all)
   (add-hook 'prog-mode-hook 'yas-minor-mode)
   (add-hook 'text-mode-hook 'yas-minor-mode))
 
 (use-package company
-  :ensure
   :bind
   (:map company-active-map
               ("C-n". company-select-next)
@@ -206,17 +291,6 @@
             (company-complete-common)
           (indent-for-tab-command)))))
 
-(use-package lsp-java
-  :config
-  (defvar gmoben/lsp-java-lombok-jar-location "/code/ext/lombok.jar")
-  (add-to-list 'lsp-java-vmargs (format "-javaagent:%s" gmoben/lsp-java-lombok-jar-location))
-  (add-to-list 'lsp-java-vmargs (format "-Xbootclasspath/a:%s" gmoben/lsp-java-lombok-jar-location)))
-
-(use-package lsp-pyright
-  :hook (python-mode . (lambda ()
-                         (require 'lsp-pyright)
-                         (lsp))))
-
 ;; Mode-specific flycheck chaining for mutli-mode lsp checker
 ;; https://github.com/flycheck/flycheck/issues/1762
 (use-package flycheck
@@ -233,8 +307,9 @@
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (use-package python-mode
-  :hook
-  (python-mode . (lambda () (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8 python-pylint)))))))))
+  ;; :hook
+  ;; (python-mode . (lambda () (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8 python-pylint))))))))
+  )
 
 (use-package dap-mode
   :commands dap-mode
@@ -244,7 +319,7 @@
   (dap-ui-mode 1)
   (require 'dap-lldb))
 
-(use-package dap-java :straight nil)
+;; (use-package dap-java :straight nil)
 
 (use-package go-mode
   :init
@@ -288,10 +363,10 @@
                                   ,(if (version<= emacs-version "27.0") 'helm-flex 'flex)))
   )
 
-(use-package helm-lsp
-  :config
-  (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
-  (define-key lsp-mode-map [remap lsp-execute-code-action] #'helm-lsp-code-actions))
+;; (use-package helm-lsp
+;;   :config
+;;   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
+;;   (define-key lsp-mode-map [remap lsp-execute-code-action] #'helm-lsp-code-actions))
 
 (use-package helm-ag
   :after helm
