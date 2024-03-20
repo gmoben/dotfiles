@@ -4,8 +4,8 @@ Description=Emacs: the extensible, self-documenting text editor
 [Service]
 Type=forking
 Environment="TERM=xterm-24bit"
-ExecStart=/usr/bin/emacs --daemon
-ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
+ExecStart=/usr/local/bin/emacs --daemon
+ExecStop=/usr/local/bin/emacsclient --eval "(kill-emacs)"
 Restart=always
 
 [Install]
