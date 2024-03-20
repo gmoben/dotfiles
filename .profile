@@ -32,3 +32,5 @@ fi
 export PATH="$PATH:$HOME/.rvm/bin"
 
 [ -s "$HOME/.rvm/scripts/rvm" ] && . "$HOME/.rvm/scripts/rvm"
+
+[ -s "$HOME/.cargo/env" ] && . "$HOME/.cargo/env"

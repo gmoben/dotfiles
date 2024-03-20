@@ -179,7 +179,7 @@ function install_base {
         arch)
             PKGLIST=`cat $SETUP/arch/pacaur.pkglist | grep -vE "#.*" | xargs`
             $INSTALL_CMD rustup
-            rustup default stable
+            rustup default nightly
             rustup update
             mkdir -p $HOME/.zfunc
             ;;
@@ -229,6 +229,16 @@ function install_packages {
 
     diff-so-fancy --set-defaults || true
     pip_packages
+    cargo_packages
+
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install
+
+}
+
+function cargo_packages {
+    cargo install ripgrep
+    cargo install --locked bat
 }
 
 function compile_terminfo {
