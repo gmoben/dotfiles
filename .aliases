@@ -35,12 +35,13 @@ term=xterm-24bit
 # Emacs
 alias emacs="TERM=$term emacs -nw"
 alias gmacs="TERM=$term emacs -c"
-alias emacsd="TERM=$term emacs --daemon"
-alias emacsc="TERM=$term emacsclient -t"
-alias tmuxconf="TERM=$term emacsclient -t $HOME/.tmux.conf"
-alias emacsconf="TERM=$term emacsclient -t $HOME/.emacs.conf"
-alias ecode="TERM=$term emacsclient -t /code"
-alias ehome="TERM=$term emacsclient -t $HOME"
+alias emacsd="tmux new-session -d -s emacs-daemon-launcher 'emacs --daemon; exit'"
+alias emacsclient="TERM=$term emacsclient -t"
+alias emacsc="emacsclient"
+alias tmuxconf="emacsc $HOME/.tmux.conf"
+alias emacsconf="emacsc $HOME/.emacs.conf"
+alias ecode="emacs /code"
+alias ehome="emacsc $HOME"
 
 function e() {
     emacsc ${1:-.}
