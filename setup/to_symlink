@@ -11,6 +11,7 @@
 .config/compton.conf
 .emacs.conf
 .extend.profile
+.jupyter
 .p10k.zsh
 .pam_environment
 .profile
