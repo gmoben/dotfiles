@@ -1,3 +1,5 @@
+(use-package delight)
+
 (use-package auto-minor-mode)
 
 (use-package any-ini-mode
@@ -5,6 +7,9 @@
   :config
   (add-to-list 'auto-mode-alist '(".*\\.ini$" . any-ini-mode))
   (add-to-list 'auto-mode-alist '(".*\\.conf$" . any-ini-mode)))
+
+(use-package paredit
+  :hook (emacs-lisp-mode . paredit-mode))
 
 (use-package python-docstring
   :after python-mode
@@ -123,91 +128,186 @@
 ;;   (lsp-ui-sideline-show-code-actions t)
 ;;   (lsp-ui-doc-enable t))
 
-(use-package typescript-mode)
+(use-package typescript-mode
+  :init
+  (add-hook 'typescript-ts-base-mode-hook '(lambda () (setq tab-width 2))))
+
+(use-package kotlin-mode)
+;; (use-package kotlin-ts-mode)
+
+(use-package smithy-mode)
+
+(use-package project
+  :straight nil
+  :ensure nil
+  :config
+  (add-to-list 'project-vc-extra-root-markers "tsconfig.json"))
+
+(use-package apheleia
+  :hook ((typescript-mode . apheleia-mode)
+         (typescript-ts-mode . apheleia-mode)))
+
+(use-package flymake
+  :ensure nil
+  :custom
+  (flymake-fringe-indicator-position nil))
+
+(use-package flymake-shellcheck
+  :commands flymake-shellcheck-load
+  :init
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 (use-package eglot
   :straight nil
   :init
   :defer
-  :hook ((sh-mode . eglot-ensure)
-         (ruby-mode . eglot-ensure)
-         (rustic-mode . eglot-ensure)
+  :hook ((bash-mode . eglot-ensure)
+         (bash-ts-mode . eglot-ensure)
+         (css-mode . eglot-ensure)
+         (css-ts-mode . eglot-ensure)
          (java-mode . eglot-ensure)
          (java-ts-mode . eglot-ensure)
+         (java-ts-mode . eglot-ensure)
          (javascript-mode . eglot-ensure)
-         (typescript-mode . eglot-ensure))
+         (js-json-mode . eglot-ensure)
+         (js-ts-mode . eglot-ensure)
+         (js2-mode . eglot-ensure)
+         (json-mode . eglot-ensure)
+         (json-ts-mode . eglot-ensure)
+         (json-ts-mode . eglot-ensure)
+         (kotlin-mode . eglot-ensure)
+         ;; (kotlin-ts-mode . eglot-ensure)
+         (python-mode . eglot-ensure)
+         (python-ts-mode . eglot-ensure)
+         (ruby-mode . eglot-ensure)
+         (rustic-mode . eglot-ensure)
+         (smithy-mode . eglot-ensure)
+         (smithy-ts-mode . eglot-ensure)
+         (typescript-mode . eglot-ensure)
+         (typescript-ts-mode . eglot-ensure)
+         )
   :bind (:map eglot-mode-map
               ("C-c l a" . eglot-code-actions)
               ("C-c l r" . eglot-rename))
   :config
 
-  (add-to-list 'eglot-server-programs
-               '((java-mode java-ts-mode) . ("jdtls" "--jvm-arg=-javaagent:/code/ext/lombok.jar" ;; This should be the script to run jdtls. You can create it yourself, or use the script provided by jdt (requires python 3.9.)
-                                             ;; Alternatively, you can paste the command here (e.g. "java" "-Declipse.application=org.eclipse.jdt.ls.core.id1" ...)
-                                             ;; See https://github.com/eclipse/eclipse.jdt.ls for more info.
-                                             :initializationOptions (:extendedClientCapabilities (:classFileContentsSupport t )))))
+  (defun eglot-generate-workspace-folders (server)
+    "Generate the workspaceFolders value for the workspace.
 
-  ;; The jdt server sometimes returns jdt:// scheme for jumping to definition
-  ;; instead of returning a file. This is not part of LSP and eglot does not
-  ;; handle it. The following code enables eglot to handle jdt files.
-  ;; See https://github.com/yveszoundi/eglot-java/issues/6 for more info.
-  (defun jdt-file-name-handler (operation &rest args)
+    This is implemented by returning the content of .bemol/ws_root_folders file"
+    (let* ((root (project-root (project-current)))
+           (ws-root (file-name-parent-directory
+                     (file-name-parent-directory root)))
+           (bemol-root (file-name-concat ws-root ".bemol/"))
+           (bemol-ws-root-folders (file-name-concat bemol-root "ws_root_folders"))
+           (ws-root-folders-content)
+           (ws-folders-for-eglot))
+      (if (not (file-exists-p bemol-ws-root-folders))
+          (eglot-workspace-folders server))
+      (setq ws-root-folders-content (with-temp-buffer
+                                      (insert-file-contents bemol-ws-root-folders)
+                                      (split-string (buffer-string) "\n" t)))
+      (setq ws-folders-for-eglot (mapcar (lambda (o) (concat "file://" o))
+                                         ws-root-folders-content))
+      (vconcat ws-folders-for-eglot)))
+
+  (add-to-list 'eglot-server-programs
+               `((java-mode java-ts-mode)
+                 . ("jdtls" "--jvm-arg=-javaagent:/code/ext/lombok.jar"
+                    ;; The following allows jdtls to find definition
+                    ;; if the code lives outside the current project.
+                    :initializationOptions
+                    ,(lambda (server)
+                       `(:workspaceFolders ,(eglot-generate-workspace-folders server)
+                                           :extendedClientCapabilities
+                                           (:classFileContentsSupport t
+                                                                      :overrideMethodsPromptSupport t
+                                                                      :hashCodeEqualsPromptSupport t
+                                                                      :advancedOrganizeImportsSupport t
+                                                                      :generateToStringPromptSupport t
+                                                                      :advancedGenerateAccessorsSupport t
+                                                                      :generateConstructorsPromptSupport t
+                                                                      :generateDelegateMethodsPromptSupport t
+                                                                      :advancedExtractRefactoringSupport t
+                                                                      :moveRefactoringSupport t
+                                                                      :clientHoverProvider t
+                                                                      :clientDocumentSymbolProvider t
+                                                                      :advancedIntroduceParameterRefactoringSupport t
+                                                                      :actionableRuntimeNotificationSupport t
+                                                                      :extractInterfaceSupport t
+                                                                      :advancedUpgradeGradleSupport t))))))
+  (add-to-list 'eglot-server-programs
+               '((smithy-mode smithy-ts-mode) . ("smithy-language-server" "0")))
+
+  (defvar eglot-path-uri-cache (make-hash-table :test #'equal)
+    "File path to uri cache.")
+
+  (cl-defgeneric +eglot/ext-uri-to-path (uri)
+    "Support extension uri."
+    nil)
+
+  (define-advice eglot--uri-to-path (:around (orig-fn uri) advice)
+    "Support non standard LSP uri scheme."
+    (when (keywordp uri) (setq uri (substring (symbol-name uri) 1)))
+    (or (+eglot/ext-uri-to-path uri)
+        (funcall orig-fn uri)))
+
+  (define-advice eglot--path-to-uri (:around (orig-fn path) advice)
+    "Support non standard LSP uri scheme."
+    (or (gethash path eglot-path-uri-cache)
+        (funcall orig-fn path)))
+
+  (defun +eglot/jdtls-uri-to-path (uri)
     "Support Eclipse jdtls `jdt://' uri scheme."
-    (let* ((uri (car args))
-           (cache-dir "/tmp/.eglot")
-           (source-file
-            (directory-abbrev-apply
-             (expand-file-name
-              (file-name-concat
-               cache-dir
-               (save-match-data
-                 (when (string-match "jdt://contents/\\(.*?\\)/\\(.*\\)\.class\\?" uri))
-                 (message "URI:%s" uri)
-                 (format "%s.java" (replace-regexp-in-string "/" "." (match-string 2 uri) t t))))))))
+    (when-let* ((jdt-scheme-p (string-prefix-p "jdt://" uri))
+                (filename (when (string-match "^jdt://contents/\\(.*?\\)/\\(.*\\)\.class\\?" uri)
+                            (format "%s.java" (replace-regexp-in-string "/" "." (match-string 2 uri) t t))))
+                (source-dir (file-name-concat (project-root (eglot--current-project)) ".eglot"))
+                (source-file (expand-file-name (file-name-concat source-dir filename))))
+      (unless (file-directory-p source-dir)
+        (make-directory source-dir t))
       (unless (file-readable-p source-file)
-        (let ((content (jsonrpc-request (eglot-current-server) :java/classFileContents (list :uri uri)))
-              (metadata-file (format "%s.%s.metadata"
-                                     (file-name-directory source-file)
-                                     (file-name-base source-file))))
-          (message "content:%s" content)
-          (unless (file-directory-p cache-dir) (make-directory cache-dir t))
-          (with-temp-file source-file (insert content))
-          (with-temp-file metadata-file (insert uri))))
+        (let ((content (jsonrpc-request (eglot--current-server-or-lose)
+                                        :java/classFileContents
+                                        (list :uri uri))))
+          (with-temp-file source-file (insert content))))
+      (puthash source-file uri eglot-path-uri-cache)
       source-file))
 
-  (add-to-list 'file-name-handler-alist '("\\`jdt://" . jdt-file-name-handler))
+  (cl-defmethod +eglot/ext-uri-to-path (uri &context (major-mode java-mode))
+    (+eglot/jdtls-uri-to-path uri))
 
-  (defun jdthandler--wrap-legacy-eglot--path-to-uri (original-fn &rest args)
-    "Hack until eglot is updated.
-ARGS is a list with one element, a file path or potentially a URI.
-If path is a jar URI, don't parse. If it is not a jar call ORIGINAL-FN."
-    (let ((path (file-truename (car args))))
-      (if (equal "jdt" (url-type (url-generic-parse-url path)))
-          path
-        (apply original-fn args))))
+  (cl-defmethod +eglot/ext-uri-to-path (uri &context (major-mode java-ts-mode))
+    (+eglot/jdtls-uri-to-path uri))
 
-  (defun jdthandler--wrap-legacy-eglot--uri-to-path (original-fn &rest args)
-    "Hack until eglot is updated.
-ARGS is a list with one element, a URI.
-If URI is a jar URI, don't parse and let the `jdthandler--file-name-handler'
-handle it. If it is not a jar call ORIGINAL-FN."
-    (let ((uri (car args)))
-      (if (and (stringp uri)
-               (string= "jdt" (url-type (url-generic-parse-url uri))))
-          uri
-        (apply original-fn args))))
+  ;; https://github.com/joaotavora/eglot/discussions/888#discussioncomment-2386710
+  (cl-defmethod eglot-execute-command
+    (_server (_cmd (eql java.apply.workspaceEdit)) arguments)
+    "Command `java.apply.workspaceEdit' handler."
+    (mapc #'eglot--apply-workspace-edit arguments))
 
-  (defun jdthandler-patch-eglot ()
-    "Patch old versions of Eglot to work with Jdthandler."
-    (interactive) ;; TODO, remove when eglot is updated in melpa
-    (unless (and (advice-member-p #'jdthandler--wrap-legacy-eglot--path-to-uri 'eglot--path-to-uri)
-                 (advice-member-p #'jdthandler--wrap-legacy-eglot--uri-to-path 'eglot--uri-to-path))
-      (advice-add 'eglot--path-to-uri :around #'jdthandler--wrap-legacy-eglot--path-to-uri)
-      (advice-add 'eglot--uri-to-path :around #'jdthandler--wrap-legacy-eglot--uri-to-path)
-      (message "[jdthandler] Eglot successfully patched.")))
-
-  ;; invoke
-  (jdthandler-patch-eglot)
+  (cl-defmethod eglot-execute-command
+    (_server (_cmd (eql java.action.overrideMethodsPrompt)) arguments)
+    "Command `java.action.overrideMethodsPrompt' handler."
+    (let* ((argument (aref arguments 0))
+           (list-methods-result (jsonrpc-request (eglot--current-server-or-lose)
+                                                 :java/listOverridableMethods
+                                                 argument))
+           (methods (plist-get list-methods-result :methods))
+           (menu-items (mapcar (lambda (method)
+                                 (let* ((name (plist-get method :name))
+                                        (parameters (plist-get method :parameters))
+                                        (class (plist-get method :declaringClass)))
+                                   (cons (format "%s(%s) class: %s" name (string-join parameters ", ") class) method)))
+                               methods))
+           (selected-methods (cl-map 'vector
+                                     (lambda (choice) (alist-get choice menu-items nil nil 'equal))
+                                     (delete-dups
+                                      (completing-read-multiple "overridable methods: " menu-items))))
+           (add-methods-result (jsonrpc-request (eglot--current-server-or-lose)
+                                                :java/addOverridableMethods
+                                                (list :overridableMethods selected-methods :context argument))))
+      (eglot--apply-workspace-edit add-methods-result)))
 
   ;; (add-to-list 'eglot-server-programs '((java-mode java-ts-mode) . ("jdtls" "--jvm-arg=-javaagent:/code/ext/lombok.jar")))
 
@@ -247,50 +347,6 @@ handle it. If it is not a jar call ORIGINAL-FN."
 ;; -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 ;; auto-completion and code snippets
 
-(use-package yasnippet
-  :config
-  (yas-reload-all)
-  (add-hook 'prog-mode-hook 'yas-minor-mode)
-  (add-hook 'text-mode-hook 'yas-minor-mode))
-
-(use-package company
-  :bind
-  (:map company-active-map
-              ("C-n". company-select-next)
-              ("C-p". company-select-previous)
-              ("M-<". company-select-first)
-              ("M->". company-select-last))
-  (:map company-mode-map
-        ("<tab>". tab-indent-or-complete)
-        ("TAB". tab-indent-or-complete)))
-
-(defun company-yasnippet-or-completion ()
-  (interactive)
-  (or (do-yas-expand)
-      (company-complete-common)))
-
-(defun check-expansion ()
-  (save-excursion
-    (if (looking-at "\\_>") t
-      (backward-char 1)
-      (if (looking-at "\\.") t
-        (backward-char 1)
-        (if (looking-at "::") t nil)))))
-
-(defun do-yas-expand ()
-  (let ((yas/fallback-behavior 'return-nil))
-    (yas/expand)))
-
-(defun tab-indent-or-complete ()
-  (interactive)
-  (if (minibufferp)
-      (minibuffer-complete)
-    (if (or (not yas/minor-mode)
-            (null (do-yas-expand)))
-        (if (check-expansion)
-            (company-complete-common)
-          (indent-for-tab-command)))))
-
 ;; Mode-specific flycheck chaining for mutli-mode lsp checker
 ;; https://github.com/flycheck/flycheck/issues/1762
 (use-package flycheck
@@ -307,8 +363,8 @@ handle it. If it is not a jar call ORIGINAL-FN."
   (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (use-package python-mode
-  ;; :hook
-  ;; (python-mode . (lambda () (setq flycheck-local-checkers '((lsp . ((next-checkers . (python-flake8 python-pylint))))))))
+  :hook
+  (python-mode . (lambda () (setq flycheck-local-checkers '((eglot . ((next-checkers . (python-flake8 python-pylint))))))))
   )
 
 (use-package dap-mode
@@ -331,37 +387,73 @@ handle it. If it is not a jar call ORIGINAL-FN."
   (add-hook 'go-mode-hook #'lsp-deferred)
   :hook ((before-save . gofmt-before-save))
   :config
-  (setq gofmt-command "goimports")
+  (setq gofmt-command "goimports"))
+
+;; (use-package yasnippet
+;;   :config
+;;   (yas-reload-all)
+;;   (add-hook 'prog-mode-hook 'yas-minor-mode)
+;;   (add-hook 'text-mode-hook 'yas-minor-mode))
+
+;; (defun company-yasnippet-or-completion ()
+;;   (interactive)
+;;   (or (do-yas-expand)
+;;       (company-complete-common)))
+
+;; (defun check-expansion ()
+;;   (save-excursion
+;;     (if (looking-at "\\_>") t
+;;       (backward-char 1)
+;;       (if (looking-at "\\.") t
+;;         (backward-char 1)
+;;         (if (looking-at "::") t nil)))))
+
+;; (defun do-yas-expand ()
+;;   (let ((yas/fallback-behavior 'return-nil))
+;;     (yas/expand)))
+
+;; (defun tab-indent-or-complete ()
+;;   (interactive)
+;;   (if (minibufferp)
+;;       (minibuffer-complete)
+;;     (if (or (not yas/minor-mode)
+;;             (null (do-yas-expand)))
+;;         (if (check-expansion)
+;;             (company-complete-common)
+;;           (indent-for-tab-command)))))
+
+(use-package company
+  :after eglot
+  :hook ((after-init . global-company-mode))
+  :init
+  (setq company-idle-delay 0.1
+        company-minimum-prefix-length 1)
+  :bind
+  (:map company-active-map
+        ("C-n". company-select-next)
+        ("C-p". company-select-previous)
+        ("M-<". company-select-first)
+        ("M->". company-select-last))
+  :config
+
+  ;; (:map company-mode-map
+  ;;       ("<tab>". tab-indent-or-complete)
+  ;;       ("TAB". tab-indent-or-complete))
   )
 
-;; (use-package company
-;;   :after (company-go)
-;;   :hook ((after-init . global-company-mode))
-;;   :config
-;;   (add-to-list 'company-backends 'company-jedi)
-;;   (add-to-list 'company-backends 'company-go)
-;;   :bind (:map company-mode-map
-;;          ("C-:" . helm-company)
-;;          :map company-active-map
-;;          ("C-:" . helm-company)
-;;          ("C-n" . company-select-next-or-abort)
-;;          ("C-p" . company-select-previous-or-abort)))
 
 (use-package helm
-  :init (setq helm-M-x-fuzzy-match t)
   :custom
-  (helm-completion-style 'emacs)
+  (helm-completion-style 'helm-fuzzy)
   :config
+  (helm-mode 1)
+  (setq helm-M-x-fuzzy-match t)
   ;; Remapped bindings
   (global-set-key [remap execute-extended-command] 'helm-M-x)
   (global-set-key [remap find-file] 'helm-find-files)
   (global-set-key [remap list-buffers] 'helm-buffers-list)
   (global-set-key [remap yank-pop] 'helm-show-kill-ring)
-
-  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu)
-  (setq completion-styles `(basic partial-completion emacs22 initials
-                                  ,(if (version<= emacs-version "27.0") 'helm-flex 'flex)))
-  )
+  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu))
 
 ;; (use-package helm-lsp
 ;;   :config
@@ -408,9 +500,9 @@ handle it. If it is not a jar call ORIGINAL-FN."
 
 (use-package helm-tramp)
 
-;; (use-package yasnippet
-;;   :config
-;;   (yas-global-mode 1))
+(use-package yasnippet
+  :config
+  (yas-global-mode 1))
 
 (use-package yasnippet-snippets :ensure t :after yasnippet)
 
@@ -421,16 +513,11 @@ handle it. If it is not a jar call ORIGINAL-FN."
   (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?))
 
 (use-package treemacs-projectile :after (treemacs))
-(use-package lsp-treemacs :after (lsp-mode treemacs)
-  :config
-  (lsp-treemacs-sync-mode 1))
+;; (use-package lsp-treemacs :after (lsp-mode treemacs)
+;;   :config
+;;   (lsp-treemacs-sync-mode 1))
 
 (setq compilation-scroll-output t)
-
-(use-package flymake-shellcheck
-  :commands flymake-shellcheck-load
-  :init
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 (use-package neotree :after all-the-icons)
 
@@ -454,19 +541,21 @@ handle it. If it is not a jar call ORIGINAL-FN."
   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
   (global-set-key (kbd "<C-S-right>")  'buf-move-right))
 
-(use-package copilot
-  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
-  :hook (prog-mode . copilot-mode)
-  :bind
-  (:map copilot-mode-map
-        ("C-c SPC" . copilot-complete)
-        :map copilot-completion-map
-        ("C-n" . copilot-next-completion)
-        ("C-p" . copilot-previous-completion)
-        ("<tab>" . copilot-accept-completion)
-        ("TAB" . copilot-accept-completion))
-  :config
-  (setq copilot-disable-predicates '(copilot--buffer-changed)))
+;; (use-package copilot
+;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+;;   :hook (prog-mode . copilot-mode)
+;;   :bind
+;;   (:map copilot-mode-map
+;;         ("C-c SPC" . copilot-complete)
+;;         :map copilot-completion-map
+;;         ("C-n" . copilot-next-completion)
+;;         ("C-p" . copilot-previous-completion)
+;;         ("<tab>" . copilot-accept-completion)
+;;         ("TAB" . copilot-accept-completion))
+;;   :config
+;;   (setq copilot-disable-predicates '(copilot--buffer-changed)))
+
+
 (defun kill-to-clipboard ()
   "Use ANSI OSC 52 escape sequence to attempt clipboard copy"
   ;; Modified from https://sunaku.github.io/tmux-yank-osc52.html
@@ -492,3 +581,17 @@ handle it. If it is not a jar call ORIGINAL-FN."
 (advice-add 'kill-ring-save :after #'after-kill-region-advice)
 (advice-add 'kill-region :after #'after-kill-region-advice)
 (advice-add 'kill-line :after #'after-kill-line-advice)
+
+
+(defun switch-to-buffer-temporarily (&optional buffer)
+  "Switch to BUFFER temporarily as the only buffer in the current window.
+If BUFFER is not provided, defaults to the current buffer."
+  (interactive)
+  (unless buffer
+    (setq buffer (current-buffer)))
+  ;; Define a display buffer action that makes the buffer occupy the whole frame
+  (let ((display-buffer-alist `((,buffer . ((display-buffer-reuse-window
+                                             display-buffer-in-side-window)
+                                            (inhibit-same-window . t)
+                                            (same-window-regex . "*"))))))
+    (switch-to-buffer buffer)))
