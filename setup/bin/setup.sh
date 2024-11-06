@@ -30,6 +30,9 @@ function set_distro {
     *armv7l*)
         DISTRO=rpi
         INSTALL_CMD='sudo apt install -y';;
+    *amzn2int*)
+        DISTRO=al2
+        INSTALL_CMD='sudo yum install -y';;
     *)
         DISTRO=unsupported
         error "Unsupported platform $(bold $PLATFORM) detected"
@@ -213,6 +216,16 @@ function install_packages {
         echo "Setting permissions to run `light` without sudo"
         sudo usermod -a -G video $USER
         sudo chmod +s /usr/bin/light
+
+        echo "Removing tmux and downloading, compiling, and replacing with tmux $TMUX_VERSION"
+        export TMUX_VERSION=3.4
+        sudo apt remove -y tmux
+        cd /code/ext
+        wget https://github.com/tmux/tmux/releases/download/$TMUX_VERSION/tmux-$TMUX_VERSION.tar.gz
+        tar -xvzf tmux-${TMUX_VERSION}.tar.gz
+        cd tmux-${TMUX_VERSION}
+        ./configure && make
+        sudo make install
         ;;
     rpi)
         echo "Installing AWSCLI v2 from Github..."
@@ -275,12 +288,26 @@ function main {
     compile_terminfo || error "Failed compiling xterm-24bit terminfo"
     systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
     xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
+    setup_mise
 }
 
 function setup_rpi {
     compile_terminfo || error "Failed compiling xterm-24bit terminfo"
     $INSTALL_CMD
 }
+
+function setup_mise {
+    if [[ ! -f $HOME/.local/bin/mise ]]; then
+        curl https://mise.run | sh
+        eval "$($HOME/.local/bin/mise activate --shims)"
+    fi
+
+    for plugin in "awsls bat bat-extras node python"; do
+        mise plugins install -y $plugin
+        mise use -g $plugin
+    done
+}
+
 
 if [[ $1 == 'rpi' ]]; then
     setup_rpi

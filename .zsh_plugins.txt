@@ -8,3 +8,5 @@ gmoben/zsh-autoswitch-virtualenv
 rupa/z
 
 davidparsson/zsh-pyenv-lazy
+
+so-fancy/diff-so-fancy

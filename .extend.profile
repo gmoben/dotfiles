@@ -68,6 +68,20 @@ if [ -x "$(command -v wal)" ]; then
     [ -f ~/.cache/wal/colors-tty.sh ] && . ~/.cache/wal/colors-tty.sh
 fi
 
+# Set up mise for runtime management
+if [ -f $HOME/.local/bin/mise ]; then
+    eval "$($HOME/.local/bin/mise activate zsh --shims)"
+    source ~/.local/share/mise/completions.zsh
+fi
+
+if [ -x "$(command -v aws_completer)" ]; then
+    complete -C '$(command -v aws_completer)' aws
+fi
+
+if [ "$(uname --nodename)" = "thinkpad-arch" ]; then
+    export LIBVA_DRIVER_NAME=i965
+fi
+
 has_systemd_unit() {
     case "$(hostname)" in
         "dev"*".amazon.com") ;;
@@ -80,14 +94,6 @@ has_systemd_unit() {
 if [ -z "$(has_systemd_unit emacs)" ] && [ -z "$(ps -ef | grep emacs | grep daemon)" ]; then
     echo "Launching emacsd in the background..."
     emacsd &>/dev/null &
-fi
-
-if [ -x "$(command -v aws_completer)" ]; then
-    complete -C '$(command -v aws_completer)' aws
-fi
-
-if [ "$(uname --nodename)" = "thinkpad-arch" ]; then
-    export LIBVA_DRIVER_NAME=i965
 fi
 
 ## Dedup path entries ##
