@@ -48,3 +48,6 @@ vlc
 #volumeicon
 volumeicon-alsa
 zsh
+libevent-dev
+libncurses-dev
+bison
