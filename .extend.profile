@@ -64,7 +64,7 @@ if [ -x "$(command -v thefuck)" ]; then
 fi
 
 if [ -x "$(command -v wal)" ]; then
-    [ -f ~/.cache/wal/sequences ] && cat ~/.cache/wal/sequences &
+    [ -f ~/.cache/wal/sequences ] && (cat ~/.cache/wal/sequences &)
     [ -f ~/.cache/wal/colors-tty.sh ] && . ~/.cache/wal/colors-tty.sh
 fi
 
