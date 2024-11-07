@@ -80,6 +80,8 @@ function bootstrap {
 
     touch /code/.ruby-version
 
+    mkdir -p $HOME/.zfunc
+
     case $DISTRO in
         arch)
             info "Installing yay..."
@@ -184,7 +186,6 @@ function install_base {
             $INSTALL_CMD rustup
             rustup default nightly
             rustup update
-            mkdir -p $HOME/.zfunc
             ;;
         ubuntu)
             PKGLIST=`cat $SETUP/ubuntu/apt.pkglist | grep -vE "#.*" | xargs`
@@ -279,35 +280,41 @@ function setup_git {
 
 }
 
-function main {
-    bootstrap
-    install_packages
-    setup_git
-    install_antidote || error "Failed antidote installation"
-    install_dotfiles || error "Failed dotfile installation"
-    compile_terminfo || error "Failed compiling xterm-24bit terminfo"
-    systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
-    xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
-    setup_mise
-}
-
 function setup_rpi {
     compile_terminfo || error "Failed compiling xterm-24bit terminfo"
     $INSTALL_CMD
 }
 
-function setup_mise {
+function install_mise {
     if [[ ! -f $HOME/.local/bin/mise ]]; then
         curl https://mise.run | sh
         eval "$($HOME/.local/bin/mise activate --shims)"
     fi
 
-    for plugin in "awsls bat bat-extras node python"; do
+    local ext_plugins=("awsls" "bat" "bat-extras")
+    local core_plugins=("node" "python")
+
+    for plugin in "${ext_plugins[@]}"; do
         mise plugins install -y $plugin
+        mise use -g $plugin
+    done
+
+    for plugin in "${core_plugins[@]}"; do
         mise use -g $plugin
     done
 }
 
+function main {
+    bootstrap
+    install_packages
+    setup_git
+    install_mise || error "Failed mise installation"
+    install_antidote || error "Failed antidote installation"
+    install_dotfiles || error "Failed dotfile installation"
+    compile_terminfo || error "Failed compiling xterm-24bit terminfo"
+    systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
+    xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
+}
 
 if [[ $1 == 'rpi' ]]; then
     setup_rpi

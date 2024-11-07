@@ -14,6 +14,10 @@ if [[ ! -d $ZSH_CACHE_DIR ]]; then
     mkdir -p $ZSH_CACHE_DIR/completions
 fi
 
+if [[ ! -d $HOME/.zfunc ]]; then
+    mkdir -p $HOME/.zfunc
+fi
+
 fpath+=~/.zfunc
 ZSH_PYENV_LAZY_VIRTUALENV=true
 
@@ -219,4 +223,8 @@ if [[ `command -v mise` ]]; then
             fi
         }
     fi
+fi
+
+if [[ ! -f $HOME/.zfunc/_mise ]]; then
+    mise completions zsh > $HOME/.zfunc/_mise
 fi

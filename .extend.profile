@@ -68,12 +68,6 @@ if [ -x "$(command -v wal)" ]; then
     [ -f ~/.cache/wal/colors-tty.sh ] && . ~/.cache/wal/colors-tty.sh
 fi
 
-# Set up mise for runtime management
-if [ -f $HOME/.local/bin/mise ]; then
-    eval "$($HOME/.local/bin/mise activate zsh --shims)"
-    source ~/.local/share/mise/completions.zsh
-fi
-
 if [ -x "$(command -v aws_completer)" ]; then
     complete -C '$(command -v aws_completer)' aws
 fi
