@@ -4,7 +4,8 @@ declare -A params
 # params[HDMI-0]="--off"
 # params[DP-1.1]="--off"
 # params[DP-1.2]="--off"
-params[eDP-1-1]="--primary --auto"
+params[eDP1]="--primary --auto"
+params[eDP-1-1]=params[eDP1]
 
 connected=$(xrandr -q | grep " connected " | awk '{print $1}')
 disconnected=$(xrandr -q | grep " disconnected " | awk '{print $1}')
