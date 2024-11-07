@@ -291,15 +291,9 @@ function install_mise {
         eval "$($HOME/.local/bin/mise activate --shims)"
     fi
 
-    local ext_plugins=("awsls" "bat" "bat-extras")
-    local core_plugins=("node" "python")
+    local plugins=("awsls" "bat" "bat-extras" "usage" "node" "python")
 
-    for plugin in "${ext_plugins[@]}"; do
-        mise plugins install -y $plugin
-        mise use -g $plugin
-    done
-
-    for plugin in "${core_plugins[@]}"; do
+    for plugin in "${plugins[@]}"; do
         mise use -g $plugin
     done
 }
@@ -316,8 +310,10 @@ function main {
     xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
 }
 
-if [[ $1 == 'rpi' ]]; then
-    setup_rpi
-else
-    main
-fi
+# if [[ $1 == 'rpi' ]]; then
+#     setup_rpi
+# else
+#     main
+# fi
+
+install_mise

@@ -178,7 +178,7 @@ if [[ `command -v mise` ]]; then
       local command
       command="${1:-}"
       if [ "$#" = 0 ]; then
-        command /home/bewarre/.local/bin/mise
+        command $HOME/.local/bin/mise
         return
       fi
       shift
@@ -187,16 +187,16 @@ if [[ `command -v mise` ]]; then
       deactivate|s|shell)
         # if argv doesn't contains -h,--help
         if [[ ! " $@ " =~ " --help " ]] && [[ ! " $@ " =~ " -h " ]]; then
-          eval "$(command /home/bewarre/.local/bin/mise "$command" "$@")"
+          eval "$(command $HOME/.local/bin/mise "$command" "$@")"
           return $?
         fi
         ;;
       esac
-      command /home/bewarre/.local/bin/mise "$command" "$@"
+      command $HOME/.local/bin/mise "$command" "$@"
     }
 
     _mise_hook() {
-      eval "$(/home/bewarre/.local/bin/mise hook-env -s zsh)";
+      eval "$($HOME/.local/bin/mise hook-env -s zsh)";
     }
     typeset -ag precmd_functions;
     if [[ -z "${precmd_functions[(r)_mise_hook]+1}" ]]; then
@@ -212,7 +212,7 @@ if [[ `command -v mise` ]]; then
         [ -n "$(declare -f command_not_found_handler)" ] && eval "${$(declare -f command_not_found_handler)/command_not_found_handler/_command_not_found_handler}"
 
         function command_not_found_handler() {
-            if /home/bewarre/.local/bin/mise hook-not-found -s zsh -- "$1"; then
+            if $HOME/.local/bin/mise hook-not-found -s zsh -- "$1"; then
               _mise_hook
               "$@"
             elif [ -n "$(declare -f _command_not_found_handler)" ]; then
@@ -223,8 +223,11 @@ if [[ `command -v mise` ]]; then
             fi
         }
     fi
+
+    # Generate zsh completions if they don't exist or are empty
+    if [[ ! -f $HOME/.zfunc/_mise || -z `cat $HOME/.zfunc/_mise` ]]; then
+	mise completions zsh > $HOME/.zfunc/_mise
+	compinit -d
+    fi
 fi
 
-if [[ ! -f $HOME/.zfunc/_mise ]]; then
-    mise completions zsh > $HOME/.zfunc/_mise
-fi
