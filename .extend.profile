@@ -12,7 +12,7 @@ export PATH=$HOME/.local/bin:$CODEBEN/dotfiles/.local/bin:$PATH
 . $HOME/.aliases
 
 ## Always ensure there is an active ssh-agent
-persist-ssh-agent
+. persist-ssh-agent
 
 ## NodeJS ##
 export PATH=$HOME/.yarn/bin:$PATH
