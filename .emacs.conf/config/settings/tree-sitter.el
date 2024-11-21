@@ -46,32 +46,33 @@
     (add-to-list 'major-mode-remap-alist mapping))
   :config
   (mp-setup-install-grammars)
-  (add-to-list 'auto-mode-alist '("\\.json\\(\\.?te?mpl\\(ate\\)?\\)?\\'" . json-ts-mode))
-  ;; Do not forget to customize Combobulate to your liking:
-  ;;
-  ;;  M-x customize-group RET combobulate RET
-  ;;
-  (use-package combobulate
-    :preface
-    ;; You can customize Combobulate's key prefix here.
-    ;; Note that you may have to restart Emacs for this to take effect!
-    (setq combobulate-key-prefix "C-c o")
+  (add-to-list 'auto-mode-alist '("\\.json\\(\\.?te?mpl\\(ate\\)?\\)?\\'" . json-ts-mode)))
 
-    ;; Optional, but recommended.
-    ;;
-    ;; You can manually enable Combobulate with `M-x
-    ;; combobulate-mode'.
-    :hook
-    ((css-ts-mode . combobulate-mode)
-     (html-ts-mode . combobulate-mode)
-     (java-ts-mode . combobulate-mode)
-     (js-ts-mode . combobulate-mode)
-     (json-ts-mode . combobulate-mode)
-     (kotlin-ts-mode . combobulate-mode)
-     (python-ts-mode . combobulate-mode)
-     (tsx-ts-mode . combobulate-mode)
-     (typescript-ts-mode . combobulate-mode)
-     (yaml-ts-mode . combobulate-mode))
-    ;; Amend this to the directory where you keep Combobulate's source
-    ;; code.
-    :load-path ("path-to-git-checkout-of-combobulate")))
+;; ;; Do not forget to customize Combobulate to your liking:
+;; ;;
+;; ;;  M-x customize-group RET combobulate RET
+;; ;;
+;; (use-package combobulate
+;;   :preface
+;;   ;; You can customize Combobulate's key prefix here.
+;;   ;; Note that you may have to restart Emacs for this to take effect!
+;;   (setq combobulate-key-prefix "C-c o")
+
+;;   ;; Optional, but recommended.
+;;   ;;
+;;   ;; You can manually enable Combobulate with `M-x
+;;   ;; combobulate-mode'.
+;;   :hook
+;;   ((css-ts-mode . combobulate-mode)
+;;    (html-ts-mode . combobulate-mode)
+;;    (java-ts-mode . combobulate-mode)
+;;    (js-ts-mode . combobulate-mode)
+;;    (json-ts-mode . combobulate-mode)
+;;    (kotlin-ts-mode . combobulate-mode)
+;;    (python-ts-mode . combobulate-mode)
+;;    (tsx-ts-mode . combobulate-mode)
+;;    (typescript-ts-mode . combobulate-mode)
+;;    (yaml-ts-mode . combobulate-mode))
+;;   ;; Amend this to the directory where you keep Combobulate's source
+;;   ;; code.
+;;   :load-path ("path-to-git-checkout-of-combobulate"))

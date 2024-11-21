@@ -367,13 +367,13 @@
   (python-mode . (lambda () (setq flycheck-local-checkers '((eglot . ((next-checkers . (python-flake8 python-pylint))))))))
   )
 
-(use-package dap-mode
-  :commands dap-mode
-  :config
-  (dap-mode 1)
-  (require 'dap-ui)
-  (dap-ui-mode 1)
-  (require 'dap-lldb))
+;; (use-package dap-mode
+;;   :commands dap-mode
+;;   :config
+;;   (dap-mode 1)
+;;   (require 'dap-ui)
+;;   (dap-ui-mode 1)
+;;   (require 'dap-lldb))
 
 ;; (use-package dap-java :straight nil)
 

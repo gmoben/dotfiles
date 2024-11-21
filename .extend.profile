@@ -79,9 +79,11 @@ fi
 has_systemd_unit() {
     case "$(hostname)" in
         "dev"*".amazon.com") ;;
-        *) if [ -x "$(command -v systemctl)" ]; then
-               systemctl --user list-unit-files --all | grep "$@"
-           fi
+        *)
+            if [ -x "$(command -v systemctl)" ]; then
+                systemctl --user list-unit-files --all 2>/dev/null | grep "$@"
+            fi
+            ;;
     esac
 }
 

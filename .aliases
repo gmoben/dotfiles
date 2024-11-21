@@ -32,8 +32,10 @@ alias dclob="dclobber"
 # Pass correct $TERM to emacs and tmux
 term=xterm-24bit
 
+export COLORTERM=$term
+
 # Emacs
-alias emacs="TERM=$term emacs -nw"
+alias emacs="TERM=$term COLORTERM=$term emacs -nw"
 alias gmacs="TERM=$term emacs -c"
 alias emacsd="tmux new-session -d -s emacs-daemon-launcher 'emacs --daemon; exit'"
 alias emacsclient="TERM=$term emacsclient -t"

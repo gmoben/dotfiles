@@ -11,6 +11,9 @@ source $ROOT/.shutils
 source $SETUP/bin/utils.sh
 
 function set_distro {
+
+    [[ "$1" == *microsoft* ]] && IS_WSL=0 || IS_WSL=1
+
     case "$1" in
     *Microsoft*)
         if [[ `command -v lsb_release` ]]; then
@@ -20,7 +23,7 @@ function set_distro {
         fi;;
     *arch*|*MANJARO*|*microsoft*)
         DISTRO=arch
-        INSTALL_CMD='pacaur -S --noconfirm --noedit --needed';;
+        INSTALL_CMD='yay -S --noconfirm --needed';;
     *Ubuntu*)
         DISTRO=ubuntu
         INSTALL_CMD='sudo apt install -y';;
@@ -70,12 +73,35 @@ function install_antidote {
 
 
 function bootstrap {
-    mkdir -m755 -p $HOME/code
+    HOME_CODE=$HOME/code
+    ROOT_CODE=/code
 
-    sudo ln -s $HOME/code /code
+    mkdir -m755 -p $HOME_CODE
 
-    mkdir -p /code/ben && \
-        mkdir -p /code/ext && \
+    if [ -d "$path" ] && [ "$(ls -A "$path")" ]; then
+        error "$ROOT_CODE is a directory and is non-empty"
+        exit 1
+    elif [ -L "$ROOT_CODE" ]; then
+        target=$(readlink -f "$ROOT_CODE")
+        if [ "$target" != "$HOME_CODE" ]; then
+            if yesno "$ROOT_CODE points to $target instead of $HOME_CODE. Remove?"; then
+                info "Removing symlink at $ROOT_CODE"
+                sudo rm -rf $ROOT_CODE
+            else
+                error "Not removing $ROOT_CODE. Exiting..."
+                exit 1
+            fi
+        fi
+    elif [ -e "$ROOT_CODE" ]; then
+        error "File exists at $ROOT_CODE"
+        exit 1
+    else
+        info "Creating symlink at $ROOT_CODE to $HOME_CODE"
+        sudo ln -s $HOME_CODE $ROOT_CODE
+    fi
+
+    mkdir -p $HOME/code/ben && \
+        mkdir -p $HOME/code/ext && \
         mkdir -p $HOME/.local/bin
 
     touch /code/.ruby-version
@@ -86,8 +112,6 @@ function bootstrap {
         arch)
             info "Installing yay..."
             sudo pacman -S --noconfirm --needed yay
-            info "Installing pacaur..."
-            pacaur -S --noconfirm --needed pacaur
             ;;
         ubuntu)
             info "Updating package sources"
@@ -147,20 +171,27 @@ function pip_packages {
         _pip=`which pip`
     fi
 
-    if [[ `command -v $_pip` ]]; then
-        sudo $_pip install --ignore-installed -r $SETUP/python/requirements.txt
-        $_pip install --user pipx
-        export PATH=$HOME/.local/bin:$PATH
-        pipx ensurepath
-    else
+    if [[ ! `command -v $_pip` ]]; then
         error "Can't find pip!"
         exit 1
     fi
 
+    case $DISTRO in
+    arch)
+        PKGLIST=`cat $SETUP/arch/python.pkglist | grep -vE "#.*" | xargs`
+        $INSTALL_CMD $PKGLIST
+        ;;
+    *)
+        sudo $_pip install --ignore-installed -r $SETUP/python/requirements.txt
+        $_pip install --user pipx
+        export PATH=$HOME/.local/bin:$PATH
+        pipx ensurepath
+        ;;
+    esac
+
     cat $SETUP/python/pipx.txt | while read line || [[ -n $line ]]; do
         pipx install $line
     done
-
 
 }
 
@@ -182,7 +213,7 @@ function install_base {
 
     case $DISTRO in
         arch)
-            PKGLIST=`cat $SETUP/arch/pacaur.pkglist | grep -vE "#.*" | xargs`
+            PKGLIST=`cat $SETUP/arch/yay.pkglist | grep -vE "#.*" | xargs`
             $INSTALL_CMD rustup
             rustup default nightly
             rustup update
@@ -245,9 +276,10 @@ function install_packages {
     pip_packages
     cargo_packages
 
-    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-    ~/.fzf/install
-
+    if [[ $DISTRO != arch ]]; then
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+        ~/.fzf/install
+    fi
 }
 
 function cargo_packages {
@@ -307,13 +339,13 @@ function main {
     install_dotfiles || error "Failed dotfile installation"
     compile_terminfo || error "Failed compiling xterm-24bit terminfo"
     systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
-    xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
+    if [[ ! $IS_WSL ]]; then
+        xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
+    fi
 }
 
-# if [[ $1 == 'rpi' ]]; then
-#     setup_rpi
-# else
-#     main
-# fi
-
-install_mise
+if [[ $1 == 'rpi' ]]; then
+    setup_rpi
+else
+    main
+fi

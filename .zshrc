@@ -151,14 +151,9 @@ if [[ `uname -r` =~ microsoft-standard ]]; then
     export WINIP=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)
     export DISPLAY=$WINIP:0
     export LIBGL_ALWAYS_INDIRECT=1
-
-    if [[ ! `ps -ef | grep emacs | grep daemon` ]]; then
-        echo "Launching emacsd in the background..."
-        emacsd &>/dev/null &
-    fi
 fi
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[[ `command -v fzf` ]] && source <(fzf --zsh)
 
 export FZF_DEFAULT_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
 
@@ -226,8 +221,7 @@ if [[ `command -v mise` ]]; then
 
     # Generate zsh completions if they don't exist or are empty
     if [[ ! -f $HOME/.zfunc/_mise || -z `cat $HOME/.zfunc/_mise` ]]; then
-	mise completions zsh > $HOME/.zfunc/_mise
-	compinit -d
+        mise completions zsh > $HOME/.zfunc/_mise
+        compinit -d
     fi
 fi
-

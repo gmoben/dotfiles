@@ -11,6 +11,8 @@ edid-decode-git
 emacs-nox
 etcher-bin
 firefox
+fzf
+go
 google-chrome
 keybase-bin
 kitty
@@ -44,6 +46,7 @@ sshfs
 steam
 the_silver_searcher
 tmux
+tree
 ttf-meslo-nerd-font-powerlevel10k
 udiskie
 vlc
@@ -57,3 +60,4 @@ yubikey-manager-qt
 yubikey-personalization
 yubikey-personalization-gui
 yubioath-desktop
+zsh

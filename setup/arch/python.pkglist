@@ -1,0 +1,12 @@
+python-ipdb
+ipython
+python-lsp-server
+python-pylsp-mypy
+python-lsp-isort
+python-pylsp-rope
+python-lsp-ruff
+python-structlog
+python-pipx
+python-pywal
+colorz
+python-haishoku
