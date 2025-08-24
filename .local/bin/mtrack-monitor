@@ -1,0 +1,208 @@
+#!/bin/bash
+# Improved M-Track auto-switch monitor with stream migration
+
+LOGFILE="$HOME/.local/share/mtrack-monitor.log"
+STATEFILE="$HOME/.local/share/mtrack-monitor.state"
+mkdir -p "$(dirname "$LOGFILE")"
+
+# Configuration
+DEVICE_NAME="M-Track 8X4M"
+CHECK_INTERVAL=5
+DEBOUNCE_TIME=3
+
+echo "$(date): M-Track monitor started" >> "$LOGFILE"
+
+# Function to get current default sink ID
+get_default_sink_id() {
+    wpctl status | grep -A 50 "Sinks:" | grep -E "^\s*│\s*\*" | head -1 | sed -n 's/.*[[:space:]]\([0-9]\+\)\. .*/\1/p'
+}
+
+# Function to get current default source ID
+get_default_source_id() {
+    wpctl status | grep -A 50 "Sources:" | grep -E "^\s*│\s*\*" | head -1 | sed -n 's/.*[[:space:]]\([0-9]\+\)\. .*/\1/p'
+}
+
+# Function to get M-Track sink and source IDs
+get_mtrack_ids() {
+    local sink_id=$(wpctl status | grep -A 50 "Sinks:" | grep "$DEVICE_NAME.*Surround 4\.0" | sed -n 's/.*[[:space:]]\([0-9]\+\)\. .*/\1/p' | head -1)
+    local source_id=$(wpctl status | grep -A 50 "Sources:" | grep "$DEVICE_NAME.*Surround 7\.1" | sed -n 's/.*[[:space:]]\([0-9]\+\)\. .*/\1/p' | head -1)
+
+    echo "$sink_id $source_id"
+}
+
+# Function to check if M-Track is currently the default
+is_mtrack_default() {
+    local current_sink=$(get_default_sink_id)
+    local current_source=$(get_default_source_id)
+    local mtrack_ids=($(get_mtrack_ids))
+    local mtrack_sink=${mtrack_ids[0]}
+    local mtrack_source=${mtrack_ids[1]}
+
+    [[ -n "$mtrack_sink" && "$current_sink" == "$mtrack_sink" ]] && \
+    [[ -n "$mtrack_source" && "$current_source" == "$mtrack_source" ]]
+}
+
+# Function to get all active sink inputs (playing streams)
+get_active_sink_inputs() {
+    wpctl status | grep -A 50 "Sink inputs:" | grep -E "^\s*[0-9]+" | sed -n 's/^[[:space:]]*\([0-9]*\).*/\1/p'
+}
+
+# Function to get all active source outputs (recording streams)
+get_active_source_outputs() {
+    wpctl status | grep -A 50 "Source outputs:" | grep -E "^\s*[0-9]+" | sed -n 's/^[[:space:]]*\([0-9]*\).*/\1/p'
+}
+
+# Function to move all streams to M-Track
+move_streams_to_mtrack() {
+    local mtrack_ids=($(get_mtrack_ids))
+    local mtrack_sink=${mtrack_ids[0]}
+    local mtrack_source=${mtrack_ids[1]}
+
+    if [[ -z "$mtrack_sink" ]]; then
+        echo "$(date): ERROR: Cannot find M-Track sink for stream migration" >> "$LOGFILE"
+        return 1
+    fi
+
+    # Move all active sink inputs (playback streams) to M-Track
+    local moved_inputs=0
+    while IFS= read -r input_id; do
+        if [[ -n "$input_id" ]]; then
+            if wpctl set-default "$input_id" "$mtrack_sink" 2>/dev/null; then
+                echo "$(date): Moved sink input $input_id to M-Track sink $mtrack_sink" >> "$LOGFILE"
+                ((moved_inputs++))
+            else
+                # Try alternative method
+                if pw-cli set-param "$input_id" Props '{ target.object = "'$mtrack_sink'" }' 2>/dev/null; then
+                    echo "$(date): Moved sink input $input_id to M-Track sink $mtrack_sink (alt method)" >> "$LOGFILE"
+                    ((moved_inputs++))
+                fi
+            fi
+        fi
+    done < <(get_active_sink_inputs)
+
+    # Move all active source outputs (recording streams) to M-Track
+    local moved_outputs=0
+    if [[ -n "$mtrack_source" ]]; then
+        while IFS= read -r output_id; do
+            if [[ -n "$output_id" ]]; then
+                if wpctl set-default "$output_id" "$mtrack_source" 2>/dev/null; then
+                    echo "$(date): Moved source output $output_id to M-Track source $mtrack_source" >> "$LOGFILE"
+                    ((moved_outputs++))
+                fi
+            fi
+        done < <(get_active_source_outputs)
+    fi
+
+    echo "$(date): Stream migration complete: $moved_inputs sink inputs, $moved_outputs source outputs moved" >> "$LOGFILE"
+    return 0
+}
+
+# Function to set M-Track as default and migrate streams
+set_mtrack_default() {
+    local mtrack_ids=($(get_mtrack_ids))
+    local mtrack_sink=${mtrack_ids[0]}
+    local mtrack_source=${mtrack_ids[1]}
+
+    if [[ -z "$mtrack_sink" ]]; then
+        echo "$(date): ERROR: Cannot find M-Track sink ID" >> "$LOGFILE"
+        return 1
+    fi
+
+    # Set M-Track as default sink
+    if wpctl set-default "$mtrack_sink"; then
+        echo "$(date): Set M-Track sink $mtrack_sink as default" >> "$LOGFILE"
+    else
+        echo "$(date): ERROR: Failed to set M-Track sink $mtrack_sink as default" >> "$LOGFILE"
+        return 1
+    fi
+
+    # Set M-Track as default source
+    if [[ -n "$mtrack_source" ]]; then
+        if wpctl set-default "$mtrack_source"; then
+            echo "$(date): Set M-Track source $mtrack_source as default" >> "$LOGFILE"
+        else
+            echo "$(date): WARNING: Failed to set M-Track source $mtrack_source as default" >> "$LOGFILE"
+        fi
+    else
+        echo "$(date): WARNING: Could not find M-Track source" >> "$LOGFILE"
+    fi
+
+    # Wait a moment for the system to process the change
+    sleep 1
+
+    # Move existing streams to the new device
+    move_streams_to_mtrack
+
+    # Verify the change took effect
+    if is_mtrack_default; then
+        echo "$(date): Successfully switched to M-Track (verified)" >> "$LOGFILE"
+        echo "$(date)" > "$STATEFILE"  # Record successful switch time
+        return 0
+    else
+        echo "$(date): ERROR: M-Track switch verification failed" >> "$LOGFILE"
+        return 1
+    fi
+}
+
+# Function to check if we should avoid switching (debouncing)
+should_debounce() {
+    if [[ ! -f "$STATEFILE" ]]; then
+        return 1  # No previous state, don't debounce
+    fi
+
+    local last_switch=$(cat "$STATEFILE" 2>/dev/null)
+    if [[ -z "$last_switch" ]]; then
+        return 1
+    fi
+
+    local current_time=$(date +%s)
+    local last_switch_time=$(date -d "$last_switch" +%s 2>/dev/null)
+
+    if [[ -z "$last_switch_time" ]]; then
+        return 1
+    fi
+
+    local time_diff=$((current_time - last_switch_time))
+    [[ $time_diff -lt $DEBOUNCE_TIME ]]
+}
+
+# Wait for system to stabilize
+sleep 5
+
+# Main monitoring loop
+while true; do
+    # Check if M-Track is connected via USB
+    if lsusb | grep -q "$DEVICE_NAME"; then
+        # Check if M-Track audio devices are available
+        mtrack_ids=($(get_mtrack_ids))
+        mtrack_sink=${mtrack_ids[0]}
+
+        if [[ -n "$mtrack_sink" ]]; then
+            # M-Track audio is available - check if it's the default
+            if ! is_mtrack_default; then
+                if ! should_debounce; then
+                    echo "$(date): M-Track detected but not default, switching..." >> "$LOGFILE"
+                    set_mtrack_default
+                else
+                    echo "$(date): M-Track switch requested but debouncing (too recent)" >> "$LOGFILE"
+                fi
+            fi
+        else
+            # M-Track USB connected but audio not available
+            echo "$(date): M-Track USB connected but audio not detected, restarting pipewire..." >> "$LOGFILE"
+            systemctl --user restart pipewire
+            sleep 5
+
+            # Try again after restart
+            mtrack_ids_retry=($(get_mtrack_ids))
+            if [[ -n "${mtrack_ids_retry[0]}" ]]; then
+                echo "$(date): M-Track audio detected after pipewire restart" >> "$LOGFILE"
+                set_mtrack_default
+            else
+                echo "$(date): M-Track audio still not available after pipewire restart" >> "$LOGFILE"
+            fi
+        fi
+    fi
+
+    sleep $CHECK_INTERVAL
+done

@@ -1,0 +1,12 @@
+[Unit]
+Description=M-Track 8X4M Auto-Switch Monitor
+After=pipewire.service
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/mtrack-monitor
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

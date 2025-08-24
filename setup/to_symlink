@@ -3,6 +3,7 @@
 .config/neofetch
 .config/pipewire
 .config/systemd/user/emacs.service
+.config/systemd/user/mtrack-monitor.service
 .config/systemd/user/ssh-agent.service
 .config/systemd/user/udiskie.service
 .config/systemd/user/xscreensaver.service
@@ -12,6 +13,7 @@
 .emacs.conf
 .extend.profile
 .jupyter
+.local/bin/mtrack-monitor
 .p10k.zsh
 .pam_environment
 .profile
