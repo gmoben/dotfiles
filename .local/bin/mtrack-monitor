@@ -1,5 +1,5 @@
 #!/bin/bash
-# Improved M-Track auto-switch monitor with stream migration
+# M-Track auto-switch monitor for Pulse/Pipewire with stream migration
 
 LOGFILE="$HOME/.local/share/mtrack-monitor.log"
 STATEFILE="$HOME/.local/share/mtrack-monitor.state"
@@ -9,6 +9,10 @@ mkdir -p "$(dirname "$LOGFILE")"
 DEVICE_NAME="M-Track 8X4M"
 CHECK_INTERVAL=5
 DEBOUNCE_TIME=3
+# Control recording stream migration behavior
+# Set to true to automatically move recording streams (microphone, voice chat) to M-Track input
+# Set to false (default) to preserve user's manually selected input device
+MIGRATE_RECORDING_STREAMS=false
 
 echo "$(date): M-Track monitor started" >> "$LOGFILE"
 
@@ -31,15 +35,14 @@ get_mtrack_ids() {
 }
 
 # Function to check if M-Track is currently the default
+# NOTE: Only checks output device (sink) - input device switching was removed
+# to preserve user's preferred microphone/input device
 is_mtrack_default() {
     local current_sink=$(get_default_sink_id)
-    local current_source=$(get_default_source_id)
     local mtrack_ids=($(get_mtrack_ids))
     local mtrack_sink=${mtrack_ids[0]}
-    local mtrack_source=${mtrack_ids[1]}
 
-    [[ -n "$mtrack_sink" && "$current_sink" == "$mtrack_sink" ]] && \
-    [[ -n "$mtrack_source" && "$current_source" == "$mtrack_source" ]]
+    [[ -n "$mtrack_sink" && "$current_sink" == "$mtrack_sink" ]]
 }
 
 # Function to get all active sink inputs (playing streams)
@@ -50,6 +53,82 @@ get_active_sink_inputs() {
 # Function to get all active source outputs (recording streams)
 get_active_source_outputs() {
     wpctl status | grep -A 50 "Source outputs:" | grep -E "^\s*[0-9]+" | sed -n 's/^[[:space:]]*\([0-9]*\).*/\1/p'
+}
+
+# Function to check if there are active audio streams
+has_active_streams() {
+    local sink_inputs=$(get_active_sink_inputs | wc -l)
+    local source_outputs=$(get_active_source_outputs | wc -l)
+    [[ $sink_inputs -gt 0 || $source_outputs -gt 0 ]]
+}
+
+# Function to attempt gentle pipewire recovery before restart
+attempt_pipewire_recovery() {
+    local max_attempts=3
+    local attempt=1
+
+    echo "$(date): M-Track USB connected but audio not detected, attempting recovery..." >> "$LOGFILE"
+
+    # Step 1: Extended wait period for device enumeration (10-15 seconds)
+    echo "$(date): Waiting 30 seconds for M-Track audio device enumeration..." >> "$LOGFILE"
+    sleep 30
+
+    # Check if devices appeared after extended wait
+    local mtrack_ids_wait=($(get_mtrack_ids))
+    if [[ -n "${mtrack_ids_wait[0]}" ]]; then
+        echo "$(date): M-Track audio detected after extended wait" >> "$LOGFILE"
+        return 0
+    fi
+
+    # Step 2: Try refreshing wpctl status and reloading modules
+    echo "$(date): Attempting gentle recovery methods..." >> "$LOGFILE"
+
+    # Refresh wpctl status
+    wpctl status > /dev/null 2>&1
+    sleep 2
+
+    # Try reloading specific modules if possible
+    if systemctl --user is-active --quiet pipewire; then
+        echo "$(date): Attempting module reload via systemctl reload-or-restart..." >> "$LOGFILE"
+        systemctl --user reload-or-restart pipewire 2>/dev/null
+        sleep 5
+
+        local mtrack_ids_reload=($(get_mtrack_ids))
+        if [[ -n "${mtrack_ids_reload[0]}" ]]; then
+            echo "$(date): M-Track audio detected after module reload" >> "$LOGFILE"
+            return 0
+        fi
+    fi
+
+    # Step 3: Check for active streams before considering restart
+    if has_active_streams; then
+        echo "$(date): WARNING: Active audio streams detected - avoiding PipeWire restart" >> "$LOGFILE"
+        echo "$(date): Active streams found, skipping restart to preserve audio playback" >> "$LOGFILE"
+        return 1
+    fi
+
+    # Step 4: Last resort - full restart with multiple attempts
+    while [[ $attempt -le $max_attempts ]]; do
+        echo "$(date): Attempt $attempt/$max_attempts: Full PipeWire restart required (no active streams detected)" >> "$LOGFILE"
+
+        systemctl --user restart pipewire
+        sleep 8  # Longer wait after restart
+
+        local mtrack_ids_restart=($(get_mtrack_ids))
+        if [[ -n "${mtrack_ids_restart[0]}" ]]; then
+            echo "$(date): M-Track audio detected after PipeWire restart (attempt $attempt)" >> "$LOGFILE"
+            return 0
+        fi
+
+        ((attempt++))
+        if [[ $attempt -le $max_attempts ]]; then
+            echo "$(date): Restart attempt $((attempt-1)) failed, waiting before retry..." >> "$LOGFILE"
+            sleep 5
+        fi
+    done
+
+    echo "$(date): ERROR: M-Track audio still not available after $max_attempts restart attempts" >> "$LOGFILE"
+    return 1
 }
 
 # Function to move all streams to M-Track
@@ -80,17 +159,22 @@ move_streams_to_mtrack() {
         fi
     done < <(get_active_sink_inputs)
 
-    # Move all active source outputs (recording streams) to M-Track
+    # Move all active source outputs (recording streams) to M-Track (optional)
+    # This behavior is controlled by MIGRATE_RECORDING_STREAMS configuration flag
     local moved_outputs=0
-    if [[ -n "$mtrack_source" ]]; then
-        while IFS= read -r output_id; do
-            if [[ -n "$output_id" ]]; then
-                if wpctl set-default "$output_id" "$mtrack_source" 2>/dev/null; then
-                    echo "$(date): Moved source output $output_id to M-Track source $mtrack_source" >> "$LOGFILE"
-                    ((moved_outputs++))
+    if [[ "$MIGRATE_RECORDING_STREAMS" == "true" ]]; then
+        if [[ -n "$mtrack_source" ]]; then
+            while IFS= read -r output_id; do
+                if [[ -n "$output_id" ]]; then
+                    if wpctl set-default "$output_id" "$mtrack_source" 2>/dev/null; then
+                        echo "$(date): Moved source output $output_id to M-Track source $mtrack_source" >> "$LOGFILE"
+                        ((moved_outputs++))
+                    fi
                 fi
-            fi
-        done < <(get_active_source_outputs)
+            done < <(get_active_source_outputs)
+        fi
+    else
+        echo "$(date): Recording stream migration disabled (MIGRATE_RECORDING_STREAMS=false)" >> "$LOGFILE"
     fi
 
     echo "$(date): Stream migration complete: $moved_inputs sink inputs, $moved_outputs source outputs moved" >> "$LOGFILE"
@@ -108,7 +192,7 @@ set_mtrack_default() {
         return 1
     fi
 
-    # Set M-Track as default sink
+    # Set M-Track as default sink (output device only)
     if wpctl set-default "$mtrack_sink"; then
         echo "$(date): Set M-Track sink $mtrack_sink as default" >> "$LOGFILE"
     else
@@ -116,16 +200,9 @@ set_mtrack_default() {
         return 1
     fi
 
-    # Set M-Track as default source
-    if [[ -n "$mtrack_source" ]]; then
-        if wpctl set-default "$mtrack_source"; then
-            echo "$(date): Set M-Track source $mtrack_source as default" >> "$LOGFILE"
-        else
-            echo "$(date): WARNING: Failed to set M-Track source $mtrack_source as default" >> "$LOGFILE"
-        fi
-    else
-        echo "$(date): WARNING: Could not find M-Track source" >> "$LOGFILE"
-    fi
+    # NOTE: Input device (source) switching removed to preserve user's preferred
+    # microphone/input device (built-in mics, USB headset mics, etc.)
+    # Only output device switching to M-Track is performed automatically
 
     # Wait a moment for the system to process the change
     sleep 1
@@ -188,18 +265,14 @@ while true; do
                 fi
             fi
         else
-            # M-Track USB connected but audio not available
-            echo "$(date): M-Track USB connected but audio not detected, restarting pipewire..." >> "$LOGFILE"
-            systemctl --user restart pipewire
-            sleep 5
-
-            # Try again after restart
-            mtrack_ids_retry=($(get_mtrack_ids))
-            if [[ -n "${mtrack_ids_retry[0]}" ]]; then
-                echo "$(date): M-Track audio detected after pipewire restart" >> "$LOGFILE"
-                set_mtrack_default
-            else
-                echo "$(date): M-Track audio still not available after pipewire restart" >> "$LOGFILE"
+            # M-Track USB connected but audio not available - use graduated recovery approach
+            if attempt_pipewire_recovery; then
+                # Recovery successful, try to set as default
+                local mtrack_ids_recovered=($(get_mtrack_ids))
+                if [[ -n "${mtrack_ids_recovered[0]}" ]]; then
+                    echo "$(date): M-Track audio recovered, setting as default..." >> "$LOGFILE"
+                    set_mtrack_default
+                fi
             fi
         fi
     fi
