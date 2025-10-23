@@ -24,6 +24,11 @@ ZSH_PYENV_LAZY_VIRTUALENV=true
 source ${ZDOTDIR:-$HOME}/.antidote/antidote.zsh
 antidote load
 
+# Load autoswitch-virtualenv only when NOT in VS Code
+if [[ "$TERM_PROGRAM" != "vscode" ]]; then
+    antidote bundle gmoben/zsh-autoswitch-virtualenv >/dev/null
+fi
+
 autoload -Uz compinit colors zcalc
 autoload bashcompinit
 bashcompinit
@@ -224,4 +229,36 @@ if [[ `command -v mise` ]]; then
         mise completions zsh > $HOME/.zfunc/_mise
         compinit -d
     fi
+fi
+
+if [[ "$TERM_PROGRAM" == "vscode" ]]; then
+    vsc_server_folder=$(ls -d ~/.vscode-server/cli/servers/*/ -t | head -n1 | tail -1)
+    code_cli="$vsc_server_folder/server/bin/remote-cli/code"
+    if [[ -x "$code_cli" ]]; then
+        VSI=$("$code_cli" --locate-shell-integration-path zsh 2>/dev/null)
+        [[ -f "$VSI" ]] && . "$VSI"
+    fi
+
+    # Make `cd` from a vscode terminal go to the workspace root
+    # Assume the following is in vscode settings:
+    # "terminal.integrated.env.linux":  {"VSCODE_WS": "${workspaceFolder}"},
+    # "terminal.integrated.env.windows":{"VSCODE_WS": "${workspaceFolder}"},
+    # When in filemode / not in a workspace, `VSCODE_WS` is set to the literal `${workspaceFolder}` so we check and ignore that
+    if [[ -v VSCODE_WS ]] && [[ "$VSCODE_WS" != '${workspaceFolder}' ]]; then
+        function _cd() {
+            # Override cd behavior: no args goes to VSCODE_WS, preserve special cases
+            case "${1:-}" in
+                "")      # No arguments: go to workspace root
+                         cd "${VSCODE_WS}" ;;
+                "-"|".") # Previous dir (-) and current dir (.) work normally
+                         cd "$1" ;;
+                /*)      # Absolute paths work normally
+                         cd "$1" ;;
+                *)       # Relative paths: prefix with workspace root
+                         cd "${VSCODE_WS}" && cd "$@" ;;
+            esac
+        }
+        alias cd=_cd
+    fi
+
 fi

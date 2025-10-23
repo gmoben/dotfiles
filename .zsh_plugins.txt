@@ -4,7 +4,6 @@ zsh-users/zsh-completions
 zsh-users/zsh-syntax-highlighting
 zsh-users/zsh-history-substring-search
 
-gmoben/zsh-autoswitch-virtualenv
 rupa/z
 
 davidparsson/zsh-pyenv-lazy
