@@ -541,6 +541,16 @@
   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
   (global-set-key (kbd "<C-S-right>")  'buf-move-right))
 
+(use-package xwiki-mode
+  :mode "\\.x?wiki")
+
+(use-package mmm-mode
+  :config
+  (require 'mmm-auto)
+  (require 'mmm-erb)
+  (setq mmm-global-mode 'maybe)
+  (mmm-add-mode-ext-class nil "\\.erb\\'" 'erb))
+
 ;; (use-package copilot
 ;;   :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
 ;;   :hook (prog-mode . copilot-mode)
@@ -555,6 +565,9 @@
 ;;   :config
 ;;   (setq copilot-disable-predicates '(copilot--buffer-changed)))
 
+(use-package groovy-mode)
+
+(use-package kotlin-mode)
 
 (defun kill-to-clipboard ()
   "Use ANSI OSC 52 escape sequence to attempt clipboard copy"
