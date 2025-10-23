@@ -161,6 +161,7 @@ fi
 [[ `command -v fzf` ]] && source <(fzf --zsh)
 
 export FZF_DEFAULT_OPTS="--preview 'bat --style=numbers --color=always --line-range :500 {}'"
+export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window down:3:hidden:wrap --bind '?:toggle-preview'"
 
 if [[ ! `command -v diff-so-fancy` && -d /code/ext/diff-so-fancy ]]; then
     export PATH=/code/ext/diff-so-fancy:$PATH
