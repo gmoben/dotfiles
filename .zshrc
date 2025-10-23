@@ -29,6 +29,8 @@ if [[ "$TERM_PROGRAM" != "vscode" ]]; then
     antidote bundle gmoben/zsh-autoswitch-virtualenv >/dev/null
 fi
 
+export COLORTERM=truecolor
+
 autoload -Uz compinit colors zcalc
 autoload bashcompinit
 bashcompinit
