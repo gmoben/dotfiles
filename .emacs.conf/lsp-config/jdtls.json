@@ -31,7 +31,8 @@
           "\\.git",
           ".metadata",
           "archetype-resources",
-          "META-INF/maven"
+          "META-INF/maven",
+          "build"
         ]
       },
       "server": {

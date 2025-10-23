@@ -190,6 +190,8 @@
               ("C-c l a" . eglot-code-actions)
               ("C-c l r" . eglot-rename))
   :config
+  ;; Increase timeout for jdtls initialization with large workspaces (30+ packages)
+  (setq eglot-connect-timeout 360)
 
   (defun eglot-generate-workspace-folders (server)
     "Generate the workspaceFolders value for the workspace.
