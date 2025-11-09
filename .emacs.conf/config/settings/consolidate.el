@@ -652,6 +652,13 @@ handle it. If it is not a jar call ORIGINAL-FN."
 
 (use-package kotlin-mode)
 
+;; Kitty Keyboard Protocol support for Emacs
+;; Enables enhanced keyboard input (Ctrl+punctuation, etc.) in terminal
+(use-package kkp
+  :straight (kkp :type git :host github :repo "benotn/kkp")
+  :config
+  (global-kkp-mode +1))
+
 (defun kill-to-clipboard ()
   "Use ANSI OSC 52 escape sequence to attempt clipboard copy"
   ;; Modified from https://sunaku.github.io/tmux-yank-osc52.html
