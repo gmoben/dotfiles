@@ -265,3 +265,8 @@ if [[ "$TERM_PROGRAM" == "vscode" ]]; then
     fi
 
 fi
+
+if [[ -f /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    export HOMEBREW_NO_ANALYTICS=1
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
