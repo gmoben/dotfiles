@@ -282,6 +282,87 @@
   (cl-defmethod +eglot/ext-uri-to-path (uri &context (major-mode java-ts-mode))
     (+eglot/jdtls-uri-to-path uri))
 
+  ;; Additional jdt:// file-name-handler support
+  ;; This catches jdt:// URIs earlier in the file handling process
+  ;; See https://github.com/yveszoundi/eglot-java/issues/6
+  (defun jdt-file-name-handler (operation &rest args)
+    "Support Eclipse jdtls `jdt://' uri scheme."
+    (let* ((uri (car args))
+           (cache-dir (file-name-concat (project-root (eglot--current-project)) ".eglot"))
+           (source-file
+            (directory-abbrev-apply
+             (expand-file-name
+              (file-name-concat
+               cache-dir
+               (save-match-data
+                 (when (string-match "jdt://contents/\\(.*?\\)/\\(.*\\)\\.class\\?" uri)
+                   (message "URI:%s" uri)
+                   (format "%s.java" (match-string 2 uri)))))))))
+      (unless (file-readable-p source-file)
+        (let* ((source-dir (file-name-directory source-file))
+               (content (jsonrpc-request (eglot-current-server) :java/classFileContents (list :uri uri)))
+               (metadata-file (format "%s.%s.metadata"
+                                      source-dir
+                                      (file-name-base source-file))))
+          (message "content:%s" content)
+          (unless (file-directory-p source-dir) (make-directory source-dir t))
+          (with-temp-file source-file (insert content))
+          (with-temp-file metadata-file (insert uri))))
+      source-file))
+
+  (add-to-list 'file-name-handler-alist '("\\`jdt://" . jdt-file-name-handler))
+
+  (defun jdthandler--wrap-legacy-eglot--path-to-uri (original-fn &rest args)
+    "Hack until eglot is updated.
+ARGS is a list with one element, a file path or potentially a URI.
+If path is a jar URI, don't parse. If it is not a jar call ORIGINAL-FN."
+    (let ((path (file-truename (car args))))
+      (if (equal "jdt" (url-type (url-generic-parse-url path)))
+          path
+        (apply original-fn args))))
+
+  (defun jdthandler--wrap-legacy-eglot--uri-to-path (original-fn &rest args)
+    "Hack until eglot is updated.
+ARGS is a list with one element, a URI.
+If URI is a jar URI, don't parse and let the `jdthandler--file-name-handler'
+handle it. If it is not a jar call ORIGINAL-FN."
+    (let ((uri (car args)))
+      (if (and (stringp uri)
+               (string= "jdt" (url-type (url-generic-parse-url uri))))
+          uri
+        (apply original-fn args))))
+
+  (defun jdthandler-patch-eglot ()
+    "Patch old versions of Eglot to work with Jdthandler."
+    (interactive)
+    (unless (and (advice-member-p #'jdthandler--wrap-legacy-eglot--path-to-uri 'eglot--path-to-uri)
+                 (advice-member-p #'jdthandler--wrap-legacy-eglot--uri-to-path 'eglot--uri-to-path))
+      (advice-add 'eglot--path-to-uri :around #'jdthandler--wrap-legacy-eglot--path-to-uri)
+      (advice-add 'eglot--uri-to-path :around #'jdthandler--wrap-legacy-eglot--uri-to-path)
+      (message "[jdthandler] Eglot successfully patched.")))
+
+  ;; Apply the jdthandler patch
+  (jdthandler-patch-eglot)
+
+  ;; Suppress workspace/didChangeWorkspaceFolders warning
+  ;; This capability is not needed since workspace folders are provided at initialization
+  (cl-defmethod eglot-register-capability
+    (_server (_method (eql workspace/didChangeWorkspaceFolders)) _id &rest _params)
+    "Silently ignore workspace/didChangeWorkspaceFolders registration."
+    nil)
+
+  ;; Ensure decompiled Java files in .eglot/ cache use java-ts-mode
+  ;; This fixes an issue where monet-mode/claude-code-mode interfere with mode detection
+  (defun +eglot/ensure-java-mode-for-decompiled ()
+    "Enable java-ts-mode for decompiled Java files in .eglot/ directory."
+    (when (and buffer-file-name
+               (string-match-p "/\\.eglot/" buffer-file-name)
+               (string-match-p "\\.java\\'" buffer-file-name)
+               (eq major-mode 'fundamental-mode))
+      (java-ts-mode)))
+
+  (add-hook 'find-file-hook '+eglot/ensure-java-mode-for-decompiled)
+
   ;; https://github.com/joaotavora/eglot/discussions/888#discussioncomment-2386710
   (cl-defmethod eglot-execute-command
     (_server (_cmd (eql java.apply.workspaceEdit)) arguments)
@@ -596,7 +677,6 @@
 (advice-add 'kill-ring-save :after #'after-kill-region-advice)
 (advice-add 'kill-region :after #'after-kill-region-advice)
 (advice-add 'kill-line :after #'after-kill-line-advice)
-
 
 (defun switch-to-buffer-temporarily (&optional buffer)
   "Switch to BUFFER temporarily as the only buffer in the current window.
