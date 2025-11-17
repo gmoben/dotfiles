@@ -1,0 +1,12 @@
+python3-ipdb
+python3-ipython
+python3-pylsp
+python3-pylsp-mypy
+#python-lsp-isort
+python3-pylsp-rope
+#python-lsp-ruff
+python3-structlog
+pipx
+#python-pywal
+#colorz
+#python-haishoku
