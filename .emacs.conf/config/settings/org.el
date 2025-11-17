@@ -51,6 +51,13 @@
 (setq org-refile-targets '((nil :maxlevel . 9)
                (org-agenda-files :maxlevel . 9)))
 
+(setq org-todo-keyword-faces
+      '(("DECIDE" . (:foreground "yellow"))
+        ("DONATE" . (:foreground "blue"))
+        ("TOSS" . (:foreground "#8B4513")) ; Using HEX code for Dark Brown
+        ("SELL" . (:foreground "green" :weight bold))))
+
+
 
 ;; ;; Capture
 ;; ;; TODO: Generate these
@@ -92,12 +99,12 @@
 ;;      :clock-in t :clock-resume t)
 ;; ))
 
-;; ;; Agenda
-;; (setq org-agenda-compact-blocks t)
-;; (setq org-agenda-files (list))
-;; (dolist (path '("/code/org/ben" "/code/org/work") nil)
-;;   (if (or (file-exists-p path) (file-symlink-p path))
-;;       (add-to-list 'org-agenda-files path)))
+;; Agenda
+(setq org-agenda-compact-blocks t)
+(setq org-agenda-files (list))
+(dolist (path '("/code/org/ben" "/code/org/work" "/code/notes/") nil)
+  (if (or (file-exists-p path) (file-symlink-p path))
+      (add-to-list 'org-agenda-files path)))
 
 ;; ;; Conditionally set capture templates
 ;; (setq org-capture-templates
