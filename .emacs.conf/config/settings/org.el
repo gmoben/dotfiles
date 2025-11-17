@@ -136,8 +136,6 @@
 
 
 ;; Global Key Bindings
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "C-c o a") 'org-agenda)
 (global-set-key (kbd "C-c o b") 'org-iswitchb) ;; TODO Find/write a helm plugin
 (global-set-key (kbd "C-c o c") 'org-capture)

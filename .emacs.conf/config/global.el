@@ -1,8 +1,33 @@
-;; Store auto-save files in system temp dir
+;;; global.el --- Global Emacs settings -*- lexical-binding: t; -*-
+
+;; Declare external variables to suppress byte-compiler warnings
+(defvar make-auto-save-file-name-function)
+(defvar c-basic-indent)
+(defvar c-basic-offset)
+(defvar mouse-wheel-scroll-amount)
+(defvar mouse-wheel-progressive-speed)
+(defvar auto-revert-verbose)
+
+;; Store auto-save files in ~/.emacs.d with hash-based names to avoid long filenames
+;; This prevents "File name too long" errors for deeply nested project paths
+(defun make-auto-save-file-name-hash ()
+  "Create an auto-save file name using SHA1 hash to keep names short."
+  (let* ((filename (buffer-file-name))
+         (basename (if filename
+                      (file-name-nondirectory filename)
+                      (buffer-name)))
+         (hash (if filename
+                  (sha1 filename)
+                  (sha1 (buffer-name))))
+         (auto-save-dir (expand-file-name "auto-save/" user-emacs-directory)))
+    (unless (file-directory-p auto-save-dir)
+      (make-directory auto-save-dir t))
+    (expand-file-name (format "#%s#%s#" hash basename) auto-save-dir)))
+
+(setq make-auto-save-file-name-function 'make-auto-save-file-name-hash)
+
 (setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+      `((".*" . ,(expand-file-name "backups/" user-emacs-directory))))
 
 ;; save hooks
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -97,6 +122,18 @@ See `sort-regexp-fields'."
 
 ;; visual-line-mode for line wrapping
 (setq global-visual-line-mode 1)
+
+;; Faster scrolling
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 1) ((control) . nil)))
+(setq mouse-wheel-progressive-speed t)
+(setq scroll-step 3)
+(setq scroll-conservatively 10)
+
+;; Auto-revert buffers without prompting when files change externally
+;; This prevents "file has changed, reload?" prompts when Claude edits files
+(global-auto-revert-mode 1)
+(setq revert-without-query '(".*"))  ; Auto-revert all files without asking
+(setq auto-revert-verbose nil)       ; Don't show messages when reverting
 
 (global-set-key (kbd "C-c TAB") 'indent-region)
 (global-set-key (kbd "C-x TAB") 'indent-rigidly)

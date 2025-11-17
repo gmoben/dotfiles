@@ -525,9 +525,38 @@ handle it. If it is not a jar call ORIGINAL-FN."
   )
 
 
+;; Fix "Exit with code 1, no result found" error message
+;; Define functions at top level (before use-package)
+(defun helm-projectile--filter-no-results-insert (orig-fun &rest args)
+  "Filter out 'Exit with code 1' error messages from helm-grep."
+  (if (and (stringp (car args))
+           (string-match-p "^\\* Exit with code 1, no result found" (car args))
+           ;; Match *helm grep*, *helm ag*, *helm rg* with any suffix
+           (string-match-p "\\*helm \\(grep\\|ag\\|rg\\)" (buffer-name)))
+      nil
+    (apply orig-fun args)))
+
+(defun helm-projectile--remove-empty-source-header ()
+  "Remove 'RG' source header when it's the only content (no results)."
+  (when-let ((buf (cl-find-if (lambda (b)
+                                 ;; Match *helm grep*, *helm ag*, *helm rg* with any suffix
+                                 (string-match-p "\\*helm \\(grep\\|ag\\|rg\\)" (buffer-name b)))
+                               (buffer-list))))
+    (with-current-buffer buf
+      (let ((contents (buffer-substring-no-properties (point-min) (point-max))))
+        (when (string= contents "RG\n")
+          (let ((inhibit-read-only t))
+            (erase-buffer)))))))
+
 (use-package helm
   :custom
   (helm-completion-style 'helm-fuzzy)
+  (helm-input-idle-delay 0.05)           ; Faster general input (default: 0.05)
+  (helm-grep-input-idle-delay 0.05)      ; Faster grep/ag/rg searches (default: 0.1)
+  (helm-echo-input-in-header-line nil)   ; Suppress "C-j" flicker during search
+  (helm-grep-ignored-directories
+   '("SCCS/" "RCS/" "CVS/" "MCVS/" ".svn/" ".git/" ".hg/" ".bzr/" "_MTN/"
+     "_darcs/" "{arch}/" ".gvfs/" "build/"))
   :config
   (helm-mode 1)
   (setq helm-M-x-fuzzy-match t)
@@ -536,16 +565,23 @@ handle it. If it is not a jar call ORIGINAL-FN."
   (global-set-key [remap find-file] 'helm-find-files)
   (global-set-key [remap list-buffers] 'helm-buffers-list)
   (global-set-key [remap yank-pop] 'helm-show-kill-ring)
-  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu))
+  (global-set-key (kbd "C-c s") 'helm-semantic-or-imenu)
+
+  ;; Prevent native compilation of helm-grep (it inlines insert calls, bypassing advice)
+  (add-to-list 'native-comp-deferred-compilation-deny-list "helm-grep")
+
+  ;; Load helm-grep for key binding fix
+  (require 'helm-grep)
+  (define-key helm-grep-map (kbd "DEL") 'helm-delete-char-backward)
+
+  ;; Apply advice
+  (advice-add 'insert :around #'helm-projectile--filter-no-results-insert)
+  (add-hook 'helm-after-update-hook #'helm-projectile--remove-empty-source-header))
 
 ;; (use-package helm-lsp
 ;;   :config
 ;;   (define-key lsp-mode-map [remap xref-find-apropos] #'helm-lsp-workspace-symbol)
 ;;   (define-key lsp-mode-map [remap lsp-execute-code-action] #'helm-lsp-code-actions))
-
-(use-package helm-ag
-  :after helm
-  :init (setq helm-ag-base-command "ag -f --nocolor --nogroup --hidden"))
 
 (use-package helm-company :after (helm company))
 
@@ -651,6 +687,122 @@ handle it. If it is not a jar call ORIGINAL-FN."
 (use-package groovy-mode)
 
 (use-package kotlin-mode)
+
+;; Claude Code IDE
+;; Monet
+(use-package monet
+  :straight (:type git :host github :repo "stevemolitor/monet")
+  :custom
+  (monet-diff-cleanup-tool 'monet-ediff-cleanup-tool)
+  (monet-diff-tool 'monet-ediff-tool)
+  (monet-do-not-disturb nil)
+  (monet-ediff-split-window-direction 'vertical)
+  :config
+  (monet-mode 1))
+
+;; install required inheritenv dependency:
+(use-package inheritenv
+  :straight (:type git :host github :repo "purcell/inheritenv"))
+
+;; Terminal backends
+(use-package eat :defer t)
+
+(use-package vterm
+  :config
+  ;; Enable Kitty keyboard protocol - tmux extended-keys will handle passthrough
+  (setq vterm-enable-kitty-keyboard-protocol t))
+
+;; Claude Code IDE with built-in MCP integration
+(use-package claude-code-ide
+  :straight (:type git :host github :repo "manzaltu/claude-code-ide.el")
+  :bind (("C-c C-'" . claude-code-ide-menu)  ; Requires tmux extended-keys support
+         ("C-c C-c" . claude-code-ide))
+  :custom
+  ;; Terminal backend (vterm is faster, eat is pure elisp)
+  (claude-code-ide-terminal-backend 'eat)
+
+  ;; Enable MCP server for exposing Emacs functions to Claude
+  (claude-code-ide-enable-mcp-server t)
+  ;; Use a static port so external Claude instances can connect
+  (claude-code-ide-mcp-server-port 58765)
+
+  ;; CLI flags for Bedrock model selection
+  (claude-code-ide-cli-extra-flags
+   "--model global.anthropic.claude-sonnet-4-5-20250929-v1:0[1m]")
+
+  ;; Window configuration
+  (claude-code-ide-use-side-window t)
+  (claude-code-ide-window-side 'right)
+  (claude-code-ide-window-width 90)
+  (claude-code-ide-focus-on-open t)
+
+  ;; Built-in ediff for reviewing diffs before applying
+  (claude-code-ide-use-ide-diff t)
+  (claude-code-ide-focus-claude-after-ediff nil)
+  (claude-code-ide-show-claude-window-in-ediff t)
+
+  :config
+  ;; Set AWS/Bedrock environment variables globally
+  ;; These will be inherited by claude-code-ide processes
+  (setenv "CLAUDE_CODE_SUBAGENT_MODEL" "global.anthropic.claude-sonnet-4-5-20250929-v1:0[1m]")
+  (setenv "CLAUDE_CODE_USE_BEDROCK" "1")
+  (setenv "AWS_REGION" "us-east-1")
+  (setenv "AWS_PROFILE" "bewarre")
+  (setenv "ANTHROPIC_MODEL" "sonnet[1m]")
+
+  ;; Enable built-in MCP tools for Emacs integration
+  ;; Provides xref, imenu, tree-sitter, diagnostics access to Claude
+  (claude-code-ide-emacs-tools-setup))
+
+;; stevemolitor/claude-code.el configuration
+;; To switch back: uncomment this, comment out claude-code-ide above, restart Emacs
+;; (use-package claude-code
+;;   :straight (:type git :host github :repo "stevemolitor/claude-code.el" :branch "main" :depth 1
+;;                    :files ("*.el" (:exclude "images/*")))
+;;   :bind-keymap
+;;   ("C-c C-c" . claude-code-command-map)
+;;   :bind
+;;   (:repeat-map my-claude-code-map ("M" . claude-code-cycle-mode))
+;;   :config
+;;   ;; Set AWS and Anthropic environment variables for Claude Code only
+;;   ;; These are only visible to the Claude process, not global Emacs
+;;   (add-hook 'claude-code-process-environment-functions
+;;             (lambda (claude-buffer-name directory)
+;;               '("CLAUDE_CODE_SUBAGENT_MODEL=global.anthropic.claude-sonnet-4-5-20250929-v1:0[1m]"
+;;                 "CLAUDE_CODE_USE_BEDROCK=1"
+;;                 "AWS_REGION=us-east-1"
+;;                 "AWS_PROFILE=bewarre"
+;;                 "ANTHROPIC_MODEL=sonnet[1m]")))
+;;
+;;   ;; optional IDE integration with Monet
+;;   (add-hook 'claude-code-process-environment-functions #'monet-start-server-function)
+;;   (monet-mode 1)
+;;
+;;   (claude-code-mode))
+
+;; Helper to get MCP config for external Claude sessions
+;; External sessions must use the SAME session ID as the Emacs session
+;; to share project and buffer context
+(defun claude-code-ide-get-external-config ()
+  "Get MCP config for external Claude to connect with project context.
+Run this from a buffer in your project after starting claude-code-ide in Emacs.
+The external Claude will share the same session and see your active buffers."
+  (interactive)
+  (let* ((project-dir (or (claude-code-ide-mcp--get-buffer-project)
+                          default-directory))
+         (session-id (gethash project-dir claude-code-ide--session-ids))
+         (port (claude-code-ide-mcp-server-get-port)))
+    (if (not session-id)
+        (message "No Claude Code IDE session running for this project. Start one with M-x claude-code-ide first.")
+      (let ((mcp-config (json-encode
+                         `((mcpServers . ((emacs-tools . ((type . "http")
+                                                          (url . ,(format "http://localhost:%d/mcp/%s" port session-id))))))))))
+        (kill-new (format "claude --mcp-config '%s'" mcp-config))
+        ;; Use the custom tmux/SSH clipboard integration
+        (kill-to-clipboard)
+        (message "Command copied to clipboard! Session: %s\nPaste in terminal to connect with full project/buffer context" session-id)))))
+
+(global-set-key (kbd "C-c C-e") 'claude-code-ide-get-external-config)
 
 ;; Kitty Keyboard Protocol support for Emacs
 ;; Enables enhanced keyboard input (Ctrl+punctuation, etc.) in terminal
