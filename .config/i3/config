@@ -17,7 +17,7 @@ new_float normal
 hide_edge_borders none
 
 # change borders
-# bindsym $mod+u border none
+bindsym $mod+u border none
 # bindsym $mod+y border pixel 1
 # bindsym $mod+n border normal
 
@@ -300,7 +300,7 @@ mode "resize" {
 
 # Autostart applications
 exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-exec --no-startup-id nitrogen --restore; sleep 1; picom -b
+#exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
 exec_always --no-startup-id dex -ae i3
 
