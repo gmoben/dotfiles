@@ -41,16 +41,21 @@ def ask_delete(dest):
     elif isdir(dest):
         ftype = 'Directory'
 
+    should_delete = always_delete
     if not always_delete:
         answer = input(f"{ftype} already exists at {dest}. Delete it? (yes/no/always) ")
         if answer.startswith(('y', 'Y', 'a', 'A')):
             if answer.startswith(('a', 'A')):
                 always_delete = True
-            if ftype == 'Directory':
-                shutil.rmtree(dest)
-            else:
-                os.remove(dest)
-            return True
+            should_delete = True
+
+    if should_delete:
+        if ftype == 'Directory':
+            shutil.rmtree(dest)
+        else:
+            os.remove(dest)
+        return True
+    return False
 
 
 def _operate(func, src, dest):
@@ -67,11 +72,11 @@ def _operate(func, src, dest):
     if exists(dest):
         if not ask_delete(dest):
             LOG.info(f"Skipping {fname} operation from {src} to {dest}")
-        return
-    else:
-        LOG.info(f"{fname.capitalize()}ing {src} to {dest}")
-        func(src, dest)
-        return True
+            return
+
+    LOG.info(f"{fname.capitalize()}ing {src} to {dest}")
+    func(src, dest)
+    return True
 
 
 def build_paths(src_dir, dest_dir, subpaths):
