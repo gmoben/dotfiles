@@ -1,5 +1,6 @@
 acpica
 arandr
+awesome-terminal-fonts
 aws-cli-v2
 bash-language-server
 cool-retro-term
@@ -24,6 +25,7 @@ neofetch
 nerd-fonts-complete-starship
 nitrogen
 pavucontrol
+pcf-profont-powerline
 pipewire
 pipewire-alsa
 pipewire-docs
@@ -42,6 +44,7 @@ sshfs
 steam
 tmux
 tree
+ttf-dejavu
 ttf-meslo-nerd-font-powerlevel10k
 udiskie
 vlc
