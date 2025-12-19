@@ -30,7 +30,7 @@ reload_themes() {
 
     # If emacs daemon is running, reload theme
     if (ps -ef | grep emacs | grep daemon &>/dev/null); then
-        emacsclient -e "(load-theme '$emacs_theme)" &>/dev/null
+        emacsclient -e "(load-theme '$emacs_theme t)" &>/dev/null
         echo "Reloaded emacs theme ($emacs_theme)"
     fi
 }

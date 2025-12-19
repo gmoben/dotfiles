@@ -4,7 +4,7 @@ BASE_DIR=$HOME/Pictures/wallpaper
 CUR_DIR=${ROFI_INFO:-$BASE_DIR}
 
 function print_files() {
-    find $1 -maxdepth 1 -mindepth 1 -printf "%f\n" | xargs -IXXX echo -en "XXX\0info\x1f$1\n" # | sed 's#'$BASE_DIR'/##'
+    find -L $1 -maxdepth 1 -mindepth 1 -printf "%f\n" | xargs -IXXX echo -en "XXX\0info\x1f$1\n"
 }
 
 if [[ -z "$1" ]]; then
