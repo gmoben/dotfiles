@@ -201,7 +201,8 @@ function install_dotfiles {
 
 function activate_systemd {
     #sudo systemctl --now enable sshd || true
-    #sudo systemctl --now enable NetworkManager || true
+    sudo systemctl enable --now NetworkManager || true
+    sudo systemctl enable --now bluetooth || true
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
     # services="$services node-hp-scan-to"
     info "Enabling and starting systemd user services: $services" ""

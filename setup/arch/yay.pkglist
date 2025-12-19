@@ -4,6 +4,7 @@ awesome-terminal-fonts
 aws-cli-v2
 bash-language-server
 blueman
+bluez-utils
 cool-retro-term
 cpio
 dex
@@ -26,6 +27,7 @@ neofetch
 nerd-fonts-complete-starship
 network-manager-applet
 nitrogen
+pasystray
 pavucontrol
 pcf-profont-powerline
 picom
@@ -53,8 +55,10 @@ udiskie
 vlc
 wireplumber
 xclip
+xdotool
 xorg-fonts-misc
 xorg-xev
+xorg-xwininfo
 xscreensaver
 yubikey-manager
 yubikey-manager-qt

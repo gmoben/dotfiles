@@ -47,7 +47,6 @@ exec_always --no-startup-id i3-battery-monitor
 ## sound-section - DO NOT EDIT if you wish to automatically upgrade Alsa -> Pulseaudio later! ##
 ################################################################################################
 
-exec_always --no-startup-id "sleep 3; pgrep volumeicon || volumeicon"
 bindsym $mod+Ctrl+m exec --no-startup-id pavucontrol
 
 ################################################################################################
@@ -368,10 +367,8 @@ bar {
 	status_command i3status
 	position bottom
 
-## please set_from_resource your primary output first. Example: 'xrandr --output eDP1 --primary'
-	tray_output primary
-    tray_output eDP-1
-	tray_output DP-1-2
+## tray_output removed to allow i3bar to auto-detect
+	verbose yes
 
 	bindsym button4 nop
 	bindsym button5 nop
