@@ -7,7 +7,6 @@ cpio
 dex
 diff-so-fancy
 dnsutils
-edid-decode-git
 emacs-nox
 etcher-bin
 firefox
@@ -15,7 +14,6 @@ fzf
 go
 google-chrome
 inxi
-keybase-bin
 kitty
 kitty-terminfo
 libfido2
@@ -38,14 +36,10 @@ python-pip
 read-edid
 rofi
 ruby
-ruby2.7
 scrot
-selenium-server-standalone
 shellcheck
-spotify-tui
 sshfs
 steam
-the_silver_searcher
 tmux
 tree
 ttf-meslo-nerd-font-powerlevel10k
