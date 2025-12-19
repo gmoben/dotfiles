@@ -35,6 +35,9 @@ export PYENV_VIRTUALENVWRAPPER_PREFER_PYVENV="true"
 export PYENV_ROOT=$HOME/.pyenv
 export AUTOSWITCH_VIRTUAL_ENV_DIR=$WORKON_HOME
 
+## Claude Code ##
+export claude="DISABLE_ERROR_REPORTING=1 DISABLE_TELEMETRY=1 claude"
+
 # ############
 # # SETTINGS #
 # ############
