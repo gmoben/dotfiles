@@ -3,6 +3,7 @@ arandr
 awesome-terminal-fonts
 aws-cli-v2
 bash-language-server
+blueman
 cool-retro-term
 cpio
 dex
@@ -23,9 +24,11 @@ mosh
 node-hp-scan-to
 neofetch
 nerd-fonts-complete-starship
+network-manager-applet
 nitrogen
 pavucontrol
 pcf-profont-powerline
+picom
 pipewire
 pipewire-alsa
 pipewire-docs
