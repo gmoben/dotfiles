@@ -12,6 +12,8 @@
 .config/kitty
 .config/compton.conf
 .emacs.conf
+.gnupg/gpg.conf
+.gnupg/dirmngr.conf
 .extend.profile
 .jupyter
 .local/bin/mtrack-monitor
