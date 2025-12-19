@@ -1,25 +1,74 @@
 #!/usr/bin/env bash
+#
+# Unified SSH agent management script
+# - Prefers systemd ssh-agent.service when available (Linux with systemd)
+# - Falls back to standalone agent for other environments (Amazon Linux 2, macOS, etc.)
+# - Skips on WSL2 (let Windows manage SSH agent)
+# - Always ensures keys are loaded into the active agent
+#
 
-# if [[ $(uname -a) =~ microsoft ]]; then
-#     exit
-# fi
-
-new_agent() {
-    ssh-agent -s > $HOME/.ssh-agent
-    source $HOME/.ssh-agent &>/dev/null
-    echo "Started new ssh-agent (SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID)"
-}
-
-# If file exists and isn't empty
-if [[ -s $HOME/.ssh-agent ]]; then
-    source $HOME/.ssh-agent &>/dev/null
-    if [[ -n "$SSH_AUTH_SOCK" && ! -e $SSH_AUTH_SOCK ]]; then
-        echo "ssh-agent $SSH_AUTH_SOCK is dead"
-        new_agent
-    fi
-else
-    echo "Starting new agent using $HOME/.ssh-agent"
-    new_agent
+# Skip on WSL2 - Windows-side SSH agent should be used instead
+if [[ $(uname -r) =~ microsoft-standard ]]; then
+    return 0 2>/dev/null || exit 0
 fi
 
-find ~/.ssh -name "id_*" | grep -Ev "pub|cert" | xargs ssh-add &>/dev/null
+# Create standalone agent and persist connection info
+new_standalone_agent() {
+    mkdir -p "$HOME/.ssh/agent"
+    ssh-agent -s > "$HOME/.ssh-agent"
+    source "$HOME/.ssh-agent" &>/dev/null
+    echo "Started standalone ssh-agent (SSH_AUTH_SOCK=$SSH_AUTH_SOCK)"
+}
+
+# Check if a socket is a functional ssh-agent
+is_agent_functional() {
+    local sock="$1"
+    [[ -S "$sock" ]] && SSH_AUTH_SOCK="$sock" ssh-add -l &>/dev/null
+    # Exit code 0 = has keys, 1 = no keys but agent works, 2 = can't connect
+    [[ $? -lt 2 ]]
+}
+
+# Try to use systemd ssh-agent if available
+use_systemd_agent() {
+    local systemd_sock="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/ssh-agent.socket"
+
+    if is_agent_functional "$systemd_sock"; then
+        export SSH_AUTH_SOCK="$systemd_sock"
+        unset SSH_AGENT_PID  # systemd manages the process
+        return 0
+    fi
+    return 1
+}
+
+# Use or create standalone agent
+use_standalone_agent() {
+    # Try existing agent from saved file
+    if [[ -s "$HOME/.ssh-agent" ]]; then
+        source "$HOME/.ssh-agent" &>/dev/null
+        if is_agent_functional "$SSH_AUTH_SOCK"; then
+            return 0
+        fi
+        echo "Standalone ssh-agent at $SSH_AUTH_SOCK is dead"
+    fi
+
+    # Start new agent
+    echo "Starting new standalone ssh-agent"
+    new_standalone_agent
+}
+
+# Load SSH keys into the current agent
+load_keys() {
+    # Only load if agent has no identities
+    if ! ssh-add -l &>/dev/null; then
+        find ~/.ssh -name "id_*" 2>/dev/null | grep -Ev "pub|cert" | xargs -r ssh-add &>/dev/null
+    fi
+}
+
+# Main logic: prefer systemd, fall back to standalone
+if use_systemd_agent; then
+    : # Using systemd agent
+else
+    use_standalone_agent
+fi
+
+load_keys

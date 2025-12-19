@@ -48,11 +48,6 @@ export GPG_TTY=$(tty)
 export EDITOR=$(command -v emacsclient > /dev/null && printf '%s\n' 'emacsclient -t' || command -v emacs > /dev/null && printf '%s\n' 'emacs' || command -v vim > /dev/null && printf '%s\n' 'vim' || command -v nano > /dev/null && printf '%s\n' 'nano')
 export SYSTEMD_EDITOR=$EDITOR
 
-## SSH ##
-if [ "$OSTYPE" = "linux-gnu" ] && [ -n "$XDG_RUNTIME_DIR" ] && [ -e "$XDG_RUNTIME_DIR/ssh-agent.socket" ]; then
-    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
-fi
-
 ## OSX ##
 case "$OSTYPE" in
 darwin*)

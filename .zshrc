@@ -151,8 +151,6 @@ if [[ `command -v pipx` ]]; then
     eval "$(register-python-argcomplete pipx)"
 fi
 
-[[ -f $HOME/.ssh-agent ]] && source ~/.ssh-agent &>/dev/null
-
 # WSL2 X11 Forwarding
 if [[ `uname -r` =~ microsoft-standard ]]; then
     export WINIP=$(awk '/nameserver / {print $2; exit}' /etc/resolv.conf 2>/dev/null)

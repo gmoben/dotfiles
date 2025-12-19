@@ -4,7 +4,6 @@ Description=Emacs: the extensible, self-documenting text editor
 [Service]
 Type=forking
 Environment="TERM=xterm-24bit"
-Environment="SSH_AUTH_SOCK=%t/ssh-agent.socket"
 ExecStart=/usr/bin/emacs --daemon
 ExecStop=/usr/bin/emacsclient --eval "(kill-emacs)"
 Restart=always

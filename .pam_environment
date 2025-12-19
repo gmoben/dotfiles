@@ -1,1 +1,14 @@
+# PAM environment file - sets environment variables for PAM sessions
+# (login managers, cron jobs, systemd user services, etc.)
+#
+# NOTE: This file is DEPRECATED in systemd 254+ (Feb 2023)
+# Modern systems default user_readenv=0 in pam_env.so, meaning this file
+# is not read unless explicitly enabled in /etc/pam.d/* configs.
+#
+# Kept for compatibility with older systems (e.g., pre-systemd 254 distros,
+# Amazon Linux 2) where it may still be read.
+#
+# On modern systems, persist-ssh-agent handles SSH_AUTH_SOCK detection
+# and works across both systemd and non-systemd environments.
+
 SSH_AUTH_SOCK DEFAULT="${XDG_RUNTIME_DIR}/ssh-agent.socket"
