@@ -1,0 +1,12 @@
+#!/bin/sh
+# GUI askpass helper for sudo when no TTY is available
+# Tries rofi first, falls back to zenity, errors if neither exists
+
+if command -v rofi >/dev/null 2>&1; then
+    rofi -dmenu -password -p "sudo password" -lines 0
+elif command -v zenity >/dev/null 2>&1; then
+    zenity --password --title="sudo password"
+else
+    echo "Error: No askpass helper found (install rofi or zenity)" >&2
+    exit 1
+fi

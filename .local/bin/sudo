@@ -1,0 +1,15 @@
+#!/bin/sh
+# Sudo wrapper: uses GUI askpass when no TTY is available
+# This allows sudo to work in non-interactive environments like Claude Code
+
+# Determine askpass location (same directory as this script)
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+export SUDO_ASKPASS="${SUDO_ASKPASS:-$SCRIPT_DIR/sudo-askpass}"
+
+if [ -t 0 ]; then
+    # TTY available - use normal interactive sudo
+    /usr/bin/sudo "$@"
+else
+    # No TTY - use GUI askpass
+    /usr/bin/sudo -A "$@"
+fi

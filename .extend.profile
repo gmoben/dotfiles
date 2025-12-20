@@ -38,6 +38,12 @@ export AUTOSWITCH_VIRTUAL_ENV_DIR=$WORKON_HOME
 ## Claude Code ##
 export claude="DISABLE_ERROR_REPORTING=1 DISABLE_TELEMETRY=1 claude"
 
+## Sudo Askpass (GUI prompt when no TTY available) ##
+## Wrapper script at .local/bin/sudo handles TTY detection automatically
+if ! command -v rofi >/dev/null 2>&1 && ! command -v zenity >/dev/null 2>&1; then
+    echo "Warning: Neither rofi nor zenity found. GUI sudo prompts will not work." >&2
+fi
+
 # ############
 # # SETTINGS #
 # ############
