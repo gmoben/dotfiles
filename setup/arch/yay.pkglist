@@ -19,11 +19,14 @@ go
 google-chrome
 hidapi
 htop
+intel-media-driver
 inxi
 kitty
 kitty-terminfo
 libfido2
+libva-utils
 lutris
+manjaro-settings-manager
 mosh
 neofetch
 nerd-fonts-complete-starship
