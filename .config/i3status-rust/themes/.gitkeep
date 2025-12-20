@@ -1,0 +1,5 @@
+# i3status-rust user themes directory
+#
+# pywal.toml: Initially symlinks to gruvbox-dark as a fallback.
+# When wal-set runs, it replaces this symlink to point to
+# ~/.cache/wal/i3status-rust-theme.toml (generated from pywal template)

@@ -364,13 +364,10 @@ set_from_resource $i3_color15         color15
 set $i3_color16         #ffffff
 set $i3_color17         #0c0c0c
 
-# Start i3bar to display a workspace bar (plus the system information i3status if available)
+# Start i3bar to display a workspace bar (plus the system information i3status-rust if available)
 bar {
-	status_command i3status
+	status_command i3status-rs ~/.config/i3status-rust/config.toml
 	position bottom
-
-## tray_output removed to allow i3bar to auto-detect
-	verbose yes
 
 	bindsym button4 nop
 	bindsym button5 nop

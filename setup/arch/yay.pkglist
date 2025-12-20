@@ -21,6 +21,7 @@ go
 google-chrome
 hidapi
 htop
+i3status-rust
 intel-media-driver
 inxi
 kitty

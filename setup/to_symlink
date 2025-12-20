@@ -1,6 +1,7 @@
 .aliases
 .claude/settings.json
 .config/i3
+.config/i3status-rust
 .config/neofetch
 .config/pipewire
 .config/systemd/user/emacs.service

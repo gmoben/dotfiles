@@ -1,1 +1,20 @@
-/code/work/bewarre-tools/src/Bewarre-amz-dotfiles/.config/wal/wal-set-post.tmuxonly
+#!/bin/bash
+#
+# wal-set-post: Custom commands to run after generating pywal themes
+#
+# This script is called by wal-set after theme generation completes.
+# Use it for any custom theme propagation or additional setup.
+#
+# Examples:
+#
+# Reload emacs theme on a remote machine (wal-set passes $emacs_theme):
+#   ssh remote-machine -C "emacsclient -e \"(load-theme '$emacs_theme t)\"" &>/dev/null || true
+#
+# Sync wal colors to another machine:
+#   rsync ~/.cache/wal/ remote-machine:~/.cache/wal/
+#
+# Reload kitty on remote:
+#   ssh remote-machine -C "kill -SIGUSR1 \$(pgrep kitty)" &>/dev/null || true
+
+# Add your custom commands below:
+
