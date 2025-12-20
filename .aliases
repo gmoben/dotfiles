@@ -99,6 +99,13 @@ alias gpo="git pull origin"
 alias gpu="git pull upstream"
 alias gcm="git commit -m"
 
+# Package management (disable mise to use system Python for AUR builds)
+if [[ `command -v mise` ]]; then
+    [[ `command -v pacman` ]] && alias pacman='MISE_DISABLED=1 pacman'
+    [[ `command -v yay` ]] && alias yay='MISE_DISABLED=1 yay'
+    [[ `command -v makepkg` ]] && alias makepkg='MISE_DISABLED=1 makepkg'
+fi
+
 # Utils
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
