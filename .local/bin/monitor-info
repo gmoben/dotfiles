@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# monitor-info - Display connected monitor make/model info via EDID
+#
+# Requires: edid-decode, python3
+
+if ! command -v edid-decode &>/dev/null; then
+    echo "Error: edid-decode not found. Install with: yay -S read-edid" >&2
+    exit 1
+fi
+
+# Get all connected outputs
+connected=$(xrandr --query | grep " connected" | awk '{print $1}')
+
+if [[ -z "$connected" ]]; then
+    echo "No connected displays found"
+    exit 0
+fi
+
+for output in $connected; do
+    # Extract EDID hex for this output
+    edid_hex=$(xrandr --props 2>/dev/null | \
+        awk "/^${output} connected/,/^[A-Za-z].*:/" | \
+        grep -A100 "EDID:" | \
+        tail -n+2 | \
+        grep -E "^\s+[0-9a-f]" | \
+        head -16 | \
+        tr -d "\t\n " || true)
+
+    if [[ -z "$edid_hex" ]]; then
+        echo "=== $output ==="
+        echo "  (no EDID data)"
+        echo
+        continue
+    fi
+
+    # Decode EDID
+    decoded=$(echo "$edid_hex" | \
+        python3 -c "import sys; sys.stdout.buffer.write(bytes.fromhex(sys.stdin.read().strip()))" | \
+        edid-decode 2>/dev/null || true)
+
+    manufacturer=$(echo "$decoded" | grep "Manufacturer:" | head -1 | awk '{print $2}' || true)
+    product_name=$(echo "$decoded" | grep "Display Product Name:" | sed "s/.*Display Product Name: *'\(.*\)'/\1/" || true)
+    resolution=$(xrandr --query | grep "^${output}" | grep -oE "[0-9]+x[0-9]+\+[0-9]+\+[0-9]+" | head -1 | cut -d+ -f1 || true)
+    dimensions=$(xrandr --query | grep "^${output}" | grep -oE "[0-9]+mm x [0-9]+mm" || true)
+
+    echo "=== $output ==="
+    if [[ -n "$product_name" ]]; then
+        echo "  Model:        $product_name"
+    fi
+    if [[ -n "$manufacturer" ]]; then
+        echo "  Manufacturer: $manufacturer"
+    fi
+    if [[ -n "$resolution" ]]; then
+        echo "  Resolution:   $resolution"
+    fi
+    if [[ -n "$dimensions" ]]; then
+        echo "  Size:         $dimensions"
+    fi
+    echo
+done

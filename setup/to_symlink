@@ -16,6 +16,7 @@
 .gnupg/dirmngr.conf
 .extend.profile
 .jupyter
+.local/bin/monitor-info
 .local/bin/mtrack-monitor
 .p10k.zsh
 .pam_environment
