@@ -1,4 +1,5 @@
 acpica
+adobe-source-han-serif-otc-fonts
 arandr
 awesome-terminal-fonts
 aws-cli-v2
@@ -32,6 +33,8 @@ neofetch
 nerd-fonts-complete-starship
 network-manager-applet
 nitrogen
+noto-fonts-cjk
+noto-fonts-emoji
 node-hp-scan-to
 openrgb
 pasystray
@@ -55,8 +58,10 @@ ruby
 scrot
 shellcheck
 sshfs
+spotify
 steam
 tinyxxd
+ttf-sarasa-gothic
 tmux
 tree
 ttf-dejavu
