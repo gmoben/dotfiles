@@ -1,0 +1,71 @@
+--- a/PKGBUILD
++++ b/PKGBUILD
+@@ -2,14 +2,14 @@
+ 
+ _pkgname="galaxybudsclient"
+ pkgname="${_pkgname}-git"
+-pkgver=r1797.e2ffd828
++pkgver=r2028.2bae0446
+ pkgrel=1
+ pkgdesc="Unofficial manager for the Samsung Galaxy Buds, Buds+, Buds Live and Buds Pro. Master branch."
+ arch=('x86_64' 'armv7h' 'aarch64')
+ url="https://github.com/ThePBone/GalaxyBudsClient"
+ license=('GPL-3.0-only')
+ depends=('gcc-libs' 'zlib' 'bluez')
+-makedepends=('git' 'dotnet-sdk>=8.0')
++makedepends=('git' 'dotnet-sdk>=10.0')
+ provides=("${pkgname}")
+ conflicts=("${_pkgname}-bin")
+ options=('!strip')
+@@ -32,7 +32,7 @@
+ 
+ prepare() {
+ 	cd "$srcdir/${pkgname}"
+-  
++
+   # Detect architecture
+   if [ $CARCH == "x86_64" ]; then
+     DOTNETARCH="linux-x64"
+@@ -42,15 +42,38 @@
+     DOTNETARCH="linux-arm64"
+   fi
+ 
+-  # Restore dependencies
+-  dotnet restore -r $DOTNETARCH --configfile "$srcdir/${pkgname}/GalaxyBudsClient/nuget.config" "$srcdir/${pkgname}/GalaxyBudsClient/GalaxyBudsClient.csproj"
++  # Fix SDK version to match installed dotnet-sdk
++  local installed_sdk=$(dotnet --version)
++  local required_sdk=$(grep -oP '"version":\s*"\K[^"]+' global.json)
++  local installed_minor="${installed_sdk%.*}"
++  local required_minor="${required_sdk%.*}"
++
++  if [ "$installed_minor" != "$required_minor" ]; then
++    echo "Error: Installed SDK minor version ($installed_minor) doesn't match required ($required_minor)"
++    return 1
++  fi
++
++  sed -i "s/\"version\": \"$required_sdk\"/\"version\": \"$installed_sdk\"/" global.json
++
++  # Restore dependencies (main project for net10.0, generators for netstandard2.0)
++  dotnet restore -r $DOTNETARCH -p:TargetFramework=net10.0 --configfile "$srcdir/${pkgname}/GalaxyBudsClient/nuget.config" "$srcdir/${pkgname}/GalaxyBudsClient/GalaxyBudsClient.csproj"
++  dotnet restore "$srcdir/${pkgname}/GalaxyBudsClient.Generators/GalaxyBudsClient.Generators.csproj"
+ }
+ 
+ build() {
+ 	cd "$srcdir/${pkgname}"
+-  
++
++  # Detect architecture
++  if [ $CARCH == "x86_64" ]; then
++    DOTNETARCH="linux-x64"
++  elif [ $CARCH == "armv7h" ]; then
++    DOTNETARCH="linux-arm"
++  elif [ $CARCH == "aarch64" ]; then
++    DOTNETARCH="linux-arm64"
++  fi
++
+   # Build
+-  dotnet publish -r $DOTNETARCH -o "$srcdir/${pkgname}/bin" -c Release -p:PublishSingleFile=true --self-contained true --no-restore "$srcdir/${pkgname}/GalaxyBudsClient/GalaxyBudsClient.csproj"
++  dotnet publish -r $DOTNETARCH -f net10.0 -o "$srcdir/${pkgname}/bin" -c Release -p:PublishSingleFile=true --self-contained true --no-restore "$srcdir/${pkgname}/GalaxyBudsClient/GalaxyBudsClient.csproj"
+ 
+   # Set exectuable bit
+   cd bin

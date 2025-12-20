@@ -209,12 +209,67 @@ function activate_systemd {
     systemctl --user --now enable $services || true
 }
 
+function install_with_patch {
+    local pkg=$1
+    local patch_file="$SETUP/arch/pkgbuild-patches/${pkg}.patch"
+    local cache_dir="$HOME/.cache/yay/${pkg}"
+
+    # Get patch modification time (Unix timestamp)
+    local patch_mtime=$(stat -c %Y "$patch_file")
+
+    # Query AUR for package last modified time
+    local aur_mtime=$(curl -s "https://aur.archlinux.org/rpc/?v=5&type=info&arg=${pkg}" | \
+        python3 -c "import sys,json; print(json.load(sys.stdin)['results'][0]['LastModified'])" 2>/dev/null || echo "0")
+
+    if [[ "$patch_mtime" -gt "$aur_mtime" ]]; then
+        info "Patch for $pkg is newer than AUR version"
+        if yesno "Apply local patch for $pkg?"; then
+            rm -rf "$cache_dir"
+            git clone "https://aur.archlinux.org/${pkg}.git" "$cache_dir"
+            cd "$cache_dir"
+            patch -p1 < "$patch_file"
+            makepkg -si --noconfirm
+            cd -
+            return 0
+        fi
+    else
+        warning "Patch for $pkg is older than AUR version - AUR may have been updated"
+        if yesno "Apply local patch anyway?"; then
+            rm -rf "$cache_dir"
+            git clone "https://aur.archlinux.org/${pkg}.git" "$cache_dir"
+            cd "$cache_dir"
+            patch -p1 < "$patch_file"
+            makepkg -si --noconfirm
+            cd -
+            return 0
+        fi
+    fi
+
+    # Fall back to normal yay install
+    yay -S --noconfirm --needed "$pkg"
+}
+
 function install_base {
     info "Installing base packages"
 
     case $DISTRO in
         arch)
-            PKGLIST=`cat $SETUP/arch/yay.pkglist | grep -vE "#.*" | xargs`
+            # Filter out packages that have patches, install those separately
+            local patched_pkgs=()
+            PKGLIST=""
+            for pkg in $(cat $SETUP/arch/yay.pkglist | grep -vE "#.*"); do
+                if [[ -f "$SETUP/arch/pkgbuild-patches/${pkg}.patch" ]]; then
+                    patched_pkgs+=("$pkg")
+                else
+                    PKGLIST="$PKGLIST $pkg"
+                fi
+            done
+
+            # Install patched packages
+            for pkg in "${patched_pkgs[@]}"; do
+                install_with_patch "$pkg"
+            done
+
             $INSTALL_CMD rustup
             rustup default nightly
             rustup update
