@@ -304,7 +304,7 @@ exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 #exec --no-startup-id nitrogen --restore; sleep 1; picom -b
 exec --no-startup-id picom -b
 exec --no-startup-id xautolock -time 90 -locker "xscreensaver-command -lock"
-exec --no-startup-id dex -ae i3
+exec_always --no-startup-id dex -ae i3
 
 # Color palette used for the terminal ( ~/.extend.Xresources file )
 # Colors are gathered based on the documentation:

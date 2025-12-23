@@ -25,10 +25,10 @@ reload_themes() {
         echo "Updated i3status-rust theme symlink"
     fi
 
-    # If i3status-rust pywal config was generated, update symlink
+    # If i3status-rust pywal config was generated, copy it (not symlink, since dir is in dotfiles)
     if [[ -f $HOME/.cache/wal/i3status-rust-config.toml ]]; then
-        ln -sf $HOME/.cache/wal/i3status-rust-config.toml $HOME/.config/i3status-rust/config.toml
-        echo "Updated i3status-rust config symlink"
+        cp $HOME/.cache/wal/i3status-rust-config.toml $HOME/.config/i3status-rust/config.toml
+        echo "Updated i3status-rust config"
     fi
 
     # If i3 is running, restart to reload bar
