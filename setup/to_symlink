@@ -19,6 +19,7 @@
 .jupyter
 .local/bin/monitor-info
 .local/bin/mtrack-monitor
+.local/bin/wal-set
 .p10k.zsh
 .pam_environment
 .profile

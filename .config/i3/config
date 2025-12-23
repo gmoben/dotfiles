@@ -368,10 +368,13 @@ set $i3_color17         #0c0c0c
 bar {
 	status_command i3status-rs ~/.config/i3status-rust/config.toml
 	position bottom
+	height 24
+	tray_padding 0
+	padding 0
 
 	bindsym button4 nop
 	bindsym button5 nop
-	font pango:DejaVu Sans Mono, FontAwesome 12
+	font pango:MesloLGS NF 11
 	strip_workspace_numbers yes
 
 	colors {

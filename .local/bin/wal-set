@@ -18,11 +18,17 @@ reload_themes() {
         echo "Reloaded wemux"
     fi
 
-    # If i3status-rust pywal theme was generated, update symlink
+    # If i3status-rust pywal theme was generated, update symlinks
     if [[ -f $HOME/.cache/wal/i3status-rust-theme.toml ]]; then
         mkdir -p $HOME/.config/i3status-rust/themes
         ln -sf $HOME/.cache/wal/i3status-rust-theme.toml $HOME/.config/i3status-rust/themes/pywal.toml
         echo "Updated i3status-rust theme symlink"
+    fi
+
+    # If i3status-rust pywal config was generated, update symlink
+    if [[ -f $HOME/.cache/wal/i3status-rust-config.toml ]]; then
+        ln -sf $HOME/.cache/wal/i3status-rust-config.toml $HOME/.config/i3status-rust/config.toml
+        echo "Updated i3status-rust config symlink"
     fi
 
     # If i3 is running, restart to reload bar
