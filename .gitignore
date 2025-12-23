@@ -1,5 +1,7 @@
-#*#
+# Emacs temporary files
+\#*#
 *~
+.#*
 .DS_Store
 .config/systemd/user/default.target.wants
 .screenlayout/*.sh
