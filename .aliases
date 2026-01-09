@@ -131,6 +131,9 @@ if [ `command -v wal-set` ]; then
 fi
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
+   # macOS-style open command
+   alias open="xdg-open"
+
    # Xscreensaver
    alias locks="xscreensaver-command --lock"
 
