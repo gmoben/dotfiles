@@ -199,6 +199,10 @@ function install_dotfiles {
     $SETUP/install_dotfiles.py
 }
 
+function install_firefox_config {
+    $SETUP/bin/firefox.sh
+}
+
 function activate_systemd {
     #sudo systemctl --now enable sshd || true
     sudo systemctl enable --now NetworkManager || true
@@ -393,6 +397,7 @@ function main {
     install_mise || error "Failed mise installation"
     install_antidote || error "Failed antidote installation"
     install_dotfiles || error "Failed dotfile installation"
+    install_firefox_config || warning "Firefox config setup skipped"
     compile_terminfo || error "Failed compiling xterm-24bit terminfo"
     systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
     if [[ ! $IS_WSL ]]; then

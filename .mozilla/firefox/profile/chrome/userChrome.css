@@ -1,0 +1,37 @@
+/* Keep bookmarks toolbar visible in fullscreen */
+
+/* Prevent toolbar from collapsing in fullscreen */
+#navigator-toolbox[inFullscreen] {
+  --uc-autohide-toolbox-delay: 0ms !important;
+}
+
+/* Force PersonalToolbar (bookmarks bar) visible */
+#PersonalToolbar {
+  visibility: visible !important;
+  opacity: 1 !important;
+  display: -moz-box !important;
+}
+
+#PersonalToolbar[collapsed="true"] {
+  visibility: visible !important;
+  display: -moz-box !important;
+  min-height: unset !important;
+}
+
+/* Ensure toolbox doesn't hide in fullscreen */
+#navigator-toolbox[inFullscreen] #PersonalToolbar {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Prevent the fullscreen hiding animation */
+#navigator-toolbox[inFullscreen]:not(:hover) #PersonalToolbar {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Override any max-height restrictions */
+#main-window[inFullscreen] #PersonalToolbar {
+  max-height: none !important;
+  visibility: visible !important;
+}
