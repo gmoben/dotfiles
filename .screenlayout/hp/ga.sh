@@ -2,7 +2,7 @@
 declare -A params
 params[eDP1]="--mode 1920x1200 --pos 2219x1600 --rotate normal"
 params[eDP-1]=${params[eDP1]}
-params[DP1-2]="--primary --mode 3840x1600 --pos 0x0 --rotate normal"
+params[DP1-2]="--primary --mode 3840x1600 --rate 74.98 --pos 0x0 --rotate normal"
 params[DP-1-2]=${params[DP1-2]}
 params[DP3-2]=${params[DP1-2]}
 params[DP-3-2]=${params[DP1-2]}
