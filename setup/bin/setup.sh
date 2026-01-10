@@ -213,6 +213,32 @@ function activate_systemd {
     systemctl --user --now enable $services || true
 }
 
+function add_to_ignorepkg {
+    local pkg=$1
+    local conf="/etc/pacman.conf"
+
+    # Check if package is already in IgnorePkg
+    if grep -qE "^IgnorePkg\s*=.*\b${pkg}\b" "$conf"; then
+        info "Package $pkg already in IgnorePkg"
+        return 0
+    fi
+
+    # Check if IgnorePkg line exists (uncommented)
+    if grep -qE "^IgnorePkg\s*=" "$conf"; then
+        # Append to existing IgnorePkg line
+        sudo sed -i "s/^\(IgnorePkg\s*=.*\)/\1 ${pkg}/" "$conf"
+    else
+        # Uncomment and set IgnorePkg line, or add new one after the comment
+        if grep -qE "^#IgnorePkg\s*=" "$conf"; then
+            sudo sed -i "s/^#IgnorePkg\s*=.*/IgnorePkg   = ${pkg}/" "$conf"
+        else
+            # Add IgnorePkg line in the options section
+            sudo sed -i "/^\[options\]/a IgnorePkg   = ${pkg}" "$conf"
+        fi
+    fi
+    success "Added $pkg to IgnorePkg in $conf"
+}
+
 function install_with_patch {
     local pkg=$1
     local patch_file="$SETUP/arch/pkgbuild-patches/${pkg}.patch"
@@ -234,6 +260,7 @@ function install_with_patch {
             patch -p1 < "$patch_file"
             makepkg -si --noconfirm
             cd -
+            add_to_ignorepkg "$pkg"
             return 0
         fi
     else
@@ -245,6 +272,7 @@ function install_with_patch {
             patch -p1 < "$patch_file"
             makepkg -si --noconfirm
             cd -
+            add_to_ignorepkg "$pkg"
             return 0
         fi
     fi
