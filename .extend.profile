@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Source secrets file if it exists (not tracked in git)
+[ -f ~/.secrets ] && . ~/.secrets
+
 #########
 # PATHS #
 #########
@@ -11,8 +14,8 @@ export PATH=$HOME/.local/bin:$CODEBEN/dotfiles/.local/bin:$PATH
 . $CODEBEN/dotfiles/.shutils
 . $HOME/.aliases
 
-## Always ensure there is an active ssh-agent
-. persist-ssh-agent
+## Always ensure there is an active auth agent (gpg-agent preferred, ssh-agent fallback)
+. persist-auth-agent
 
 ## NodeJS ##
 export PATH=$HOME/.yarn/bin:$PATH

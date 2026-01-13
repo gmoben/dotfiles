@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+#
+# Unified authentication agent management script
+# Priority order:
+#   1. gpg-agent with SSH support (if configured)
+#   2. systemd ssh-agent.socket (if available)
+#   3. standalone ssh-agent (fallback for non-systemd systems)
+#
+# Environments:
+#   - Linux desktop with YubiKey: uses gpg-agent
+#   - Amazon Linux 2 / older systems: falls back to ssh-agent
+#   - WSL2: skipped (Windows manages SSH agent)
+#
+
+# Skip on WSL2 - Windows-side SSH agent should be used instead
+if [[ $(uname -r) =~ microsoft-standard ]]; then
+    return 0 2>/dev/null || exit 0
+fi
+
+# Check if a socket is a functional SSH agent
+is_agent_functional() {
+    local sock="$1"
+    [[ -S "$sock" ]] && SSH_AUTH_SOCK="$sock" ssh-add -l &>/dev/null
+    # Exit code 0 = has keys, 1 = no keys but agent works, 2 = can't connect
+    [[ $? -lt 2 ]]
+}
+
+# Try to use gpg-agent with SSH support
+use_gpg_agent() {
+    # Must have gpgconf command
+    command -v gpgconf &>/dev/null || return 1
+
+    # Must have enable-ssh-support in config
+    local gpg_agent_conf="${GNUPGHOME:-$HOME/.gnupg}/gpg-agent.conf"
+    grep -q "^enable-ssh-support" "$gpg_agent_conf" 2>/dev/null || return 1
+
+    # Launch gpg-agent if needed
+    gpgconf --launch gpg-agent 2>/dev/null || return 1
+
+    # Get the SSH socket path
+    local gpg_ssh_sock
+    gpg_ssh_sock=$(gpgconf --list-dirs agent-ssh-socket 2>/dev/null) || return 1
+
+    # Socket must be functional
+    if is_agent_functional "$gpg_ssh_sock"; then
+        export SSH_AUTH_SOCK="$gpg_ssh_sock"
+        unset SSH_AGENT_PID  # gpg-agent manages itself
+        return 0
+    fi
+
+    return 1
+}
+
+# Try to use systemd ssh-agent if available
+use_systemd_ssh_agent() {
+    local systemd_sock="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/ssh-agent.socket"
+
+    if is_agent_functional "$systemd_sock"; then
+        export SSH_AUTH_SOCK="$systemd_sock"
+        unset SSH_AGENT_PID  # systemd manages the process
+        return 0
+    fi
+    return 1
+}
+
+# Create standalone agent and persist connection info
+new_standalone_agent() {
+    mkdir -p "$HOME/.ssh/agent"
+    ssh-agent -s > "$HOME/.ssh-agent"
+    source "$HOME/.ssh-agent" &>/dev/null
+    echo "Started standalone ssh-agent (SSH_AUTH_SOCK=$SSH_AUTH_SOCK)"
+}
+
+# Use or create standalone agent
+use_standalone_agent() {
+    # Try existing agent from saved file
+    if [[ -s "$HOME/.ssh-agent" ]]; then
+        source "$HOME/.ssh-agent" &>/dev/null
+        if is_agent_functional "$SSH_AUTH_SOCK"; then
+            return 0
+        fi
+        echo "Standalone ssh-agent at $SSH_AUTH_SOCK is dead"
+    fi
+
+    # Start new agent
+    echo "Starting new standalone ssh-agent"
+    new_standalone_agent
+}
+
+# Load SSH keys into the current agent (for non-GPG agents)
+load_ssh_keys() {
+    # Only load if agent has no identities and we're not using gpg-agent
+    # (gpg-agent manages its own keys via sshcontrol file)
+    local gpg_sock
+    gpg_sock=$(gpgconf --list-dirs agent-ssh-socket 2>/dev/null)
+    if [[ "$SSH_AUTH_SOCK" != "$gpg_sock" ]]; then
+        if ! ssh-add -l &>/dev/null; then
+            find ~/.ssh -name "id_*" 2>/dev/null | grep -Ev "pub|cert" | xargs -r ssh-add &>/dev/null
+        fi
+    fi
+}
+
+# Main logic: prefer gpg-agent, fall back to ssh-agent
+if use_gpg_agent; then
+    : # Using gpg-agent with SSH support
+elif use_systemd_ssh_agent; then
+    : # Using systemd ssh-agent
+else
+    use_standalone_agent
+fi
+
+load_ssh_keys

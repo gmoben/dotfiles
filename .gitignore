@@ -5,3 +5,6 @@
 .DS_Store
 .config/systemd/user/default.target.wants
 .screenlayout/*.sh
+
+# Secrets (API keys, tokens, etc.)
+.secrets

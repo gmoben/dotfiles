@@ -8,7 +8,7 @@
 # Kept for compatibility with older systems (e.g., pre-systemd 254 distros,
 # Amazon Linux 2) where it may still be read.
 #
-# On modern systems, persist-ssh-agent handles SSH_AUTH_SOCK detection
+# On modern systems, persist-auth-agent handles SSH_AUTH_SOCK detection
 # and works across both systemd and non-systemd environments.
 
-SSH_AUTH_SOCK DEFAULT="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+SSH_AUTH_SOCK DEFAULT="${XDG_RUNTIME_DIR}/gnupg/S.gpg-agent.ssh"

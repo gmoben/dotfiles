@@ -54,6 +54,7 @@ pipewire-docs
 pipewire-jack
 pipewire-pulse
 pipewire-zeroconf
+polkit-gnome
 pkgconf
 pyenv
 python-hid

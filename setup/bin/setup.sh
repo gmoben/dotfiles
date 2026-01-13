@@ -228,6 +228,12 @@ function activate_systemd {
     #sudo systemctl --now enable sshd || true
     sudo systemctl enable --now NetworkManager || true
     sudo systemctl enable --now bluetooth || true
+
+    # Enable PC/SC daemon for smartcard (YubiKey) support
+    sudo systemctl enable --now pcscd.socket || true
+
+    # Enable gpg-agent sockets for GPG and SSH authentication
+    systemctl --user enable --now gpg-agent.socket gpg-agent-ssh.socket || true
     services=`ls $HOME/.config/systemd/user | grep -v wants | cut -d'.' -f1 | xargs`
     # services="$services node-hp-scan-to"
     info "Enabling and starting systemd user services: $services" ""
