@@ -1,0 +1,30 @@
+# Pinentry pre-exec hook
+# This runs before the default pinentry selection logic
+# See /usr/bin/pinentry for how this is sourced
+#
+# Priority:
+#   1. Emacs (INSIDE_EMACS set) → pinentry-emacs
+#   2. Real terminal (USE_TTY=1 + valid GPG_TTY) → pinentry-curses
+#   3. GUI available (DISPLAY set) → pinentry-gtk (not gnome3, it has issues)
+#   4. Fallback → pinentry-curses
+
+# Inside Emacs - use emacs pinentry for minibuffer prompt
+# Requires allow-emacs-pinentry in gpg-agent.conf and pinentry.el in Emacs
+if [[ -n "$INSIDE_EMACS" ]] && [[ -x /usr/bin/pinentry-emacs ]]; then
+    exec /usr/bin/pinentry-emacs "$@"
+fi
+
+# Terminal session with valid TTY - use curses
+# PINENTRY_USER_DATA is passed from shell → gpg-agent → pinentry
+# GPG_TTY must be a real device (not empty or "not a tty")
+if [[ "$PINENTRY_USER_DATA" == *USE_TTY=1* ]] && [[ -n "$GPG_TTY" ]] && [[ -c "$GPG_TTY" ]]; then
+    exec /usr/bin/pinentry-curses "$@"
+fi
+
+# GUI available - use gtk (pinentry-gnome3 has communication issues with gpg-agent)
+if [[ -n "$DISPLAY" || "$XDG_SESSION_TYPE" == "wayland" ]] && [[ -x /usr/bin/pinentry-gtk ]]; then
+    exec /usr/bin/pinentry-gtk "$@"
+fi
+
+# Fallback to curses
+exec /usr/bin/pinentry-curses "$@"

@@ -49,7 +49,11 @@ fi
 # ############
 export VAGRANT_LOG=warn
 export GPG_TTY=$(tty)
-
+# Signal to pinentry that we prefer terminal-based input when in a real TTY
+# This is checked by ~/.config/pinentry/preexec
+export PINENTRY_USER_DATA="USE_TTY=1"
+# Notify gpg-agent of the current TTY for pinentry prompts
+gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
 ## Editors ##
 export EDITOR=$(command -v emacsclient > /dev/null && printf '%s\n' 'emacsclient -t' || command -v emacs > /dev/null && printf '%s\n' 'emacs' || command -v vim > /dev/null && printf '%s\n' 'vim' || command -v nano > /dev/null && printf '%s\n' 'nano')
 export SYSTEMD_EDITOR=$EDITOR
