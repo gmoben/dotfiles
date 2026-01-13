@@ -130,6 +130,27 @@ function bootstrap {
     esac
 }
 
+function install_system_configs {
+    info 'Installing system configuration files'
+
+    local root_dir="$SETUP/$DISTRO/root"
+    if [[ ! -d "$root_dir" ]]; then
+        info "No system configs found for $DISTRO at $root_dir"
+        return 0
+    fi
+
+    # Copy all files from $DISTRO/root/ to / preserving directory structure
+    cd "$root_dir"
+    find . -type f | while read -r file; do
+        local dest="/${file#./}"
+        local dest_dir=$(dirname "$dest")
+        sudo mkdir -p "$dest_dir"
+        sudo cp "$root_dir/$file" "$dest"
+        success "Installed" "$dest"
+    done
+    cd - > /dev/null
+}
+
 function install_mbp_extras {
     info 'Installing MBP extras'
 
@@ -421,6 +442,7 @@ function install_mise {
 function main {
     bootstrap
     install_packages
+    install_system_configs
     setup_git
     install_mise || error "Failed mise installation"
     install_antidote || error "Failed antidote installation"
