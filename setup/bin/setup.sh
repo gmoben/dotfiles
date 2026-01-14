@@ -23,16 +23,19 @@ function set_distro {
         fi;;
     *arch*|*MANJARO*|*microsoft*)
         DISTRO=arch
-        INSTALL_CMD='yay -S --noconfirm --needed';;
+        INSTALL_CMD='yay -S --noconfirm --needed'
+        REMOVE_CMD='yay -R --noconfirm';;
     *Ubuntu*)
         DISTRO=ubuntu
-        INSTALL_CMD='sudo apt install -y';;
+        INSTALL_CMD='sudo apt install -y'
+        REMOVE_CMD='sudo apt remove -y';;
     *Darwin*)
         DISTRO=darwin
         INSTALL_CMD='brew install';;
     *armv7l*)
         DISTRO=rpi
-        INSTALL_CMD='sudo apt install -y';;
+        INSTALL_CMD='sudo apt install -y'
+        REMOVE_CMD='sudo apt remove -y';;
     *amzn2int*)
         DISTRO=al2
         INSTALL_CMD='sudo yum install -y';;
@@ -62,8 +65,14 @@ yesno "Is this a Macbook (15,1)?" && IS_MBP=0 || IS_MBP=1
 
 function install_pkg {
     local usage="Usage: install_pkg PKGNAME"
-    1=${1?usage}
-    $INSTALL_CMD $1
+    local pkg=${1?$usage}
+    $INSTALL_CMD "$pkg"
+}
+
+function remove_pkg {
+    local usage="Usage: remove_pkg PKGNAME"
+    local pkg=${1?$usage}
+    $REMOVE_CMD "$pkg"
 }
 
 function install_antidote {
@@ -163,12 +172,12 @@ function install_mbp_extras {
 
     # Setup pulseaudio
     # https://gist.github.com/MCMrARM/c357291e4e5c18894bea10665dcebffb
-    sudo cp ${$SETUP/arch/mbp/root,}/usr/share/alsa/cards/AppleT2.conf
-    sudo cp ${$SETUP/arch/mbp/root,}/usr/share/pulseaudio/alsa-mixer/profile-sets/apple-t2.conf
-    sudo cp ${$SETUP/arch/mbp/root,}/usr/lib/udev/rules.d/91-pulseaudio-custom.rules
+    sudo cp "$SETUP/arch/mbp/root/usr/share/alsa/cards/AppleT2.conf" /usr/share/alsa/cards/
+    sudo cp "$SETUP/arch/mbp/root/usr/share/pulseaudio/alsa-mixer/profile-sets/apple-t2.conf" /usr/share/pulseaudio/alsa-mixer/profile-sets/
+    sudo cp "$SETUP/arch/mbp/root/usr/lib/udev/rules.d/91-pulseaudio-custom.rules" /usr/lib/udev/rules.d/
 
     yesno "Do you have a Macbook15,1?" && (
-            sudo cp ${$SETUP/arch/mbp/root,}/lib/firmware/bcrm/* /lib/firmware/bcrm
+            sudo cp "$SETUP/arch/mbp/root/lib/firmware/bcrm/"* /lib/firmware/bcrm
             sudo modprobe -r bcrmfmac; sudo modprobe bcrmfmac
             sudo echo bcrmfmac >> /etc/modules-load.d/apple.conf
             sudo cat << EOF >> /etc/NetworkManager/NetworkManager.conf
@@ -360,9 +369,8 @@ function install_packages {
     ubuntu)
         echo "Installing diff-so-fancy..."
         sudo npm install --global diff-so-fancy
-        echo "Setting permissions to run `light` without sudo"
+        # Add user to video group for backlight control (used by brightnessctl)
         sudo usermod -a -G video $USER
-        sudo chmod +s /usr/bin/light
 
         echo "Removing tmux and downloading, compiling, and replacing with tmux $TMUX_VERSION"
         export TMUX_VERSION=3.4
