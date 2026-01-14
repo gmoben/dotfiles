@@ -31,6 +31,9 @@ floating_modifier $mod
 # start a terminal
 bindsym $mod+Return exec $terminal
 bindcode $mod+48 exec $terminal
+
+# start an incognito terminal (no shell history)
+bindsym $mod+Shift+Return exec --no-startup-id env HISTFILE=/dev/null $terminal
 # kill focused window
 bindsym $mod+Shift+q kill
 

@@ -51,6 +51,7 @@ function e() {
 
 # Reload shell
 alias exsh='exec $SHELL'
+alias zsh-incognito='HISTFILE=/dev/null zsh'
 
 # Tmux
 export TMUX_DEFAULT_SESSION_GROUP=${TMUX_DEFAULT_SESSION_GROUP:-"main"}
@@ -58,18 +59,101 @@ TMUX_PATH=`which -a tmux | grep -v alias | grep bin/tmux | head -1`
 alias tmux="TERM=$term $TMUX_PATH"
 
 function tma() {
-    echo "Deprecated. Use 'tmn [session_group]' instead. Default session_group: $TMUX_DEFAULT_SESSION_GROUP"
-    tmn $@
+    echo "Deprecated. Use 'tmn [-i|--incognito] [-f|--force] [session_group]' instead."
+    tmn "$@"
 }
 
 function tmn() {
-    local session_group=${1:-$TMUX_DEFAULT_SESSION_GROUP}
+    local incognito_flag=0
+    local force_flag=0
+    local session_group=""
+
+    # Parse arguments (flags can appear anywhere)
+    for arg in "$@"; do
+        case "$arg" in
+            --incognito|-i)
+                incognito_flag=1
+                ;;
+            --force|-f)
+                force_flag=1
+                ;;
+            *)
+                [[ -z "$session_group" ]] && session_group="$arg"
+                ;;
+        esac
+    done
+
+    session_group="${session_group:-$TMUX_DEFAULT_SESSION_GROUP}"
+
+    # Determine current shell state
+    local in_nohist_shell=0
+    [[ "$HISTFILE" == "/dev/null" ]] && in_nohist_shell=1
+
+    # Check if target is already an incognito group
+    local target_is_incognito=0
+    [[ "$session_group" == incognito-* ]] && target_is_incognito=1
+
+    # Extract base group name (without incognito- prefix if present)
+    local base_group="$session_group"
+    [[ "$session_group" == incognito-* ]] && base_group="${session_group#incognito-}"
+
+    # Check for existing session groups
+    local non_incognito_exists=0
+    local incognito_exists=0
+    tmux has-session -t "$base_group (root)" &>/dev/null && non_incognito_exists=1
+    tmux has-session -t "incognito-$base_group (root)" &>/dev/null && incognito_exists=1
+
+    # Determine incognito mode (may be modified by warnings)
+    local incognito_mode=0
+    if [[ $incognito_flag -eq 1 ]] || [[ $in_nohist_shell -eq 1 ]] || [[ $target_is_incognito -eq 1 ]]; then
+        incognito_mode=1
+    fi
+
+    # Warning A: incognito mode + non-incognito group exists + incognito group does NOT exist
+    # Ask if user wants to create a new incognito group alongside the existing non-incognito one
+    if [[ $incognito_mode -eq 1 ]] && [[ $target_is_incognito -eq 0 ]] && [[ $non_incognito_exists -eq 1 ]] && [[ $incognito_exists -eq 0 ]]; then
+        if [[ $force_flag -eq 0 ]]; then
+            echo "Warning: Non-incognito group '$session_group' already exists."
+            read -q "REPLY?Create separate 'incognito-$session_group' group? [y/N] " || {
+                echo
+                echo "To attach to the non-incognito group instead, use: tmn -f $session_group"
+                return 1
+            }
+            echo
+        fi
+    fi
+
+    # Warning B: Regular shell targeting incognito group
+    if [[ $in_nohist_shell -eq 0 ]] && [[ $incognito_flag -eq 0 ]] && [[ $target_is_incognito -eq 1 ]]; then
+        if [[ $force_flag -eq 0 ]]; then
+            echo "Warning: Attaching to incognito group '$session_group' from a regular shell."
+            read -q "REPLY?Continue? (tmux session will not save history) [y/N] " || { echo; return 1; }
+            echo
+        fi
+    fi
+
+    # Handle -f/--force from incognito shell to attach to non-incognito group
+    if [[ $force_flag -eq 1 ]] && [[ $in_nohist_shell -eq 1 ]] && [[ $target_is_incognito -eq 0 ]]; then
+        incognito_mode=0  # Force non-incognito mode
+    fi
+
+    # Compute final session group name
+    if [[ $incognito_mode -eq 1 ]] && [[ $target_is_incognito -eq 0 ]]; then
+        session_group="incognito-$session_group"
+    fi
+
     local root_session_name="$session_group (root)"
+
+    # Build tmux environment args for incognito mode
+    local env_args=()
+    if [[ $incognito_mode -eq 1 ]]; then
+        env_args=(-e "HISTFILE=/dev/null")
+    fi
 
     # Create a detached root session that will persist without any attached clients.
     # This preserves the windows even if we detach from all child clients.
     if ! tmux has-session -t "$root_session_name" &>/dev/null; then
-        tmux new-session -d -s "$root_session_name" -t "$session_group" &>/dev/null
+        tmux new-session -d -s "$root_session_name" -t "$session_group" "${env_args[@]}" &>/dev/null
     fi
 
     # Look for first available session suffix
@@ -82,7 +166,7 @@ function tmn() {
     done
 
     # Start children sessions with destroy-unattached
-    tmux new-session -s "$session_group-$suffix" -t $session_group \; set-option destroy-unattached
+    tmux new-session -s "$session_group-$suffix" -t "$session_group" "${env_args[@]}" \; set-option destroy-unattached
 }
 
 

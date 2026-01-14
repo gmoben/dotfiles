@@ -41,9 +41,17 @@ source $HOME/.profile
 
 ## Options section
 
-HISTFILE=~/.zhistory
-HISTSIZE=100000
-SAVEHIST=50000
+# Only set HISTFILE if not already set to /dev/null (incognito mode)
+if [[ "$HISTFILE" == "/dev/null" ]]; then
+    # Incognito mode: load existing history for recall, but don't save new commands
+    HISTSIZE=100000
+    SAVEHIST=0
+    fc -R ~/.zhistory
+else
+    HISTFILE=~/.zhistory
+    HISTSIZE=100000
+    SAVEHIST=50000
+fi
 
 setopt correct           # Auto correct mistakes
 setopt extendedglob      # Extended globbing. Allows using regular expressions with *

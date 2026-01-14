@@ -49,6 +49,7 @@
     status                  # exit code of the last command
     command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
+    incognito               # no-history shell indicator (HISTFILE=/dev/null)
     direnv                  # direnv status (https://direnv.net/)
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
@@ -1631,6 +1632,21 @@
   # User-defined prompt segments can be customized the same way as built-in segments.
   # typeset -g POWERLEVEL9K_EXAMPLE_FOREGROUND=208
   # typeset -g POWERLEVEL9K_EXAMPLE_VISUAL_IDENTIFIER_EXPANSION='⭐'
+
+  #################################[ incognito: no-history shell indicator ]##################################
+  # Incognito mode indicator - shows when HISTFILE=/dev/null (no shell history)
+  function prompt_incognito() {
+    [[ "$HISTFILE" == "/dev/null" ]] || return
+    p10k segment -f 208 -i '󰗹' -t 'incognito'
+  }
+
+  function instant_prompt_incognito() {
+    prompt_incognito
+  }
+
+  # Incognito segment styling
+  typeset -g POWERLEVEL9K_INCOGNITO_FOREGROUND=208
+  typeset -g POWERLEVEL9K_INCOGNITO_VISUAL_IDENTIFIER_EXPANSION='󰗹'
 
   # Transient prompt works similarly to the builtin transient_rprompt option. It trims down prompt
   # when accepting a command line. Supported values:
