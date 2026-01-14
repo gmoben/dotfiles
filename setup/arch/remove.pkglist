@@ -1,0 +1,4 @@
+# Packages to remove - conflict with preferred alternatives or deprecated
+
+# Use libinput instead of synaptics for touchpad (synaptics is deprecated)
+xf86-input-synaptics

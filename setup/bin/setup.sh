@@ -405,6 +405,46 @@ function install_packages {
     fi
 }
 
+function remove_unwanted_packages {
+    info "Checking for unwanted packages to remove"
+
+    local remove_list="$SETUP/$DISTRO/remove.pkglist"
+    if [[ ! -f "$remove_list" ]]; then
+        return 0
+    fi
+
+    local PKGLIST=$(cat "$remove_list" | grep -vE "^#|^$" | xargs)
+    if [[ -z "$PKGLIST" ]]; then
+        return 0
+    fi
+
+    # Collect installed packages to remove
+    local to_remove=()
+    for pkg in $PKGLIST; do
+        local is_installed=false
+        case $DISTRO in
+            arch)
+                yay -Qi "$pkg" &>/dev/null && is_installed=true
+                ;;
+            ubuntu|rpi)
+                dpkg -l "$pkg" 2>/dev/null | grep -q "^ii" && is_installed=true
+                ;;
+        esac
+
+        if [[ "$is_installed" == "true" ]]; then
+            to_remove+=("$pkg")
+        else
+            warning "Package '$pkg' not installed, skipping removal"
+        fi
+    done
+
+    # Remove all collected packages in a single command
+    if [[ ${#to_remove[@]} -gt 0 ]]; then
+        info "Removing packages: ${to_remove[*]}"
+        $REMOVE_CMD "${to_remove[@]}" || warning "Failed to remove some packages"
+    fi
+}
+
 function cargo_packages {
     cargo install ripgrep
     cargo install --locked bat
@@ -456,6 +496,7 @@ function install_mise {
 function main {
     bootstrap
     install_packages
+    remove_unwanted_packages
     install_system_configs
     setup_git
     install_mise || error "Failed mise installation"
