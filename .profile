@@ -31,6 +31,11 @@ if [ -d "$HOME/.local/bin" ] ; then
     PATH="$HOME/.local/bin:$PATH"
 fi
 
+# Default terminal emulator
+if command -v kitty >/dev/null 2>&1; then
+    export TERMINAL=kitty
+fi
+
 [ -f "$HOME/.extend.profile" ] && . "$HOME/.extend.profile"
 
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.

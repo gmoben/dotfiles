@@ -217,7 +217,7 @@ function pip_packages {
 }
 
 function install_dotfiles {
-    $SETUP/install_dotfiles.py
+    $SETUP/install_dotfiles.py --distro=$DISTRO
 }
 
 function install_firefox_config {
@@ -458,6 +458,10 @@ function main {
     systemctl status &>/dev/null && activate_systemd || warning "Systemctl probably disabled, skipping activation..."
     if [[ ! $IS_WSL ]]; then
         xdg-settings set default-web-browser "firefox.desktop" || error "Failed setting default web browser via xdg-settings"
+        # Update desktop database for MIME type associations
+        if [[ -d "$HOME/.local/share/applications" ]] && [[ $(command -v update-desktop-database) ]]; then
+            update-desktop-database "$HOME/.local/share/applications" || warning "Failed updating desktop database"
+        fi
     fi
 }
 

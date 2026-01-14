@@ -81,6 +81,7 @@ vlc-plugin-x264
 vlc-plugin-x265
 wireplumber
 xclip
+xdg-terminal-exec
 xdotool
 xorg-fonts-misc
 xorg-xev

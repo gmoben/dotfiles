@@ -37,3 +37,12 @@
 .xsession
 .zsh_plugins.txt
 .zshrc
+
+# Terminal configuration
+.config/xdg-terminals.list
+.local/share/applications/emacs-terminal.desktop
+.local/share/applications/emacsclient-terminal.desktop
+
+# Hide broken GUI launchers when using emacs-nox
+.local/share/applications/emacs.desktop:if-pkg:emacs-nox
+.local/share/applications/emacsclient.desktop:if-pkg:emacs-nox
